@@ -43,3 +43,7 @@
 ### In GCP VM we will be installing three things: Docker Engine (Building Docker Image and Installing Minikube), Minikube, Kubectl (Need to interact with Kubernetes Cluster)
 
 ### We will integrate whatever we have in GitHub Code, and connect it to GCP VM; Once code has been copied we will have the docker file, Kubernetes file; We will build Docker Image using Docker file and Deploy in Kubernetes; After Github Integration, we will build Test App
+
+**Project Codes:**
+
+1. pip install -e . - Triggers setup.py (Install all the dependencies from setup.py)
