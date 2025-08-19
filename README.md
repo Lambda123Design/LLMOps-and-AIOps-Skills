@@ -1,6 +1,10 @@
 # LLMOps-and-AIOps-Skills
 
+**(Cloud CI/CD Toolkit like Gitlab; Jenkins is a Local**
+
 **A. AI Anime Recommender Project**
+
+**E. Celebrity Detector and QnA**
 
 **A. AI Anime Recommender Project**
 
@@ -47,3 +51,25 @@
 **Project Codes:**
 
 1. pip install -e . - Triggers setup.py (Install all the dependencies from setup.py)
+
+
+
+**E. Celebrity Detector and QnA**
+
+1. Groq - LLM (LLama 4 Vision Transformer)
+
+2. Circle CI - CI/CD for making Pipelines **(Cloud CI/CD Toolkit like Gitlab; Jenkins is a Local**
+
+3. OpenCV Python - To deal with Image work like conversion, scaling, etc..
+
+4. Github - Serves as SCM for the project
+
+5. Flask - To make the backend of the application **Helps user to upload Images**
+
+6. HTML/CSS - To make UI or Frontend of the application
+
+7. Docker - For containerization of app during deployment
+
+8. GCP GAR - For storing Docker Images **Google Artifact Registry; It is like a Docker Hub for Google Cloud**
+
+9. GCP GKE - To deploy and run app in Cloud within a Kubernetes Cluster; It is an service offered by Google Cloud **Google Kubernetes Engine**
