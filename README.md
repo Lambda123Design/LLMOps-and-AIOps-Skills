@@ -99,3 +99,108 @@
 **We will inject API into Kubernetes Cluster**
 
 10. Added .gitignore file for GitHub code versioning
+
+### Pre-Deployment Checklist: Need to have Dockerfile, Kubernetes Deployment File, Code Versioning using GitHub
+
+11. Deployment in GCP:
+
+When using GCP for first time, enable Kubernetes Engine API,
+Container Registry API,
+Compute Engine API,
+Cloud Build API,
+Cloud Storage API,
+IAM API
+
+12. Creating a Kubernetes Cluster
+
+13. Create a Artifact Registry
+
+#### 14. Creating an Service account, because we want to give access to Kubernetes; We need to give our CI/CD Tool to give partial access to our Kubernetes
+
+15. Create a Service Key and get as a JSON Format
+
+16. Copy it to VS Code and change it's name to GCP Key; Add gcp file name in gitignore
+
+### We need to fetch image from artifact registry and need to work with Kubernetes engine also; So we need GCP Key
+
+#### We created Kubernetes Cluster, created Artifact Repository, created service account with permissions, created access key, downloaded as a JSON and stored in VS Code
+
+17. Circle CI Codes: created "config.yml" file
+
+### **Codes inside config.yml (Inside circleci Folder):**
+
+18. Pulling the image from Docker, and installing it in our directory; Gave the repository to work with too
+
+**Why use Google Image, instead of Python Image, because if we use Python Image or anything we need to install GCloud CLI Separately; So to reduce our work, we used Google Image; It's dependcies will be automatically installed**
+
+19. Jobs - Checkout Code from GitHub, Build Docker Image, Deploy in Kubernetes Engine
+
+### Whatever we have uploaded in GitHub, we are pulling into Docker Container; and using into Google Container; It is pulling everything, storing inside app (We use a Docker Executor here)
+
+Second Job - Building Docker Image, Pushing it to Google Artifact Registry; We use same docker executor because we need docker to build and pushing the image
+
+Setup remote docker - This command will let us build Docker Inside the circle CI; We have to write the code to use Docker Image inside Circle CI
+
+Next two commands - Authenticating into GCP, Building and Pushing
+
+## Then we had some encoded key; We have encoded GCP Key that we downloaded as a JSON into a special format known as Base64 and then stored inside environment variables inside CircleCI
+
+We say that environment variable from Circle CI
+
+We have again decoded and stored as JSON
+
+## Why did we took a Long approach and not pushed directly?
+
+Because we can't push GCP key to github or any source code management 
+
+### We converted it to a Circle CI Environment Variable, after that we used it to recreate our field (We took that file from Local Repository, converted it to base64 Image, after that it gets converted to a simple one line code
+
+## So we pasted in one Circle CI Environment Variables; We didn't expose it to any Github or any public repository; It is inside Circle CI Private Repository
+
+## From that environment variable we decoded it again to GCP (Normal File); That's how we protected it from being exposed to a Public Platform
+
+20. We have the GCP.Json and we can use it to activate our Service account; We use this GCP Key to activate Service Account (We have configure that region part alone to our need)
+
+[Whole some part was for authentication purpose]
+
+### We took our Key from Environment Variable, converted back into our file, decoded it back to GCP.JSON format and we used that file to activate the account
+
+#### Then we autheticated our Docker using Particular Region
+
+Now comes the Main Part of the Job
+
+21. Building and Pushing Docker Image
+
+**Docker Build Code is - It is the Google Repository Path Copied (Registry-Project_ID [We kept Project_ID inside our environment varibale] - Google Artifact Registry Name - Image Name (Whatever we give in the last is the Docker Image Name) [Whenever we change it make sure to change it inside Kubernetes Deployment file name too (To the kubernetes_deployment.yaml file)]**
+
+We build Docker Image till here; Next we will push it;
+
+Push Code format also Similar 
+
+22. **Third Job - Image is in Google Artifact Registry; We use docker executor, doing the checkout; Setting up a Remote Docker, because we want to run Docker Commands, so we want to give permissions and setup Remote Docker**
+
+### Again we have to authenticate with our GCP because, We need to deploy the Pushed Image; So we authenticated again to Google Cloud
+
+23. **Next Configuration is for Google Kubernetes**
+
+We wrote Gcloud Container cluster. passed Cluster name (Gave in Environment Variables and we will be fetching it), giving the region of Kubernetes Cluster; Then we give the Project ID (Same way we give in Environment Variables of Circle CI)
+
+**Then we have authenticated our GCP and Kubernetes**
+
+### Main Part is Deployment and we will Deploy using "kubernetes_deployment.yaml" file 
+
+24. Gave the file name in code;
+
+#### kubectl-rollout - Everytime new docker image is used each time pipeline runs 
+
+We have to keep same app name "llmops-app" in both "kubernetes_deployment.yaml" file and "config.yml" file
+
+**Image name also should match in both**
+
+25. Next comes the Workflow code, where we define the workflow
+
+###  We have defined the Jobs, but we didn't define in which pattern the Jobs should run (Whether to checkout, build, push; We didn't define that pattern in which each step has to be performed)
+
+#### Pattern is, it has to run the checkout code, then build docker image (It can run only if the checkout code is fullfiled) and run, then deploy to Kubernetes (It can run only if Docker Image is successful)
+
+#### This is what whole workflow of Circle CI CI/CD Pipeline
