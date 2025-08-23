@@ -73,3 +73,29 @@
 8. GCP GAR - For storing Docker Images **Google Artifact Registry; It is like a Docker Hub for Google Cloud**
 
 9. GCP GKE - To deploy and run app in Cloud within a Kubernetes Cluster; It is an service offered by Google Cloud **Google Kubernetes Engine**
+
+**Project Working**
+
+1. Created a folder, venv, requirements.txt,setup.py, .env,  folders- templates, static, app --> __init__.py, utils folder --> __init__.py
+
+2. Run "pip install -e ." to run setup.py
+
+3. Created image_handler.py inside utils using OpenCV **Creating Image Handler Code using OpenCV** - Used BytesIO, OpenCV, np
+
+4. **Created Celebrity Detector Code using Llama-4** - Creating celebrity_detector.py in utils; **Used GROQ and Meta Llama-4**
+
+5. **Created qaengine.py in utils - Question Answer Engine Code**
+
+6. **Created Flask Backend Routes code using routes.py inside utils**
+
+7. Writing the main code in "__init__.py" in Utils folder
+
+### Here it will run in Flask in Local Host and Ports
+
+8. Created a Docker File (Some of the OpenCV Library needs some dependencies)
+
+9. Created Kubernetes Deployment yaml file
+
+**We will inject API into Kubernetes Cluster**
+
+10. Added .gitignore file for GitHub code versioning
