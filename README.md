@@ -1,5 +1,7 @@
 # LLMOps-and-AIOps-Skills
 
+**To Trigger setup.py - pip install -e .**
+
 **(Cloud CI/CD Toolkit like Gitlab; Jenkins is a Local**
 
 ### **We are converting here; Why not RGB to Gray; Because when we get a Image from Internet it is BGR and not RGB** gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -9,6 +11,8 @@
 **A. AI Anime Recommender Project**
 
 **E. Celebrity Detector and QnA**
+
+**F. AI Music Composer**
 
 **A. AI Anime Recommender Project**
 
@@ -326,3 +330,68 @@ We have to keep same app name "llmops-app" in both "kubernetes_deployment.yaml" 
 #### Pattern is, it has to run the checkout code, then build docker image (It can run only if the checkout code is fullfiled) and run, then deploy to Kubernetes (It can run only if Docker Image is successful)
 
 #### This is what whole workflow of Circle CI CI/CD Pipeline
+
+
+
+
+
+
+
+
+**F. AI Music Composer**
+
+**Tech Stack:**
+
+1. Groq - LLM
+
+2. Gitlab CI/CD - CI/CD Tool for making Pipelines
+
+3. Langchain - Gen AI Framework to interact with LLM
+
+4. Gitlab - Serves as SCM for our Project
+
+5. Music21 - To handle music theories like notes, chords, etc..
+
+6. Streamlit - To make frontend of the app
+
+7. Docker - For Containerization off app during deployment
+
+8. Synthesizer - For generating sound waves (E.g. Sine waves) from notes
+
+LLM generates Music Notes (Text Format); We will convert music notes to actual music notes and chords using **Music21**; We will convert it to actual music using **Synthesizer**
+
+9. GCP GAR - For Storing Docker Images
+
+### GAR - Google Artifact Registry - It is like Docker Hub for Google
+
+10. GCP GKE - To deploy and run app on cloud within a Kubernetes Cluster
+
+### Project Notes:
+
+In the first stage of the project, we begin with the basic setup of the environment and API integration. The process starts by creating a virtual environment to keep all dependencies isolated and manageable. Once the environment is ready, we implement logging and custom exception handling so that any errors can be properly tracked and debugged. After this, we install all the required libraries for the project, including LangChain, Music21, and Synthesizer, which will play a crucial role later. As part of this setup, we also connect our project with the cloud by generating an API key, which allows us to use the LLaMA 3.3 language model in our application. This completes the API setup stage.
+
+The second stage of the project involves building the utility functions that will help in processing musical data. Since the LLM will generate musical notes and chords, we need to transform them into formats suitable for audio synthesis. For this purpose, we create two helper functions. The first function uses Music21 to convert note names into frequencies, as the synthesizer can only process numerical frequency values. The second function uses the Synthesizer library to generate WAV audio files from these frequencies. WAV is chosen over MP3 since it provides uncompressed, higher-quality sound. Together, these functions bridge the gap between symbolic music representation and actual sound output.
+
+Once the utilities are ready, we move to the core logic of the application, which is implemented inside a dedicated Music class. This class contains several methods responsible for generating different aspects of music. It first generates a melody, which is essentially a sequence of musical notes. Then, it creates harmony chords, which enhance the melody and make it richer. Next, it defines the rhythm, which refers to the beats or tempo of the composition. The system also adapts the output to different music styles, such as jazz, sad, happy, or joyful, based on user input. Finally, the class produces a composition summary that describes the generated melody, chords, rhythm, and overall style, ensuring transparency of how the music was created.
+
+After the core music logic is complete, the fourth stage focuses on building the user interface. We use Streamlit to create a simple web application where users can type in their preferences (for example, “happy piano music” or “sad violin music”) and generate music at the click of a button. The Streamlit app handles all inputs and displays the outputs in an interactive and user-friendly manner.
+
+The next stage is containerization of the application. We create a Dockerfile that defines how the application should be packaged into a Docker image. This ensures consistency across environments and makes deployment easier. Once the Docker image is ready, we move to Kubernetes deployment, where a deployment file specifies details like the number of replicas, ports, and the source of the Docker image. The application is then deployed to Google Kubernetes Engine (GKE) for scalable cloud deployment.
+
+For source code management, we use GitLab instead of GitHub. All project code is pushed and maintained in a GitLab repository. Finally, the project integrates GitLab CI/CD pipelines to automate the deployment process. The pipeline is defined in a GitLab CI/CD file with three stages: the first handles code checkout (although in GitLab this is implicit), the second builds and pushes the Docker image to an artifact registry, and the third deploys the latest image to GKE. This setup ensures continuous integration and continuous deployment. Any changes in the codebase, such as updates to the UI or modifications in the logic, are automatically detected by the pipeline, and the application is redeployed with the latest updates.
+
+By the end of this workflow, the project achieves a fully automated AI-powered music generation system that takes user input, generates musical notes using a language model, processes them into frequencies, synthesizes them into audio files, and finally serves the results through a scalable web application deployed on the cloud.
+
+**(i) Project and API Setup (Groq)**
+
+To begin, open any directory of your choice and create a new folder for the project. Let’s name this directory iMusic Composer. Once the directory is created, open it in VS Code. You can do this in two ways: either directly right-click and select Open with Code, or open the terminal inside that folder and type code . which will automatically launch VS Code. After opening, make sure to trust the authors when prompted. On the top menu, open the terminal and create a new Command Prompt terminal.
+
+The first step is to create a virtual environment. For this, type the command python -m venv env (you can name the environment anything; here we use “env”). It may take some time to create. While it is being created, also make two new files: requirements.txt and setup.py. The setup.py file has already been explained earlier in the course and is also available in the GitHub resources section. You can copy the base code from there and simply modify it by changing the project name to something like music composer. To summarize, the setup.py file serves two purposes: it installs all the packages listed in the requirements file and also treats specific folders as packages rather than ordinary folders. For example, if we create a source directory, by default it is just a folder. But with the help of setup.py and an __init__.py file, it can be treated as a package, allowing imports across different parts of the project. This makes package and import management easier.
+
+Once the environment is created, activate it by running the command env\Scripts\activate. If activated correctly, you will see (venv) in brackets on your terminal prompt. Clear the screen with cls for better readability. Next, list all the project requirements inside requirements.txt. The libraries needed are: Streamlit (for building the user interface), Music21 (for handling chords and notes in music), python-dotenv (for loading environment variables such as API keys), LangChain (the generative AI framework we will use), LangChain-core, LangChain-community, and LangChain-groq (for interactions with the Groq API). Additionally, we include scipy (which will be useful later) and the Synthesizer library (for creating and synthesizing music). Be careful while writing the spelling of “synthesizer” correctly as s y n t h e s i z e r. Once done, save the requirements.txt file.
+
+Now, let’s define the project structure. Create a folder named app which will contain the main components of the application such as utility functions, the main logic, and eventually the application code. To ensure this folder is treated as a package, add an __init__.py file inside it. With this, our basic project structure is ready. Later, we will extend it with files like application.py, a Dockerfile, and Kubernetes deployment files, but for now, the structure is kept simple.
+
+To install both the requirements and the package, we use the setup.py file. Run the command pip install -e . which will trigger the setup file and install everything accordingly. Once the installation is complete, we move on to API integration. Open your browser and search for Groq Cloud API. Sign up or log in, and then navigate to the API Keys section. Create a new API key, naming it something like music, and submit it. The system will generate an API key for you. Copy this key, return to your project root directory, and create a .env file. Inside this file, create an environment variable named API_KEY and assign your copied key to it, enclosing it in double quotes. This will ensure that your sensitive key is safely loaded from the environment instead of being hard-coded.
+
+So, to summarize what we achieved in this video: we first created a virtual environment, defined the initial project structure, listed all required libraries in requirements.txt, and installed them using setup.py. We then generated and stored an API key from Groq Cloud by placing it into a .env file as an environment variable. This completes the basic setup phase. In the later stages, we will add more files for application logic, Dockerization, and Kubernetes deployment, but this foundational setup ensures the project is ready to move forward.
