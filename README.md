@@ -402,6 +402,24 @@ In this part of the project, the focus was on building utility functions that wo
 
 First, Music21 was imported to handle music theory concepts such as notes, chords, and durations. This library is essential because it allows the program to interpret symbolic music elements and translate them into computational representations. Next, NumPy was included since audio signals can be represented as arrays, and NumPy provides the necessary mathematical operations to handle these signals efficiently. The IO module was also imported to enable in-memory storage of generated audio files. Instead of saving every generated file permanently on disk, temporary memory is used to store audio files during a session. This prevents storage overflow when multiple users generate files, as the cached data is cleared when the app refreshes.
 
+
+**2. Core Code for Application:**
+
+In this stage, we begin writing the core application code that ties together the utility functions we built earlier with the LLM (Large Language Model). For this, a new file named main.py is created inside the application directory. The goal of this module is to define a reusable class that manages prompts, communicates with the Groq API, and generates musical note sequences based on user input.
+
+The first step is to perform the necessary imports. We import os to securely fetch environment variables, such as the API key required for Groq. Next, we bring in ChatPromptTemplate from LangChain, which is used to structure the prompts we send to the LLM. Finally, we import ChatGroq from LangChain’s Groq integration. This will serve as the interface for initializing and running our chosen LLaMA model via Groq Cloud.
+
+With the imports complete, we define a class named MusicLM. This class encapsulates all the functionality related to music generation. In the constructor (__init__), we accept a parameter called temperature, with a default value of 0.7. The temperature parameter plays a crucial role in controlling the creativity of the model. At lower values (close to 0), the model behaves more rigidly and adheres strictly to factual content. At higher values (close to 1), the model generates more creative, diverse, and sometimes unexpected outputs. Since music composition requires creativity, a temperature around 0.7–0.8 is ideal, striking a balance between variety and coherence.
+
+Inside the constructor, the LLM instance is initialized using ChatGroq. Three key arguments are provided:
+
+Temperature – the creativity setting explained above.
+
+API key – securely fetched using os.getenv().
+
+Model name – one of Groq’s available models. Groq offers both lightweight and larger parameter models. For instance, llama-3.1-8b-instant (8 billion parameters) is faster and suited for quick responses, whereas llama-3.3-70b-versatile (70 billion parameters) generates more detailed and nuanced results. For this project, the smaller 8B instant model is selected to keep inference times manageable.
+
+Next, we define the generate_melody method. This method accepts user input (a text description such as “make a happy melody”) and produces a melody—essentially a sequence of musical notes. To achieve this, a prompt template is constructed using ChatPromptTemplate.from_template(). The template instructs the LLM to generate a melody formatted as a space-separated sequence of notes.
 The next import was from scipy.io.wavfile, specifically the write function. This module is responsible for converting NumPy arrays into actual WAV audio files. Just as videos come in multiple formats (e.g., MP4, MKV), audio files also have formats such as MP3 or WAV. WAV is an uncompressed audio format, while MP3 is its compressed version. In this project, WAV files are generated first, which can later be compressed into MP3 if needed. Finally, from the Synthesizer package, both the Synthesizer and Waveform classes were imported. Music21 helps generate notes, but the synthesizer converts those notes into actual sound waves — typically sine waves or similar — that form the basis of audible music.
 
 With the imports complete, the first function was defined: note_to_frequencies(note_list). This function takes in a list of musical notes (for example, “C4” or “E4”) and converts them into corresponding frequencies measured in Hertz. A blank list named freqs was initialized to store the resulting values. The function iterates through each note in the input list, creating a Note object using Music21, then accessing its pitch to extract the exact frequency. Each valid frequency is appended to the list. Importantly, this process is wrapped in a try–except block. The reason is that users may sometimes provide invalid note names. Without exception handling, such errors would crash the program. By using except: continue, invalid entries are skipped gracefully while valid notes are still processed. Finally, the function returns the full list of frequencies, ensuring that only clean, usable data moves forward in the pipeline.
@@ -426,10 +444,128 @@ Next, the generated NumPy audio array needed to be converted into a WAV file. In
 
 In summary, the second utility function bridges the gap between abstract musical frequencies and playable audio files. The workflow can be described as follows:
 
-A synthesizer object is created, configured to use a sine wave at a standard sample rate.
+(i) A synthesizer object is created, configured to use a sine wave at a standard sample rate.
 
-Each note frequency is processed into a sine wave and then merged into a full waveform using NumPy.
+(ii) Each note frequency is processed into a sine wave and then merged into a full waveform using NumPy.
 
-The final waveform is written into an in-memory buffer as a WAV file, ready to be played or delivered to the user.
+(iii) The final waveform is written into an in-memory buffer as a WAV file, ready to be played or delivered to the user.
 
 By combining the first and second utility functions, the application is capable of taking text-based musical notes, converting them into frequencies, and ultimately producing an audio file in real time. This structured pipeline makes the system both efficient and scalable for generating music dynamically.
+
+By specifying this output format, we ensure that the generated response is structured and easy to parse in subsequent steps.
+
+After defining the prompt, it is combined with the initialized LLM into a chain. This is done by piping (|) the prompt into the model. Once the chain is created, it can be invoked using the user’s input. The method then extracts the relevant portion of the LLM’s response by accessing the .content attribute. A .strip() function is applied to remove any unnecessary whitespace at the beginning or end of the output. This ensures that the returned string is a clean list of notes.
+
+To summarize, the generate_melody method performs the following steps:
+
+(i) Accepts user input describing the kind of melody desired.
+
+(ii) Builds a structured prompt that asks the LLM to generate a melody as a sequence of notes.
+
+(iii) Forms a chain that connects the prompt with the Groq LLM.
+
+(iv) Invokes the chain using the user input.
+
+(v) Returns the generated melody as a clean, space-separated string of notes.
+
+This design ensures that the application can dynamically generate music note sequences in response to any textual description. The next step will extend this approach by defining a second method, generate_harmony, which builds harmonic layers to accompany the generated melody.
+
+Once the melody has been generated, the next step is to enhance it by adding harmony, rhythm, and stylistic variations. These layers transform a simple sequence of notes into a more complete and musical composition.
+
+**Generating Harmony** - The method generate_harmony accepts a melody (produced earlier) and generates chords that harmonize with it. In music, harmony ensures that notes are not played in isolation but are grouped into chord structures, creating depth and fullness.
+
+To achieve this, a new prompt template is created. Instead of asking for single notes, the prompt instructs the LLM to “create harmony chords for this melody”. The input melody is passed into this prompt, and the output is expected in a structured format where chords are represented as space-separated notes.
+
+Here, each group of three notes (separated by spaces) forms a chord, and the sequence of chords provides harmony to the melody.
+
+The logic is the same as in melody generation:
+
+(i) Define a structured prompt.
+
+(ii) Combine it with the Groq LLM into a chain.
+
+(iii) Invoke the chain using the melody as input.
+
+(iv) Extract and clean the response to return a chord progression.
+
+Effectively, the melody provides the skeleton, while the harmony builds the supporting structure to make the music sound complete.
+
+**Generating Rhythm:** The method generate_rhythm adds the concept of timing and beats to the composition. Rhythm determines how long each note or chord is played, giving the piece a sense of tempo and flow.
+
+Similar to the earlier methods, this function uses a prompt that asks the LLM to “suggest rhythm durations in beats for this melody”. The format here differs, as the output must be numerical beat values separated by spaces
+
+This means the first note is held for one beat, the next two for half a beat each, and the last for two beats. Higher values produce slower, more extended sounds, while smaller values create faster, energetic passages.
+
+Again, the flow is identical:
+
+(i) A rhythm-specific prompt is defined.
+
+(ii) It is combined with the LLM into a chain.
+
+(iii) The chain is invoked using the melody.
+
+(iv) The cleaned output is returned as a sequence of beat durations.
+
+By combining melody, harmony, and rhythm, we now have the essential building blocks of structured music.
+
+**Adapting to Music Style:** Finally, the method adapt_style integrates user preferences to shape the overall feel of the music. This function accepts:
+
+style (user-defined, e.g., jazz, classical, lo-fi, instrumental, etc.),
+
+melody (generated earlier),
+
+harmony (chord progression),
+
+rhythm (beat structure).
+
+The purpose of this method is to guide the LLM in merging all three elements into a composition that reflects the chosen style. For instance, a jazz style might favor complex chord progressions and syncopated rhythms, while a lo-fi style would emphasize simplicity and relaxed beats.
+
+By layering style adaptation on top of melody, harmony, and rhythm, the model is capable of producing music that is not only structurally complete but also aligned with a specific mood or genre.
+
+**Adapting to a Music Style:** After generating the melody, harmony, and rhythm, the final step is to adapt the composition to a particular style. While the previous methods create the raw musical elements, this stage ensures that the output matches the mood or genre specified by the user.
+
+The adapt_style method achieves this by constructing a prompt that integrates all three elements—melody, harmony, and rhythm—along with the chosen style. The format of the prompt is simple and structured:
+
+(i) First, it specifies the style to be applied (e.g., “Adapt to happy style” or “Adapt to jazz style”).
+
+(ii) Then, it appends the melody sequence.
+
+(iii) Next, it includes the harmony (the chords generated earlier).
+
+(iv) Finally, it lists the rhythm (the beat durations).
+
+This organized prompt is then passed to the language model chain, ensuring that all components are processed together. When invoking the chain, the system passes a dictionary containing the user-selected style, the generated melody, the harmony, and the rhythm. Each of these keys must exactly match the input parameters expected by the template to avoid mismatches. The model then produces a single string summary, which represents the adapted piece of music in the specified style. To ensure clean output, the response is stripped of extra spaces before returning.
+
+**Why Style Adaptation is Important:** The reason for combining everything into a single string summary lies in the transformation process. By this stage, the system already has:
+
+(i) A melody – a raw sequence of notes.
+
+(ii) A harmony – chords that organize the melody.
+
+(iii) A rhythm – the timing and beat structure.
+
+Individually, these represent separate musical elements, but they are not yet cohesive. Style adaptation restructures these elements into a unified musical piece that reflects the user’s preference. For example:
+
+(i) If the style is set to happy music, the model will arrange the melody, harmony, and rhythm in a bright, uplifting manner.
+
+(ii) If the style is sad or sorrowful, the same elements will be restructured to sound slower, softer, and emotionally deeper.
+
+(iii) If the style is jazz, classical, or lo-fi, the chords, rhythms, and note progressions will be aligned to match those genres.
+
+Thus, style adaptation acts as the final layer of polish—it takes the flat, technical music structure and molds it into something emotionally and stylistically meaningful.
+
+### Complete Workflow Summary:
+
+To summarize the entire workflow:
+
+(i) Constructor Setup – Initializes the LLM with API keys, temperature, and model parameters.
+
+(ii) Generate Melody – Produces a raw sequence of musical notes (e.g., “C4 D4 E4 G4”).
+
+(iii) Generate Harmony – Groups these notes into chords, giving them a structured arrangement.
+
+(iv) Generate Rhythm – Assigns beats and timing, defining how long each note or chord should be played.
+
+(v) Adapt Style – Combines melody, harmony, and rhythm into a single string, adapting the music to the user’s chosen style (e.g., happy, sad, jazz, lo-fi).
+
+This pipeline ensures that music is generated in a step-by-step, modular fashion. Each component builds on the previous one, and the final adaptation step ensures that the composition reflects the user’s creative intent.
