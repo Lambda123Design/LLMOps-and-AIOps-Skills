@@ -569,3 +569,45 @@ To summarize the entire workflow:
 (v) Adapt Style – Combines melody, harmony, and rhythm into a single string, adapting the music to the user’s chosen style (e.g., happy, sad, jazz, lo-fi).
 
 This pipeline ensures that music is generated in a step-by-step, modular fashion. Each component builds on the previous one, and the final adaptation step ensures that the composition reflects the user’s creative intent.
+
+**4. Main Application code using Streamlit**
+
+A new file must be created in the root directory and named app.py.
+
+First, some essential imports are required. Streamlit is imported to create the front end of the application. Streamlit is referenced as st. The Music class from the previous video is imported using from app.main import Music. Additionally, utility functions are imported from the app/utils folder. The utils file contains two functions: notes_to_frequencies and frequencies_to_audio. Both functions are imported at once using from app.utils import *.
+
+The BytesIO class from the io module is imported to handle audio bytes. This allows the generated music to be played directly within the Streamlit app. The load_dotenv function is imported from the dotenv module to ensure all environment variables are loaded whenever app.py runs. This is particularly important during deployment using Docker, as all environment variables will be loaded automatically, preventing issues with the Grok LM.
+
+Next, basic configuration for Streamlit is performed. The function st.set_page_config() is called at the top of the file, as it must be executed before any other Streamlit code. The page title is set to "Music Composer", and the layout is centered. The app title is defined with st.title("Music Composer"). A description is added using st.markdown(), such as “Generate music by describing the style and contents.” Running streamlit run app.py in the terminal confirms that the title and description appear correctly.
+
+An input section is then created to accept two inputs from the user: the type of music and the style. The music input is collected using st.text_input(), allowing the user to describe the music they wish to compose. The style is selected from predefined options using a st.selectbox(). Available styles include “Sad,” “Happy,” “Jazz,” “Romantic,” and “Extreme.” Additional styles can be added as required. Once the app is saved and refreshed, the two input boxes are visible, enabling user interaction.
+
+A button is created using st.button() and labeled “Generate Music.” When pressed, the app verifies that the music input is not empty before generating music. An object of the MusicLM class is created using generator = MusicLM(). A spinner is added with with st.spinner("Generating music...") to provide visual feedback while the music is being generated.
+
+The application generates four components: melody, harmony, rhythm, and the final composition. Melody is produced using generator.generate_melody(), based on the user-provided input. Harmony is generated with generator.generate_harmony(melody), which takes the generated melody as input. Rhythm is produced using generator.generate_rhythm(melody). The final composition is created using generator.adapt_style(), which combines the user-selected style, melody, harmony, and rhythm. This function provides an overall summary of how the music was composed.
+
+To convert generated notes into frequencies, the melody string is split into a list using melody.split(). For example, a string "E4 E5 E6" becomes ['E4', 'E5', 'E6']. This list is stored as melody_notes and converted to frequencies using the notes_to_frequencies() function, with the result stored in melody_frequencies. The same process is repeated for harmony, splitting the harmony string into chords and converting them into frequencies.
+
+This organized process ensures that all inputs, including the user-selected style, generated melody, harmony, and rhythm, are properly handled. The final composition reflects the combined result of all components, providing an accurate representation of the music as intended by the user.
+
+The harmony string is first split into individual chords. An empty list is initialized to store the harmony notes. Each chord in the harmony is iterated over using a loop, and the notes within each chord are split and extended into the list. This process ensures that each chord is separated into individual notes, similar to the way the melody notes are handled.
+
+For example, a chord sequence such as "C4 E4 G4" is split into ['C4', 'E4', 'G4']. This organization allows the harmonics to complement the melody, enhancing the overall musical structure. The main purpose of splitting the harmonic chords is to make the music more organized and structured.
+
+Once the harmony notes are properly split, the frequencies for both melody and harmony are generated. The notes_to_frequencies() function is used for this purpose. Melody frequencies are obtained from the melody notes, while harmony frequencies are obtained from the harmony notes. After computing the frequencies, the melody and harmony frequencies are combined into a single list, representing all frequencies that will be used to generate the final music.
+
+To summarize the process so far: first, the page configuration is defined; then the user inputs for music and style are set up. A button is created, and an object of the MusicLM class is initialized. Melody, harmony, rhythm, and composition are generated. The melody notes are converted to frequencies, and harmony chords are split into notes and converted to harmonic frequencies. Both frequency lists are then combined for audio generation.
+
+The melody notes form the main tune of the music, while the harmony notes act as an improvised version that enriches and harmonizes the melody. Combining both ensures that the music is fuller and more pleasing to the listener.
+
+The combined frequencies are then used to generate a WAV audio file using the generate_wav_bytes_from_notes_frequencies() function. The resulting audio is stored in a variable named wav_bytes. Since the audio is in bytes format, it cannot be directly displayed in the Streamlit app. To address this, the BytesIO class is used, and the audio is rendered with st.audio(). The audio format is specified as WAV; if a different format such as MP3 is desired, the format parameter can be adjusted accordingly. A success message is displayed to indicate that the music has been generated.
+
+Additionally, the composition summary is shown using st.expander(). This allows users to expand and view the generated composition details, including the melody, harmony, rhythm, and how the music was structured. The rhythm component is primarily used in the composition generation; the synthesizer library used does not support advanced rhythm integration. Alternative libraries, such as Midi, can be used to include rhythm more explicitly.
+
+A brief summary of the application: essential imports include Streamlit, the MusicLM class, utility functions, load_dotenv for environment variables, and BytesIO for displaying audio. The app page is configured, user inputs are collected, and a button is created. Melody, harmony, rhythm, and the overall composition are generated, converted to frequencies, and combined. The final WAV audio file is displayed using BytesIO, and the composition summary is provided.
+
+Testing the application involves generating prompts to input into the music description box. For example, a prompt like “alien soundscape with unusual harmony and experimental rhythm” is entered, and a style is selected, such as Extreme. The generated music plays, and the composition summary is displayed, showing details of the melody, chords, and rhythm.
+
+Other prompts can also be tested, such as “generate a relaxing jazz tune with melody and soft rhythm.” The generated output demonstrates variations in melody and harmony according to the selected style. The synthesizer library is limited to a single instrument; other libraries can be used to simulate instruments like guitar or violin. The composition summary provides additional details, including chord progressions, rhythm, tempo, and melodic characteristics.
+
+This concludes the creation and testing of the application. The app successfully accepts user inputs, generates music using the MusicLM class, displays audio, and presents the composition summary. The process is now complete, and the application is ready for further exploration or enhancement.
