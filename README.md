@@ -570,7 +570,7 @@ To summarize the entire workflow:
 
 This pipeline ensures that music is generated in a step-by-step, modular fashion. Each component builds on the previous one, and the final adaptation step ensures that the composition reflects the user’s creative intent.
 
-**4. Main Application code using Streamlit**
+**3. Main Application code using Streamlit**
 
 A new file must be created in the root directory and named app.py.
 
