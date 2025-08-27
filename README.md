@@ -8,6 +8,8 @@
 
 ### Next is temperature; Higher the temperature, more creative our model is; More creative more hallucinative, if suppose we have given Virat Kohli, it can detect as other clebrity, so give it in between 0.2-0.5
 
+#### "Full Documentation.md" file of tutor in GitHub has every steps that we have to do for Deployment
+
 **A. AI Anime Recommender Project**
 
 **E. Celebrity Detector and QnA**
@@ -611,3 +613,221 @@ Testing the application involves generating prompts to input into the music desc
 Other prompts can also be tested, such as “generate a relaxing jazz tune with melody and soft rhythm.” The generated output demonstrates variations in melody and harmony according to the selected style. The synthesizer library is limited to a single instrument; other libraries can be used to simulate instruments like guitar or violin. The composition summary provides additional details, including chord progressions, rhythm, tempo, and melodic characteristics.
 
 This concludes the creation and testing of the application. The app successfully accepts user inputs, generates music using the MusicLM class, displays audio, and presents the composition summary. The process is now complete, and the application is ready for further exploration or enhancement.
+
+**4. Docker File and Kubernetes Deployment File:**
+
+In this video, we will be creating our Dockerfile and our Kubernetes deployment file. First, let’s make a Dockerfile. You can go to the GitHub resource section provided, where a link to the GitHub repository is given. Inside that repository, you will find a Dockerfile. Simply copy it and paste it here. Now, let me explain what this Dockerfile is doing. It is based on the Python 3.11 slim image, and then we create one working directory called app. Whenever this Dockerfile is used to build a container, that directory will be formed. Inside this app directory, all the project files will be copied—whether it is app.py, the app folder, your requirements.txt, or setup.py—everything will be placed inside this directory.
+
+pip install -e .
+
+In the Dockerfile, the same approach is used, but with --no-cache-dir added. This flag avoids creating cache files inside the app directory and ensures a fresh restart for the application. After that, some default environment variables are set, and finally, the command to run the application is defined. In the previous video, we ran our application using: streamlit run app.py
+
+Now, let’s discuss the three key parameters: server port, server address, and server headless. The server port is set to 8501, because that is the default port for Streamlit applications. The server address is set to 0.0.0.0, which means the app can be accessed from anywhere, not just localhost. This is important if the application is deployed on a virtual machine or Kubernetes cluster, since the IP will change. The server.headless = true setting is also crucial. By default, Streamlit automatically tries to open the browser when you run the app locally (because headless is false). For example, if you run streamlit run app.py locally, you’ll see the browser automatically opens. But in production environments (e.g., Linux servers), you don’t want this, as it can cause dependency errors. That’s why we explicitly set headless to true—so it won’t try to force-open a browser.
+
+That’s all about the Dockerfile. Now, in the root directory, we will create another file called kubernetes-deployment.yaml. You can again go to the GitHub repository mentioned in the resources, find the YAML file, copy it, and paste it here. A Kubernetes deployment file has two main parts: the Deployment and the Service.
+
+The deployment name is set as lmops-app, and you must ensure that this name is used consistently across the YAML file, including in the service section. Next is replicas, which specifies how many pods of your application you want. Here it is set to 1 for simplicity, but you could set it to 2 or 3 if needed. More replicas mean higher costs, and since this is a learning project (not a real production company project), keeping it low avoids unnecessary expense.
+
+Then comes the image path. This is the Docker image for your application, which will be stored in Google Artifact Registry. The path format includes the artifact registry, project ID, repository name, and image name. Kubernetes will fetch the image from there to create and deploy your container. Next, the container port is defined as 8501, because that’s the port where the application is running. You could also expose this port in the Dockerfile (optional), but it is not strictly necessary.
+
+The service part of the YAML links to this deployment. Here we define the service name (lmops-service), which acts on the deployment lmops-app. The target port is again set to 8501, and it must match the container port. As for the service type, Kubernetes supports three types: ClusterIP, NodePort, and LoadBalancer. ClusterIP is used for internal deployments, while NodePort and LoadBalancer are better for external, internet-facing deployments. LoadBalancer is preferred for production-grade external deployments.
+
+Finally, we have environment variables. When doing code versioning, we don’t push sensitive files (like .env containing API keys) to the repository. Instead, we inject the API key directly into the Kubernetes cluster as a secret. The application then fetches the API key from Kubernetes at runtime. That’s what the environment section in the YAML is doing—it loads the API key into the application securely.
+
+So, to summarize: in this video, we created a Dockerfile and a Kubernetes deployment file. In the Dockerfile, we defined the Python base image, working directory, dependency installation, environment settings, and the run command. In the Kubernetes YAML, we set the deployment name, replicas, image path, container port, service configuration, and environment variable handling.
+
+**5. Code Versioning using GitLab:**
+
+In this video, you will be doing code versioning using GitLab. First, let’s create a .gitignore file. In the root directory, create a file named .gitignore. In this file, you list all the files and folders that you don’t want to push to the repository. For example, we will exclude three things: the .env file, the virtual environment, and the project management files. To do this, copy their relative paths and paste them into the .gitignore, adding a backslash where necessary. These three should not be pushed because the virtual environment contains large files, the environment file holds sensitive API keys, and the project management files are not required in version control.
+
+Next, go to your browser, open gitlab.com, create a new account (if you don’t already have one), and log in. After logging in, create a new project. Choose blank project, then give it a name—for example, let’s call it music. You can select the deployment target as Kubernetes (though this step is optional). Make sure to set the project visibility to public. Also, do not initialize the repository with a README file. Once that is set, create the project.
+
+After the project is created, GitLab will show you setup instructions. You need to initialize your repository locally. Make sure you are inside the HTTPS section (not SSH). Copy the first command provided (git init) and run it inside your terminal in VS Code. To do this, open a CMD terminal in VS Code, ensure your virtual environment is activated, paste the command, and press Enter. This initializes your Git repository.
+
+Next, you need to add the origin. Copy the GitLab HTTPS URL from your repository and run the git remote add origin command. You might see it added twice, but you only need it once. After that, clear your terminal screen. 
+
+Now we can run Git Commands using "git add ."; Commit - git commit -m "first commit"; 
+
+**Push to GitLab** - git push -u origin main
+
+(The actual branch name may vary depending on your setup.) This push depends on your internet connection, so it may take a little time.
+
+Once the push is successful, go back to your GitLab repository in the browser and refresh the page. You will see that everything has been pushed successfully: the app directory, .gitignore, Dockerfile, app.py, and the Kubernetes file—all your files are now present in GitLab.
+
+That’s how you perform code versioning with GitLab.
+
+**6) GCP Setup - Service Accounts, GKE, GAR**
+
+#### "Full Documentation.md" file of tutor in GitHub has every steps that we have to do for Deployment
+
+In this video, we are setting up Google Cloud for our project. First, open Google Cloud Platform (GCP) and create an account. When you sign up, Google provides a $300 free credit. After creating your account, sign in and open your GCP console.
+
+The first step is to enable six APIs. If you are using Google Cloud for the first time, these APIs are disabled by default. Enabling them ensures your project won’t face errors. To do this, go to the left-hand pane, select APIs and Services, and then select Library. Now search for and enable the following APIs one by one:
+
+(i) Kubernetes Engine API – required for Kubernetes clusters.
+
+(ii) Container Registry API – required for storing Docker images in Google Artifact Registry.
+
+(iii) Compute Engine API – required for handling VM instance computation.
+
+(iv) Cloud Build API – for building and deploying images.
+
+(v) Cloud Storage API – for cloud-based storage.
+
+(vi) IAM API – for managing roles and permissions.
+
+Make sure each of these is enabled. In my case, they were already enabled, but you need to check yours carefully.
+
+Next, we will create a Google Kubernetes Engine (GKE) cluster. From the GCP homepage, search for GKE and open Kubernetes Engine. In the left pane, select Clusters, then click Create Cluster. You will be asked to provide some details:
+
+(i) Cluster name: Let’s name it lmops.
+
+(ii) Region: Keep the default as us-central1.
+
+(iii) Tier: Select the Standard tier (do not choose Enterprise, as it’s for company-level production projects).
+
+(iv) Fleet registration: Skip this.
+
+(v) Networking settings: Enable access using DNS and IPv4 address, but do not tick “Enable authorized networks.” Keep it unticked.
+
+(vi) Advanced section: No changes required.
+
+Now click Create. The cluster creation process usually takes around five minutes. You must wait until the cluster is fully created before proceeding.
+
+While the cluster is being created, we can set up a Google Artifact Registry. Search for “Artifact Registry” in the GCP console and open it in a new tab. Create a new repository and name it lmops-repo. Select Docker as the format, set it to Standard, choose Region, and select the same region as your cluster (us-central1). Create the repository, which will be created instantly, unlike the cluster that takes longer.
+
+**Next, we need to create a Service Account. This service account will allow our CI/CD tool (such as CircleCI, GitHub Actions, GitLab, or Jenkins) to partially access Kubernetes and Artifact Registry. Since we cannot directly use our personal account for deployment, the service account provides controlled access.**
+
+From the left pane, go to IAM & Admin, then select Service Accounts. Create a new service account and give it any name (e.g., celebrity or any name of your choice). Click Create and Continue. Now assign the following five roles:
+
+(i) Owner
+
+(ii) Storage Object Admin
+
+(iii) Storage Object Viewer
+
+(iv) Artifact Registry Administrator
+
+(v) Artifact Registry Writer
+
+These five roles provide partial access to storage, registry, and Kubernetes operations. Once roles are added, click Done.
+
+After creating the service account, go to its Actions menu and select Manage Keys. Add a new key, choose JSON format, and download it. This JSON file contains your access credentials.
+
+Now open your VS Code, copy the downloaded JSON file into your project’s root directory, and rename it to gcp-key.json. Since this key must never be pushed to your repository, add gcp-key.json to your .gitignore file. This ensures the key remains private while still allowing your project to use it locally.
+
+This key grants your project controlled access to GCP with the roles we assigned: Owner, Storage Object Admin, Storage Object Viewer, Artifact Registry Admin, and Artifact Registry Writer. These permissions allow Kubernetes and Artifact Registry to function properly during deployments.
+
+To summarize, here’s what we completed in this video:
+
+(i) Enabled six essential Google Cloud APIs.
+
+(ii) Created a Google Kubernetes Engine cluster (wait until it’s fully created before continuing).
+
+(iii) Created a Google Artifact Registry repository (lmops-repo).
+
+(iv) Created a Service Account with five specific roles.
+
+(v) Downloaded the JSON key, renamed it to gcp-key.json, and added it to .gitignore.
+
+Finally, once your Kubernetes cluster is fully created, you will see a green tick mark, meaning the cluster is running successfully. Only then should you proceed to the next video.
+
+**7. GitLab CI/CD Code:**
+
+In this video, I will explain the code for setting up GitLab CI/CD.
+
+First, in the root directory of your project, create a file named .gitlab-ci.yml. Once you create it, you will see a small box icon appear next to the filename, which indicates that the file has been named correctly. Press Enter, and now you have your GitLab CI/CD configuration file.
+
+We are not writing this code from scratch. Instead, you can copy the code from the resource section of my GitHub and paste it into this file. In this video, I will only explain how the code works.
+
+The first thing you will notice is that the base image is set to google/cloud-sdk:latest. If you remember from the CircleCI project, you already know why this is important. Although you could have used a Python image, the disadvantage is that Python images do not come with gcloud, kubectl, or docker pre-installed. Since these commands are used repeatedly in our pipeline, installing them separately would increase both setup and execution time. The Google Cloud SDK image already contains these tools, so it saves time in both coding and processing.
+
+Our CI/CD pipeline has three stages:
+
+(i) Checkout – for fetching the code.
+
+(ii) Build – for building and pushing the Docker image.
+
+(iii) Deploy – for deploying the Docker image to Google Kubernetes Engine (GKE).
+
+In the Checkout stage, we don’t actually need to fetch anything because our code already resides in GitLab. Normally, if the source code was in GitHub or another SCM, we would copy it during this stage. In our case, we simply display a message confirming that the code is checked out.
+
+The second stage is Build. Here, we build a Docker image of our application and push it to Google Artifact Registry. To do this, we use a feature called Docker-in-Docker (DinD). This is necessary because our base image itself runs in a Docker container (Google Cloud SDK). Inside that container, we also want to build our own Docker image for the application. By enabling docker:dind services, we can run Docker commands inside a Docker container.
+
+Next comes the before_script section. Here, we configure Google Cloud authentication. In GitLab, we set an environment variable named GCP_SA_KEY that contains the content of the service account JSON file we created earlier. The pipeline converts this environment variable into a file named gcp-key.json. Using this key, we activate the Google Cloud service account and authenticate with our project. Then, we configure Docker authentication with our Artifact Registry.
+
+After authentication, we build the Docker image using the defined registry path, project ID, repository name, and application name. For example, the image name format is:
+
+<registry>/<project-id>/<repo>/<image-name>:latest
+
+We then push this Docker image to Artifact Registry. It’s important that the image name here matches exactly with the image name defined in your Kubernetes deployment YAML file. For instance, if the deployment file specifies lmops:latest, then the same name must be used when building and pushing the image.
+
+The third stage is Deploy. This stage is responsible for deploying the Docker image from Artifact Registry into the Kubernetes cluster. Similar to the build stage, we first authenticate with Google Cloud using gcp-key.json. Then we configure access to the Kubernetes cluster by fetching its credentials. For this step, we use the cluster name, cluster region, and project ID—all of which we defined as environment variables earlier.
+
+Once cluster access is configured, we apply the kubernetes-deployment.yaml file. This file tells Kubernetes to pull the Docker image from Artifact Registry and deploy it inside the cluster. Again, make sure the image name inside the deployment file matches the name you used while pushing the image in the build stage.
+
+**Summary of this:**
+
+(i) We used Google Cloud SDK as the base image because it comes with gcloud, kubectl, and docker pre-installed.
+
+(ii) The pipeline has three stages: Checkout, Build, and Deploy.
+
+a) Checkout does nothing since the code already lives in GitLab.
+
+b) Build stage creates a Docker image of the app and pushes it to Artifact Registry using Docker-in-Docker.
+
+c) Deploy stage configures Kubernetes access and applies the kubernetes-deployment.yaml file to deploy the app.
+
+(iii) Authentication is handled using a service account key (gcp-key.json) that we converted from the GitLab environment variable GCP_SA_KEY.
+
+(iv) The image naming convention must remain consistent between the GitLab pipeline and the Kubernetes deployment file.
+
+This completes the explanation of the GitLab CI/CD pipeline code.
+
+**8. Full CI/CD Deployment on GKE**
+
+First of all, you have to check some things. Your Docker file is there — yes, we have created the Docker file. Your Kubernetes deployment file is there — yes, we have created it. Have you done the code building using GitLab? Yes, we have done that, and I have also given you some instructions on how you can do the code versioning. But I think the video was enough for that purpose. Still, suppose someone wants to do the shortcut way, so that’s why I have given this as well.
+
+In the previous videos we have done the GCP setup also. Basically, we enabled some API keys, created our Google Kubernetes cluster, created one Artifact Registry, and also created one service account along with the access key for that. Now here is our GCP key dot JSON, and make sure you include this GCP key dot JSON in your .gitignore. So, you have to write it like this: GCP key dot JSON. You must download it as a JSON file, place it properly, and make sure it’s excluded from Git tracking.
+
+After that, you created this .gitlab-ci.yml. Now what you have to do is push this GitLab CI YAML to your GitLab. So, first of all, you must ensure you include the GCP JSON in .gitignore. Then, just like before, run the commands: git add, git commit, and git push. The same things you did earlier during the code versioning process. Once pushed, if I show you my GitLab, now you will see one .gitlab-ci.yml file is also there.
+
+As soon as the .gitlab-ci.yml is there, you will get an option in GitLab settings. You can see under Settings, there is an option for CI/CD. We will be coming into CI/CD soon, but let’s go one by one. First of all, you have to convert this GCP key into Base64 format. Why Base64 format? Because in the GitLab CI YAML we are encoding the GCP key into Base64 format so that we can store it as an environment variable on GitLab. Later, GitLab will fetch this environment variable (GCP_SA_KEY), decode it back, and recreate the GCP key dot JSON to activate the service account. So first we encode, then we decode.
+
+To do this, open a Git Bash terminal in VSCode. Copy the provided command, and make sure you open specifically a Git Bash terminal (not CMD or PowerShell). If your file is named GCP.json, use that exact name. If you saved it with some other name, adjust the command accordingly. Then press enter, and it will generate the Base64 string. Make sure you don’t include any extra spaces. Copy everything end-to-end without adding a space anywhere.
+
+Now what you have to do after copying it is add this as a GitLab CI/CD variable. Go to Settings > CI/CD, then in the Variables section, add a new variable. Keep the type as Variable, environment as All, visibility default, and paste the Base64 value you copied earlier into the Value field. Again, check top and bottom for extra spaces — there should be none.
+
+For the key, you must use the same name as written in the YAML. In this case, the key should be GCP_SA_KEY. Copy that from your VSCode and paste it into the Key field. Add the variable. You will see that the variable GCP_SA_KEY has been successfully added. Done — so you have added your CI/CD variable here.
+
+Next, you have to set up your LM ops secrets in your Google Kubernetes cluster. Open your Google Kubernetes cluster, connect it, and run the Cloud Shell. You will get a command automatically to connect — just copy it and run it. This command will be like:
+
+gcloud container clusters get-credentials <CLUSTER_NAME> --region <REGION> --project <PROJECT_ID>
+
+By default, Google generates this for you in the Cloud Shell, so you can simply press Enter. If it doesn’t appear, I have also provided the command manually, and you can adjust <CLUSTER_NAME>, <REGION>, and <PROJECT_ID> according to your project.
+
+Now, open your Kubernetes deployment YAML file. You will see environment variables defined inside, such as LM_OPS_SECRETS. Inside that, you have a key named API_KEY. To inject this secret into your cluster, open a Notepad and prepare the command:
+
+kubectl create secret generic lmops-secrets --from-literal=API_KEY=<YOUR_API_KEY>
+
+Here, replace <YOUR_API_KEY> with your actual key from .env. Since .env was never pushed to source control, we directly inject it into Kubernetes. Copy your key from .env in VSCode, paste it into the command, and then copy the entire command into your Cloud Shell. Press Enter, and you will see the message: Secret lmops-secrets created successfully. Done.
+
+Now you are ready to trigger your CI/CD pipeline. First, make sure everything has been pushed to GitLab. Once checked, go to GitLab’s left pane → Build → Pipelines. From here, you can trigger the pipeline manually. Pipelines also run automatically whenever you push code, but you can start one manually if you want.
+
+If you go into Settings > CI/CD, you will see pipeline triggers. By default, the trigger is a push event. But since we want to run manually now, go to Build → Pipelines, and create a new pipeline. It may ask for variables, but in our case, we already provided environment variables in GitLab, so just click Run pipeline.
+
+Now your pipeline starts. It will have three stages: Checkout, Build, and Deploy. The Checkout stage will run first, then Build, then Deploy. This whole process may take around 5–10 minutes depending on your internet connection.
+
+Once complete, you will see three green ticks. You can also click each stage to view logs if errors occur. In our case, there are no errors, so no need. With that, everything has passed successfully.
+
+Now, go back to your Google Kubernetes Engine, close the Cloud Shell, and go to Workloads. At first, you may see an error: Does not have minimum availability. Don’t panic — this is normal while pods are being scheduled. Wait 5–6 minutes, and it will fix itself. The error message itself mentions that provisioning nodes may take a few minutes.
+
+If you refresh after some time, you will see pods moving from Pending to Running. Once green ticks appear, it means the app is deployed. Alongside, you will get an endpoint. That endpoint opens your Streamlit application.
+
+Sometimes it may not open instantly. Again, be patient. Wait for 2–3 minutes until the containers fully initialize. Then click the endpoint again, and your Streamlit application will load. If you see a No healthy upstream error, regenerate or refresh — these are small first-time initialization errors. Eventually, it will succeed.
+
+Now test your app. For example, copy a prompt from README.md — “Compose a deeply emotional tempo evoking heartbreak and longing in a sad style” — and try generating music. At first, it may fail once, but on retry it will generate successfully. These minor hiccups are normal.
+
+Finally, let’s talk about cleanup. To avoid charges, delete your Kubernetes cluster and Artifact Registry. Go to Clusters, select your cluster, delete it. Do the same with the Artifact Repository. The service account can stay — it won’t cost anything. GitLab project can also remain as it is. The only resources that could incur charges were the Artifact Registry and Kubernetes Engine, so deleting those two is enough.
+
+And that’s it — your full CI/CD deployment pipeline is now complete.
