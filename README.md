@@ -12,11 +12,17 @@
 
 **A. AI Anime Recommender Project**
 
+**B) Flipkart Product Recommender using Prometheus,Grafana,Minikube,AstraDB, LangChain (Will do Later)**
+
 **E. Celebrity Detector and QnA**
 
 **F. AI Music Composer**
 
+**G) Multi AI Agent using,Jenkins,SonarQube,FastAPI,Langchain,Langgraph,AWS ECS (Will do Later)**
+
 **A. AI Anime Recommender Project**
+
+**1. Introduction to the Project:**
 
 1. Storage Base - CSV File containing Anime Name, Score, Genre, Synopsis; It is on basis of what Recommender will work (Anime - Japanese Art Style)
 
@@ -58,9 +64,14 @@
 
 ### We will integrate whatever we have in GitHub Code, and connect it to GCP VM; Once code has been copied we will have the docker file, Kubernetes file; We will build Docker Image using Docker file and Deploy in Kubernetes; After Github Integration, we will build Test App
 
-**Project Codes:**
+**2. Project and API Setup ( Groq and HuggingFace )**
 
-1. pip install -e . - Triggers setup.py (Install all the dependencies from setup.py)
+
+
+
+
+
+
 
 
 
@@ -859,3 +870,1228 @@ Now test your app. For example, copy a prompt from README.md — “Compose a de
 Finally, let’s talk about cleanup. To avoid charges, delete your Kubernetes cluster and Artifact Registry. Go to Clusters, select your cluster, delete it. Do the same with the Artifact Repository. The service account can stay — it won’t cost anything. GitLab project can also remain as it is. The only resources that could incur charges were the Artifact Registry and Kubernetes Engine, so deleting those two is enough.
 
 And that’s it — your full CI/CD deployment pipeline is now complete.
+
+
+
+
+
+
+
+
+
+**G) Multi AI Agent using,Jenkins,SonarQube,FastAPI,Langchain,Langgraph,AWS ECS**
+
+**1. Introduction to the Project**
+
+**Tech Stack**
+
+(i) Groq - LLM
+
+(ii) Tavily - Online Search Tool
+
+(iii) LangChain - Generative AI Framework to interact with LLM
+
+(iv) LangGraph - Agentic AI Framework to make AI Agents
+
+(v) FastAPI - To build backend API's for handling user requests
+
+(vi) Streamlit - To make UI or frontend of the app
+
+(vii) Docker - For Containerization of the app during deployment
+
+(viii) SonarQube - To check our code for Bugs, security issues, and bad practices. It's like a evaluator for the app
+
+(ix) Jenkins - For making CI/CD Pipelines
+
+(x) AWS ECS Fargate - To deploy and run app on Cloud without managing servers. It's a service offered by AWS
+
+(xi) GitHub - SCM for the Project
+
+This project is about building a multi-AI agent system where users can choose the type of agent they want, such as financial, medical, or study-related, and then ask domain-specific questions. The model will generate responses using Grok LM, while Tivoli APIs will be integrated to fetch real-time internet data, bridging the knowledge gap since most LMs are trained only up to 2021. For example, when asking about current stock trends, Tivoli provides up-to-date information that Grok can process.
+
+The tech stack includes Grok LM (using the Llama 3 model), Tivoli for online search, LangChain for generative AI interaction, and LangGraph (built on LangChain) for agent workflows. FastAPI will be used for the backend to process requests, and Streamlit will handle the frontend for user interaction. The system flow is straightforward: user inputs are captured via the frontend, processed by the backend, and outputs are displayed back to the user.
+
+To ensure scalability and deployment, Docker will containerize the application, enabling deployment on AWS services. Jenkins will be used to create a CI/CD pipeline that automates code fetching from GitHub, Docker image creation, image storage on AWS ECR (Elastic Container Registry), and deployment to AWS ECS Fargate. A load balancer (ALB) can be integrated to provide a static application URL instead of the default dynamic Fargate URL.
+
+SonarQube plays a critical role as the project’s MVP for maintaining code quality. It identifies bugs, code smells (bad coding practices), and code duplication. Examples include detecting “dead code” that will never execute, flagging excessively long functions that hurt readability, and identifying repeated logic across files. This ensures the codebase is clean, maintainable, and production-ready.
+
+The workflow starts with project setup, defining the structure, creating environment and requirements files, and configuring API keys for Grok and Tivoli. Then, logic is developed using LangChain and LangGraph, followed by backend and frontend integration. The project versioning is handled via GitHub, with Docker used for containerization. Jenkins automates the pipeline with stages like GitHub integration, SonarQube scanning, Docker image building, ECR pushing, and Fargate deployment. Finally, an Application Load Balancer ensures a static URL for consistent access.
+
+In summary, this project combines Generative AI, Agentic AI frameworks, CI/CD pipelines, containerization, and cloud deployment into one cohesive application. The integration of SonarQube ensures high code quality, while Jenkins and AWS Fargate streamline deployment. The end result is a scalable, flexible, and user-friendly multi-agent system capable of providing domain-specific intelligent responses with up-to-date data.
+
+**2. Project and API Setup ( Groq & Tavily )**
+
+Hello everyone.
+
+So this is your project setup video. It is a very important video for setting up your project structure, your API structure, your URL structure. So please watch the video carefully.
+
+Okay.
+
+So just open your any folder in your local PC and just create one folder. Here. Let me create a new folder. Let's name it multi AI agent. That is the theme of our project right. So just open it double click and just open in terminal okay. Right click and open in terminal. Here you will write code full stop.
+
+So basically what this code will do. It will trigger your VS code okay. Just press enter and you will see VS code has been opened. Right now let's create our virtual environment for creating the virtual environment. What you will do basically just go here on the top bar you will see a terminal. Just click on New Terminal and from here select Command Prompt okay. Make sure it is command prompt right.
+
+And in the command prompt section you will write:
+
+python -m venv env
+
+
+Basically it will create a virtual environment. Just press enter. On the right left side you will see env gets created okay. Now it will take some time. Uh 10 to 15 seconds I think. Then we will have to activate our virtual environment okay.
+
+So let's activate our virtual environment. Let's wait. Okay, now we have to activate our virtual environment. How? You will activate. Just write whatever the name you have given to your environment. That is V env, then a backslash then scripts then backslash.
+
+venv\Scripts\activate
+
+
+Okay. Enter. Now you will see a Venv in the bracket. So it means your virtual environment has been created successfully. Okay, good.
+
+Now, uh, we have to create one files here. Basically we will be defining our project structure now okay so let's create one file that is your requirements.txt. Now what this file do basically uh here you will list all the libraries that you need uh in your app. Okay. Let me close this terminal okay. Now what you will write inside this requirements.txt uh, basically all the libraries.
+
+Right. We need first of all, uh, we need lang chain. Brock. Basically we will be using Brock API. So we need the Lang chain. Brock library. Okay. Then we need the Lang chain community library. So I will write length chain and I will write community. Okay then we need python dot env. So it also has a separate use case. I will tell you later. Okay then we have uvicorn. Basically it is for the API setup when we will create the backend of our app, we need this Uvicorn. Okay. Then we need the fast API for creating the API structure of our app. Okay. Then we need a library known as Pydantic also. Then we need Streamlit for creating the UI of our app, right? Then we need the Lang graph for creating AI agents. Okay, our project is multi agent. So how you will create an AI agent lang graph. Okay so this is all your all the requirements. You will find. You will find this file in the Uh, code section. I have uploaded the GitHub uh, link also, so you can just copy paste. Okay. No need to write, but I am teaching, so I have to write it from scratch. Okay. Good.
+
+Now you will create one file here. Basically this file is your setup.py. So I have created a separate video for the setup.py code. So I will just copy paste the code for now. So if you want the explanation of how the setup.py file work, just go to that video and watch it. Okay. So here is your setup.py code. You will find on the code section. You will find on the GitHub section. Just copy from there and paste it in the setup.py section. Okay. Just change the file name of the project okay. Uh you can just write multi AI agent project whatever you want to do okay. Good.
+
+Now just open the terminal. And just go to your previous terminal only and just write:
+
+pip install -e .
+
+
+Now basically it will do it will install all the requirements. Basically this code will trigger your setup.py and whatever the code inside this setup.py will trigger the requirements.txt installation. Okay. So you have to watch that setup.py code explanation. Then only you will understand okay. So just enter it and it will start installing all the libraries and project dependencies. So you can see it has started installing. Okay. So let it be.
+
+Now we will create our project structure okay. Let's come to our project structure okay. So basically what you will do uh. We will create one app folder here okay. You will create one app folder here. Now we are all have project structure will be inside this folder. Okay, inside this app folder, your back end, your UI, your everything will be inside this app. Okay. So first of all inside app let's create folders. First of all our one folder will be backend. Inside this backend folder you will create your backend like your API setup everything okay. You will create one more folder here. That is your front end. So basically inside this there will be your UI and everything. Okay. Your Streamlit code, everything okay will be inside this.
+
+Now you will create one folder one more folder here. First one is common okay. Now what is this common folder do uh basically here we will list our logging files and custom exception files. Okay. So you have to watch the separate video for custom exception file and logging files. Also if you want to understand, I have given in the uh before this project, I have given those files Explanation. Okay, so just watch it for that.
+
+Now we will create one more folder here inside this app that is your folder. So basically in the core folder will be the main logic of our multi agent okay. Then we will create one more folder here. That is your config okay. So basically here will be the all the setup of your API. How to load the API and everything okay inside this config okay good. Everything good. So these are your all the folders okay. This is your project structure. Good.
+
+Now inside this app you will create one file. Till now you have created only folders. Now you will create one file. And that will be your main.py. Okay. Inside this main.py will be your main app code. As soon as you create this main.py, your app will start running. Okay. So this is your main file. Basically you will connect your front end, back end and everything inside this main.py. Okay. And to make this app as a project dependency you will create one init file inside it. So you will create hyphen hyphen init hyphen hyphen dot pi. I have given the importance of this init inside the dot pi file setup.py code explanation. So you can watch that okay. So basically this file is needed so that you can import everything from one project directory to another project directory okay. So just create it and you can see your dependencies are also getting installed okay. So I think this is your only project structure.
+
+As soon as we move ahead we will write the code for back end. Then we will write the code for front end, then for core config common and everything okay. Don't worry. Uh, yeah. For common we will write here only. So inside the common directory you will create one init file because we want in common also be treated as a package. Okay, so.py. Now inside common there will be two files. Okay. What are those two files. First of all your login file and your custom file. So first of all inside common let's create our logger.py. Then inside the common let's create our custom exception.py. Okay, now I have already explained the code for logger.py and custom exception.py in previous modules, so I will just copy paste the code. Okay, so just go to the GitHub directory that I have mentioned and just search for the yeah this logger.py and just copy it okay. Just copy it paste it in the VS code. Good okay. This will be used for logging. And just go here again for custom exception. This will be used for custom exception. Simple. Just copy paste. Okay. Done. Easy. Okay, good.
+
+So that's how you have done your project setup. Okay. For this video, as soon as we move forward, like if you are doing backend we will do setup for backend. We will do setup for front end and everything. Okay so this is your basic project setup. Okay. And one more thing. You have to run that command again that you have to install hyphen E full stop. As soon as your all these dependencies get installed you have to run it again. Why? Because we have created one this one init file. Then inside common we have created one init file here. Every time you create one init file you have to run that command pip install hyphen e full stop.
+
+Basically that pip install -e . will recognize your, uh, project directory as a package. Okay. So every time you create that init file you have to run that command pip install -e . okay. Only then your project will work properly. Good. Okay. You can see all the dependencies get installed. So just write that command again:
+
+pip install -e .
+
+
+Okay. So it is doing the installation. So basically what will happen I will tell you in short. So suppose if you want to import this logger uh okay. So this is your logger get logger function. So if you want to import this get logger function inside this front end directory. You will not be able to do. If you have not run this pip install -e . command okay. So if you have run this command then you will be able to do the imports from uh common directory to front end directory, common directory to backend directory. Okay. So that's the main use okay. Let me close the terminal. I think we don't have any use. Uh, so this is your project setup. Simple. Easy okay.
+
+Now we will create, we will do our API setup. So how you will do your API setup? Basically in the project directory you will create one file .env okay. So this is your environment variable. Basically here you list your all the uh you can say API keys and everything okay that's the main use of env folder. So I will write we need two APIs. First of all we need grok grok API key okay grok API key. Then we need. API key okay. So these two will be used for our project grok API and API.
+
+So I have explained this grok API and API in the project introduction video. So go watch that. So now just open your browser. Just search for grok okay. And just open it. Okay? And just make your account here. And just make your. Uh. Where this API. Oh, wait wait wait wait wait. I think I have to search graph API. Yeah. Okay, so this is your API keys. Just make your account here. So I have already logged in into my account. It is free. Okay. So just go to your API keys and create your API key. Okay. Let me delete my previous. And let's create one API key. And you can give any name. Uh let's keep it LM ops okay. And submit. And it has given you the API key. Make sure you copy it safely and just copy it and go to our VS code and paste it inside this grok API key. Done. Easy. Okay, so now you have done your grok API setup.
+
+Now let's search for another one that is your API. Okay. Just go to the telecom that is your first site login okay just login. I have already logged in so it automatically get me logged in. And in the overview section you will get your API key. That's the by default API key. Just copy it from here okay. And just go in the VS code and just paste it here okay. Easy. So these are the only two API's that you need for this project grok API. Basically it will be used for uh your LMS and API. It will basically use for your search online search okay. Okay. So these are your two API's.
+
+So your project structure is done. Your API setup is done. Now the third one. Your setup. Okay. So now let's do our setup. So basically how you will do your setup. What is your your Windows Subsystem Linux. Uh why we are using SSL. Because when you do your production grade projects. Right. So you will be doing that projects in a Linux environment, not in a windows environment. So we will give you a feeling of Linux inside a windows system okay. That's why we need uh WSL okay.
+
+So how you will do basically in my PC WSL is already set up. So it is hard to explain you how to install it. But I will give you a very easy method. So basically why we want we want WSL with Docker Engine okay. So that you can create your Docker apps and you can create your Jenkins pipeline in the ahead of the project. So that's why we need the WSL. So just go to the, uh, whatever. I have mentioned the GitHub documentation there. Okay. Just go there. And there you will find one this full documentation.md file. Okay. So in the starting only you will get an installation tutorial.
+
+So first of all open your PowerShell okay. Every windows have PowerShell. So open it in administrator mode. Administrator mode okay. And you will write this command will install. Just copy it and run it on your PowerShell administrator. So it will basically install your WSL if not installed if already installed, if you think you have already installed. So then just write this command WSL update and reboot your system. Restart your system, basically restart your PC. Uh, although it's not necessary, but for your safety, restart your PC. Okay, now we will be using a ubuntu environment. So what we will do basically just go to the Microsoft Store okay. Every window have a Microsoft store, so just go here and search for ubuntu. Okay. Here search for ubuntu. Okay. Just search. Okay. And now just search for ubuntu 22.40. Just open it. So first of your first one only. So this one is ubuntu. Just install it. Okay I have already installed. That's why it is showing me open but already installed okay. Okay. You can install anyone if you want this ubuntu 22.24 .404. But I will tell you, this one is the best. That one your normal ubuntu. Okay, this one is best. Just install it. Okay. Open it and check and install everything. Okay.
+
+Once it is installed, click it and just proceed with the steps. It will guide you through the steps. Install okay. Simple. Now, uh, you have to, uh, you're going to set up. Your cell is set up. Now, what you have to do, basically, you have to install Docker inside your ubuntu, Docker inside ubuntu. So you can just search on Docker installation on ubuntu okay. Install Docker engine on ubuntu. So basically it works as same as installing Docker desktop. You know there is a app for Docker Docker desktop right? I have used in the uh other projects also Docker desktop. But for this project we are using Docker Engine on Ubuntu using WSL. Okay. So just follow the requirements okay. So it wants it wants uh ubuntu 24.04 that will be installed. Okay. Now uh, just run this command one by one inside ubuntu. Just open ubuntu like this. Like I have already installed. So once your ubuntu is installed it will be like this. Just open it. Okay, so open it and it is taking some time. Okay. Then. Uh, now run those command line by line. Okay. First of all this setup dot docker app repository, then these these these. Basically I have given these command here also okay. So you can if you want to do it from here you can just do it okay.
+
+Now once you have done restart the ubuntu terminal just cancel this ubuntu terminal and restart it again okay. And just uh if you want to make sure it is installed or not, just write ubuntu in the ubuntu terminal, just write Docker version version, press enter and you will see here Client Docker Engine community 28.1 Docker Engine installed server. Docker engine also installed. Okay, so basically Docker Engine comprises of two things client and server. Okay. So these two things should be installed if you want to basically check. So you will write:
+
+docker --version
+
+
+and you will see Docker version this this this this this. So if it is showing you something like this it means your docker have been successfully installed. If not, so you have uh, done some mistake in some of the steps. Okay. Uh, it's not a big deal. Okay. You can easily counter this. Okay, so with this, your Docker setup is also done. Okay. So this was it for this video.
+
+So basically what you have done you have setup your project structure virtual environment logging custom exceptions files your API setup your setup. All done. So let's move to the next video.
+
+**Summary:**
+
+(i) Create Project Folder & Open in VS Code
+
+Create a folder multi AI agent.
+
+Open it in terminal and launch VS Code using code ..
+
+(ii) Create Virtual Environment
+
+Run: python -m venv env
+
+Activate it: venv\Scripts\activate.
+
+Confirm activation (shows (venv) in terminal).
+
+(iii) Create requirements.txt
+
+Add required libraries:
+
+langchain-brock
+
+langchain-community
+
+python-dotenv
+
+uvicorn
+
+fastapi
+
+pydantic
+
+streamlit
+
+langgraph
+
+(iv) Create setup.py
+
+Copy-paste setup code (provided separately in GitHub).
+
+Update project name if needed.
+
+Install dependencies with:
+
+pip install -e .
+
+
+(v) Define Project Structure (app/ folder)
+
+Inside app/ create folders:
+
+backend/ → for API code.
+
+frontend/ → for UI (Streamlit).
+
+common/ → for logging & custom exceptions.
+
+core/ → main multi-agent logic.
+
+config/ → API setup & configurations.
+
+Inside app/, add:
+
+main.py → connects everything.
+
+__init__.py → make package imports work.
+
+(vi) Setup common/ folder
+
+Add __init__.py.
+
+Create logger.py (logging logic).
+
+Create custom_exception.py (custom error handling).
+
+Run again:
+
+pip install -e .
+
+
+(needed whenever you add new __init__.py).
+
+(vii) Environment Variables
+
+Create .env file in root.
+
+Add:
+
+GROK_API_KEY = <your_grok_api_key>
+API_KEY = <your_api_key>
+
+
+Get keys:
+
+Grok API (for LLM).
+
+Another API (for online search).
+
+(viii) WSL & Docker Setup
+
+Install WSL (Windows Subsystem for Linux) using PowerShell (Admin):
+
+wsl --install
+wsl --update
+
+
+Restart system.
+
+Install Ubuntu 22.04 from Microsoft Store.
+
+Setup Docker Engine inside Ubuntu:
+
+Follow official Docker docs (add repo, install Docker packages).
+
+Verify with:
+
+docker --version
+
+
+(both Client & Server should be installed).
+
+**What we did:**
+
+(i) Project folder & environment ready.
+
+(ii) Dependencies installed.
+
+(iii) Project structure (app/ with subfolders) created.
+
+(iv) Logging & exception handling setup.
+
+(v) API keys configured in .env.
+
+(vi) WSL + Docker setup complete for production-like environment.
+
+**3. Configuration Code**
+
+In this lecture, we will be setting up our configuration file. First, open your app directory and go to the config directory. To make this directory behave like a Python package, create a file named __init__.py. After that, create another file inside config named settings.py, which will hold all of our configuration code.
+
+Inside settings.py, we first need to import the required libraries. For this, write "from dotenv import load_dotenv" and "import os". The dotenv library is useful because it allows us to load the values from our .env file, such as API keys. The OS library is required so we can interact with our operating system and read those values.
+
+Next, we load the environment variables by calling "load_dotenv()". This ensures that all the keys stored inside your .env file are accessible within your settings file.
+
+Now, let’s create a class called Settings. Inside this class, we will define variables to store our keys. For example, write "class Settings:" and then "grok_api_key = os.getenv('GROK_API_KEY')" followed by "table_api_key = os.getenv('TABLE_API_KEY')". Remember, the variable names inside os.getenv() must exactly match the names inside your .env file—any spelling mistake will cause errors.
+
+After loading the keys, we also want to specify which models are allowed for use. For this, inside the class, create a list by writing "allowed_models = ['llama-3-70b', 'llama-3-8b-instant']". These model names must be copied exactly as they are provided by the API, otherwise they won’t work. The larger 70B model is more accurate, while the 8B instant version is faster but less accurate.
+
+Finally, outside the class, we create an object to load it by writing "settings = Settings()". This way, whenever you want to access your API keys or allowed models in your project, you can simply import them from "config.settings".
+
+This completes our settings.py configuration file. In the next step, we will see how to use these settings throughout the project.
+
+**Summary:**
+
+Configuration File Setup (config/settings.py)
+
+(i) Make config/ a Python Package
+
+Inside config/ folder, create __init__.py (empty file).
+
+This allows importing from config like a Python package.
+
+(ii) Create settings.py
+
+This file will hold all configuration variables (API keys, models, etc.).
+
+(iii) Import Required Libraries
+
+from dotenv import load_dotenv
+import os
+dotenv → to read environment variables from .env file.
+
+os → to interact with the system and get environment variable values.
+
+(iv) Load Environment Variables
+
+python
+Copy code
+load_dotenv()
+Ensures all keys in .env file are accessible in Python.
+
+(v) Create Settings Class
+
+python
+Copy code
+class Settings:
+    grok_api_key = os.getenv('GROK_API_KEY')
+    table_api_key = os.getenv('TABLE_API_KEY')
+    allowed_models = ['llama-3-70b', 'llama-3-8b-instant']
+grok_api_key → stores Grok API key.
+
+table_api_key → stores Table API key.
+
+allowed_models → list of models allowed in the project:
+
+llama-3-70b → larger, more accurate.
+
+llama-3-8b-instant → faster, less accurate.
+
+(vi) Instantiate Settings
+
+settings = Settings()
+
+
+Creates a settings object that can be imported anywhere in the project.
+
+Example usage elsewhere:
+
+from config.settings import settings
+print(settings.grok_api_key)
+
+**What we did:**
+
+(i) Centralized configuration file for all keys and settings.
+
+(ii) Easy access throughout the project via settings object.
+
+(iii) Ensures API keys and allowed models are properly loaded and managed.
+
+**4. Core Code:**
+
+In this video, we will be setting up the core code for our app. First, open your app directory and go to the core directory. To make this directory behave like a package, create a file named "__init__.py". Remember, every time you create an "__init__.py" file, you should run "pip install -e ." in your terminal to initialize all dependencies properly.
+
+Next, inside the core directory, create a file named "ai_agent.py". This file will contain all the core logic for your app. Before writing the code, ensure your dependencies are installed by running "pip install -e ." and waiting for it to complete.
+
+Now, let’s start writing the code. First, import the required modules. For Groq models, write "from langchain.brock import Chad". The Chad class is necessary to use the Brock models, such as the LLaMA 70B model or the versatile LLaMA models. For Table API, write "from langchain_community.tools.tivoli_search import TivoliSearchResults". These imports ensure both our APIs’ tools are ready for use.
+
+Since our project is multi-agent, we will also use LangGraph to create AI agents. Import it by writing "from langgraph.prebuilt import create_react_agent". Additionally, import "from langchain.core.messages.ai import AIMessage" to differentiate between AI-generated messages and human messages in the conversation. If LangChain Core is not installed, add it to your requirements.txt and run "pip install -e ." again.
+
+We also need to import the configuration file. Write "from app.config.settings import settings". This gives us access to our Groq API key, Table API key, and allowed model names.
+
+Now, let’s create a function called "get_response_from_ai_agents". This function will take parameters such as "lm_id" (the model ID, e.g., LLaMA 70B or LLaMA versatile), "query" (the user’s question), "allow_search" (whether to enable online search using Table API), and "system_prompt" (instructions to control AI behavior).
+
+Inside this function, first set up the language model by writing "lm = Chad(model=lm_id)". This ensures the model corresponds to the user-selected LM. For tools, write "tools = [TivoliSearchResults(max_results=2)] if allow_search else []". This checks if online search is allowed and limits results to the top two items if enabled.
+
+Next, create the agent using "agent = create_react_agent(model=lm, tools=tools, state_model_file=system_prompt)". Here, the state_model_file parameter sets the AI’s system prompt to guide its behavior.
+
+Start the conversation history by writing "state = {'messages': query}". This keeps track of all messages the user has sent so far. Then, run the agent with "response = agent.invoke(state)". The agent will read all messages, process the query, optionally use web search, and generate a reply.
+
+To extract only the AI-generated responses, write "messages = response.get_any_messages()" and filter using a list comprehension: "ai_messages = [message.content for message in messages if isinstance(message, AIMessage)]". This ensures we ignore human messages and keep only the AI’s replies.
+
+Finally, return only the latest reply by writing "return ai_messages[-1]". Using -1 indexing fetches the most recent message from the list.
+
+This completes our AI agent core code. We will use the "get_response_from_ai_agents" function in both the back-end and front-end of our app in upcoming videos.
+
+**Summary:**
+
+Core Code Setup (core/ai_agent.py)
+
+(i) Make core/ a Python Package
+
+Create __init__.py inside core/.
+
+Every time you add a new __init__.py, run:
+
+pip install -e .
+
+
+to reinitialize dependencies.
+
+(ii) Create ai_agent.py
+
+This file contains the main logic for handling AI agents.
+
+(iii) Import Required Modules
+
+from langchain.brock import Chad
+from langchain_community.tools.tivoli_search import TivoliSearchResults
+from langgraph.prebuilt import create_react_agent
+from langchain.core.messages.ai import AIMessage
+from app.config.settings import settings
+
+
+Chad → to access Brock/LLaMA models (70B or versatile).
+
+TivoliSearchResults → to use Table API for online search results.
+
+create_react_agent → to build multi-agent behavior with LangGraph.
+
+AIMessage → to separate AI messages from human messages.
+
+settings → to access API keys and allowed model names from config.
+
+(iv) Define get_response_from_ai_agents Function
+
+def get_response_from_ai_agents(lm_id, query, allow_search=False, system_prompt=None):
+    # Setup language model
+    lm = Chad(model=lm_id)
+    # Configure tools (Table API search)
+    tools = [TivoliSearchResults(max_results=2)] if allow_search else []
+    # Create AI agent
+    agent = create_react_agent(model=lm, tools=tools, state_model_file=system_prompt)
+    # Initialize conversation state
+    state = {'messages': query}
+    # Invoke agent
+    response = agent.invoke(state)
+    # Extract only AI-generated messages
+    messages = response.get_any_messages()
+    ai_messages = [message.content for message in messages if isinstance(message, AIMessage)]
+    # Return the latest AI reply
+    return ai_messages[-1]
+
+(v) Function Parameters
+
+lm_id → ID of the language model (e.g., LLaMA 70B).
+
+query → user’s input question.
+
+allow_search → enable/disable online search with Table API.
+
+system_prompt → instructions for AI behavior.
+
+(vi) Function Workflow
+
+Selects LM based on lm_id.
+
+Initializes tools if online search is allowed.
+
+Builds a LangGraph agent with model + tools + system prompt.
+
+Maintains conversation history (state).
+
+Runs the agent and gets the response.
+
+Filters out only AI-generated messages.
+
+Returns the latest AI reply.
+
+**What we did:**
+
+(i) Core AI logic is centralized in ai_agent.py.
+
+(ii) Multi-agent support using LangGraph.
+
+(iii) Optional web search via Table API.
+
+(iv) Easy integration in back-end and front-end using get_response_from_ai_agents.
+
+**5. Backend using Fast API**
+
+In this video, we will be setting up the back-end code for our app. First, navigate to your app directory, and inside the back-end section, create an "__init__.py" file to make the directory a package. Remember to run "pip install -e ." again in the terminal so all dependencies are properly initialized.
+
+Next, create a file named "api.py" inside the back-end folder. This file will contain the FastAPI application for our multi-AI agent. Begin by importing the necessary modules. Write "from fastapi import FastAPI, HTTPException" to use FastAPI and handle HTTP exceptions for errors such as 500, 404, or 200 status codes. For data validation, import "from pydantic import BaseModel" which ensures that incoming requests follow a valid structure. Also, import "from typing import List" to define list types in your request data.
+
+We then import our core logic and configuration by writing "from app.core.ai_agent import get_response_from_ai_agents" and "from app.config.settings import settings". For logging, import "from app.common.logger import get_logger" and initialize it with "logger = get_logger(__name__)". Initialize the FastAPI app itself using "app = FastAPI(title='Multi AI Agent')" to give it a title.
+
+Next, define the structure of incoming requests with a class "RequestState(BaseModel)". The class should include "model_name: str" to specify the language model, "system_prompt: str" for instructions guiding AI behavior, "messages: List[str]" to hold the conversation history, and "allow_search: bool" to indicate whether online search is enabled. This ensures all incoming data is validated properly and prevents errors downstream.
+
+Now, create a POST endpoint for handling chat requests. Write "@app.post('/chat')" and define a function "def chat_endpoint(request: RequestState)". Inside this function, log the received request using "logger.info(f'Received request for model: {request.model_name}')". Check if the provided model name is in the list of allowed models with "if request.model_name not in settings.allowed_model_names". If the model is invalid, log a warning "logger.warning('Invalid model name')" and raise an exception with "raise HTTPException(status_code=400, detail='Invalid model name')".
+
+If the model is valid, use a try-except block to call the core function and generate the AI response. Write "response = get_response_from_ai_agents(lm_id=request.model_name, query=request.messages, allow_search=request.allow_search, system_prompt=request.system_prompt)". Log the successful response with "logger.info(f'Successfully got response from AI agent: {request.model_name}')", and return it as JSON with "return {'response': response}".
+
+In case of any unexpected errors, handle exceptions with "except Exception as e:" and log the error using "logger.error('Error occurred during response generation')". Raise a custom exception with "raise HTTPException(status_code=500, detail=str(CustomException('Failed to get AI response', error_detail=e)))". This ensures the API consistently returns structured error messages if anything goes wrong.
+
+Overall, this back-end setup includes imports for FastAPI, Pydantic, typing, core AI logic, settings, logging, and custom exceptions, initialization of the logger and FastAPI app, validation of incoming requests, and a /chat endpoint that handles requests, logs activity, calls the AI agent, and returns responses while handling errors gracefully.
+
+**Summary:**
+
+Back-End Setup (backend/api.py)
+
+(i) Make backend/ a Python Package
+
+Create __init__.py inside backend/.
+
+Run:
+
+pip install -e .
+
+
+whenever a new __init__.py is added to initialize dependencies.
+
+(ii) Create api.py
+
+This file handles the FastAPI application and endpoints for the multi-AI agent.
+
+(iii) Import Required Modules
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+from app.core.ai_agent import get_response_from_ai_agents
+from app.config.settings import settings
+from app.common.logger import get_logger
+
+
+FastAPI & HTTPException → to create API routes and handle errors.
+
+Pydantic BaseModel → validates incoming request structure.
+
+List → defines list-type fields in requests.
+
+Core & Config Imports → access AI agent logic and API keys/models.
+
+Logger → to log activity and errors.
+
+(iv) Initialize Logger & FastAPI App
+
+logger = get_logger(__name__)
+app = FastAPI(title='Multi AI Agent')
+
+
+(v) Define Request Model
+
+class RequestState(BaseModel):
+    model_name: str          # Language model to use
+    system_prompt: str       # Instructions for AI behavior
+    messages: List[str]      # Conversation history
+    allow_search: bool       # Enable/disable online search
+
+
+Ensures proper validation of incoming requests.
+
+(vi) Create POST /chat Endpoint
+
+@app.post('/chat')
+def chat_endpoint(request: RequestState):
+    logger.info(f'Received request for model: {request.model_name}')
+    # Validate model
+    if request.model_name not in settings.allowed_models:
+        logger.warning('Invalid model name')
+        raise HTTPException(status_code=400, detail='Invalid model name')
+    try:
+        # Call core AI agent
+        response = get_response_from_ai_agents(
+            lm_id=request.model_name,
+            query=request.messages,
+            allow_search=request.allow_search,
+            system_prompt=request.system_prompt
+        )
+        logger.info(f'Successfully got response from AI agent: {request.model_name}')
+        return {'response': response}
+    except Exception as e:
+        logger.error('Error occurred during response generation')
+        raise HTTPException(status_code=500, detail=str(CustomException('Failed to get AI response', error_detail=e)))
+
+
+(vii) Endpoint Workflow
+
+Logs incoming request.
+
+Checks if the model is allowed.
+
+Calls get_response_from_ai_agents to generate a reply.
+
+Returns AI response as JSON: {'response': <AI reply>}.
+
+Handles errors with proper logging and structured HTTP exceptions.
+
+**What we did:**
+
+(i) Fully functional FastAPI back-end for multi-AI agents.
+
+(ii) Request validation with Pydantic.
+
+(iii) Logging and error handling implemented.
+
+(iv) Integrates seamlessly with core/ai_agent.py and configuration (settings.py).
+
+**6. Frontend using Streamlit**
+
+In this video, we will be setting up the front-end code for our multi-AI agent app. First, navigate to your app/front_end directory and create an "__init__.py" file. After creating it, always run "pip install -e ." in the terminal to ensure that the package is properly installed.
+
+Next, create a file called "ui.py", which will contain all the UI code. Start by importing the necessary libraries: "import streamlit as st" for building the user interface, and "import requests" to send HTTP POST requests to your back-end API. Additionally, import the settings and logger with "from app.config.settings import settings", "from app.common.logger import get_logger", and "from app.common.custom_exception import CustomException". Initialize the logger using "logger = get_logger(__name__)".
+
+Configure the Streamlit page using "st.set_page_config(page_title='Multi AI Agent', layout='centered')" and give it a header title with "st.title('Multi AI Agent using Llama')" or any preferred title.
+
+Next, define the system prompt, which specifies the behavior of your AI agent. Use "system_prompt = st.text_area('Define your AI agent', height=70)" to allow the user to specify whether the agent is a medical assistant, business helper, homework guide, or general knowledge agent.
+
+Then, allow the user to select a model using "selected_model = st.selectbox('Select your AI model', settings.allowed_model_names)", where the allowed models are defined in your settings. Add a checkbox for web search functionality using "allow_web_search = st.checkbox('Allow web search')".
+
+Collect the user query with "user_query = st.text_area('Enter your query', height=150)". The user query is separate from the system prompt; the system prompt defines the AI agent’s behavior, while the query contains the actual questions to ask the AI.
+
+Define the API URL where your back-end is running, e.g., "api_url = 'http://127.0.0.1:9999/chat'", which points to the chat endpoint of your FastAPI back-end.
+
+Create a button to trigger the query with "if st.button('Ask Agent'):". Inside this block, first strip the user query with "user_query.strip()" to remove extra spaces. Then create a payload dictionary to send to the API:
+
+payload = {
+    'model_name': selected_model,
+    'system_prompt': system_prompt,
+    'messages': [user_query],
+    'allow_search': allow_web_search
+}
+
+
+Send the payload using "response = requests.post(api_url, json=payload)". If the API returns a success status code 200, extract the AI agent response using "agent_response = response.json().get('response', '')" and log it with "logger.info('Successfully received response from backend')". Display the response in the UI with "st.subheader('Agent Response')" and "st.markdown(agent_response.replace('\n', '<br>'), unsafe_allow_html=True)" to replace newlines with HTML break tags for cleaner formatting.
+
+If the API request fails (e.g., 404 or 500), log the error with "logger.error('Backend error')" and show an error in Streamlit with "st.error('Backend error')". Wrap the request in a try-except block to handle any unexpected errors with "except Exception as e:", log the exception, and show a message using "st.error('Custom exception: Failed to communicate with backend')".
+
+In summary, this front-end code handles:
+
+(i) Importing Streamlit, requests, settings, logger, and custom exceptions.
+
+(ii) Configuring the page layout and title.
+
+(iii) Collecting system prompt, model selection, allow web search, and user query from the user.
+
+(iv) Sending this data as a JSON payload to the back-end API.
+
+(v) Receiving and displaying the AI agent response in a clean, formatted way.
+
+(vi) Handling exceptions and API errors gracefully.
+
+This sets up the UI for the multi-AI agent app. In the next video, you will see the front-end connected to the back-end and running live.
+
+**Summary:**
+
+(i) Front-End Setup (front_end/ui.py)
+
+Make front_end/ a Python Package
+
+Create __init__.py inside front_end/.
+
+Run:
+
+pip install -e .
+
+
+whenever a new __init__.py is added to initialize dependencies.
+
+(ii) Create ui.py
+
+This file contains all the Streamlit UI logic for the multi-AI agent app.
+
+(iii) Import Required Modules
+
+import streamlit as st
+import requests
+from app.config.settings import settings
+from app.common.logger import get_logger
+from app.common.custom_exception import CustomException
+
+
+Streamlit → builds the user interface.
+
+Requests → sends POST requests to back-end API.
+
+Settings → access allowed models and API configuration.
+
+Logger & CustomException → logging and exception handling.
+
+(iv) Initialize Logger & Configure Page
+
+logger = get_logger(__name__)
+st.set_page_config(page_title='Multi AI Agent', layout='centered')
+st.title('Multi AI Agent using Llama')
+
+
+(v) Collect System Prompt & User Input
+
+system_prompt = st.text_area('Define your AI agent', height=70)
+selected_model = st.selectbox('Select your AI model', settings.allowed_models)
+allow_web_search = st.checkbox('Allow web search')
+user_query = st.text_area('Enter your query', height=150)
+
+
+System prompt → defines AI agent behavior (e.g., medical assistant, business helper).
+
+Model selection → choose from allowed models in settings.
+
+Web search option → enable/disable online search.
+
+User query → actual question to ask the AI.
+
+(vi) Define API Endpoint
+
+api_url = 'http://127.0.0.1:9999/chat'
+
+
+(vii) Trigger Query with Button
+
+if st.button('Ask Agent'):
+    try:
+        user_query = user_query.strip()
+        payload = {
+            'model_name': selected_model,
+            'system_prompt': system_prompt,
+            'messages': [user_query],
+            'allow_search': allow_web_search
+        }
+        response = requests.post(api_url, json=payload)
+        if response.status_code == 200:
+            agent_response = response.json().get('response', '')
+            logger.info('Successfully received response from backend')
+            st.subheader('Agent Response')
+            st.markdown(agent_response.replace('\n', '<br>'), unsafe_allow_html=True)
+        else:
+            logger.error('Backend error')
+            st.error('Backend error')
+    except Exception as e:
+        logger.error(f'Custom exception: {e}')
+        st.error('Custom exception: Failed to communicate with backend')
+
+
+(viii) Front-End Workflow
+
+Collect system prompt, model selection, web search preference, and user query.
+
+Create JSON payload and send POST request to /chat endpoint.
+
+Display AI agent response in a clean format using Streamlit.
+
+Log successes and handle exceptions gracefully.
+
+**What we did:**
+
+(i) Fully functional Streamlit front-end for multi-AI agent.
+
+(ii) Dynamic model selection and system prompt input.
+
+(iii) Connects seamlessly with FastAPI back-end.
+
+(iv) Handles errors and exceptions gracefully for smooth user experience.
+
+**7. Main Application Code**
+
+In this video, we connect the front-end and back-end so that the app runs successfully. Start by opening the "main.py" file created during the project setup. This file will orchestrate running both the front-end and back-end together.
+
+First, import the required modules: "import subprocess", "import threading", and "import time", which are all built-in Python libraries. Then import the logging and custom exception utilities using "from app.common.logger import get_logger" and "from app.common.custom_exception import CustomException". Initialize the logger with "logger = get_logger(__name__)".
+
+Next, import "load_dotenv" from the dotenv package using "from dotenv import load_dotenv" and call "load_dotenv()" in "main.py". This ensures that all environment variables are loaded when running "main.py" in production, even if they were already loaded in "settings.py".
+
+We then create two functions: one to run the back-end and one to run the front-end.
+
+Back-end function:
+
+def run_backend():
+    try:
+        logger.info("Starting backend service")
+        subprocess.run([
+            "uvicorn",
+            "app.backend.api:app",
+            "--host", "127.0.0.1",
+            "--port", "9999"
+        ], check=True)
+    except Exception as e:
+        logger.error("Problem with backend service")
+        raise CustomException("Failed to start backend") from e
+
+
+This function triggers the FastAPI back-end using Uvicorn on host "127.0.0.1" and port "9999". Errors are logged and raised as a custom exception.
+
+Front-end function:
+
+def run_frontend():
+    try:
+        logger.info("Starting front-end service")
+        subprocess.run([
+            "streamlit", "run", "app/front_end/ui.py"
+        ], check=True)
+    except Exception as e:
+        logger.error("Problem with front-end service")
+        raise CustomException("Failed to start front-end") from e
+
+
+This function triggers the Streamlit front-end by running "app/front_end/ui.py". Exceptions are also handled similarly.
+
+Next, we merge both functions so that the back-end runs asynchronously, allowing the front-end to start independently. This is achieved using threads:
+
+if __name__ == "__main__":
+    try:
+        backend_thread = threading.Thread(target=run_backend)
+        backend_thread.start()
+        time.sleep(2)  # Give backend time to start
+        run_frontend()
+    except CustomException as e:
+        logger.exception(f"Custom exception occurred: {e}")
+        print(str(e))
+
+
+Here, a separate thread runs the back-end first, followed by a short sleep (2 milliseconds) to ensure the back-end is ready before the front-end starts. Then the front-end is triggered. Exceptions during startup are logged and displayed.
+
+Once "main.py" is run using "python app/main.py", both the FastAPI back-end (on port 9999) and the Streamlit front-end (on port 8501) start automatically. You can now define your AI agent, select the model, allow web search, and enter user queries.
+
+For example, if you set the agent to a medical AI agent specialized in cancer, it will only answer queries relevant to that domain. Queries outside the domain (e.g., general stock advice) will be filtered or constrained to the agent’s specialization. You can also experiment with different AI models like "Llama 70B Versatile" or "Mistral" depending on your allowed models in settings.
+
+This setup ensures your multi-AI agent app runs seamlessly, with the back-end API handling queries and the front-end providing a user-friendly interface. The two ports engaged are 8501 (Streamlit) and 9999 (FastAPI).
+
+**Summary:**
+
+**Main Orchestrator Setup (main.py)**
+
+(i) Purpose
+
+Orchestrates running both the FastAPI back-end and Streamlit front-end together.
+
+Ensures smooth communication and proper startup of both components.
+
+(ii) Import Required Modules
+
+import subprocess
+import threading
+import time
+from app.common.logger import get_logger
+from app.common.custom_exception import CustomException
+from dotenv import load_dotenv
+
+
+subprocess → runs back-end and front-end as separate processes.
+
+threading → allows back-end to run asynchronously while front-end starts.
+
+time → gives a delay to ensure back-end is ready before front-end starts.
+
+Logger & CustomException → for logging and error handling.
+
+load_dotenv → loads environment variables from .env file.
+
+(iii) Initialize Logger and Load Environment Variables
+
+logger = get_logger(__name__)
+load_dotenv()
+
+
+(iv) Define Back-End Function
+
+def run_backend():
+    try:
+        logger.info("Starting backend service")
+        subprocess.run([
+            "uvicorn",
+            "app.backend.api:app",
+            "--host", "127.0.0.1",
+            "--port", "9999"
+        ], check=True)
+    except Exception as e:
+        logger.error("Problem with backend service")
+        raise CustomException("Failed to start backend") from e
+
+
+Runs FastAPI back-end using Uvicorn on 127.0.0.1:9999.
+
+Logs errors and raises them as custom exceptions.
+
+(v) Define Front-End Function
+
+def run_frontend():
+    try:
+        logger.info("Starting front-end service")
+        subprocess.run([
+            "streamlit", "run", "app/front_end/ui.py"
+        ], check=True)
+    except Exception as e:
+        logger.error("Problem with front-end service")
+        raise CustomException("Failed to start front-end") from e
+
+
+Runs Streamlit front-end using ui.py.
+
+Handles exceptions and logs errors.
+
+(vi) Run Back-End and Front-End Together
+
+if __name__ == "__main__":
+    try:
+        backend_thread = threading.Thread(target=run_backend)
+        backend_thread.start()
+        time.sleep(2)  # Give backend time to start
+        run_frontend()
+    except CustomException as e:
+        logger.exception(f"Custom exception occurred: {e}")
+        print(str(e))
+
+
+Back-end runs in a separate thread.
+
+Adds a short delay (time.sleep(2)) to ensure back-end is ready before front-end starts.
+
+Front-end runs independently after back-end initialization.
+
+Logs and prints exceptions during startup.
+
+(vii) Outcome
+
+Running python app/main.py starts both services automatically:
+
+Back-end → FastAPI on port 9999.
+
+Front-end → Streamlit on port 8501.
+
+Users can now define their AI agent, select a model, enable web search, and enter queries.
+
+AI agents respond based on system prompt and allowed models, with queries outside the specialization filtered.
+
+**What we did:**
+
+(i) Asynchronous back-end ensures front-end doesn’t wait unnecessarily.
+
+(ii) Threading + subprocess handles process management.
+
+(iii) Environment variables and logging make the app production-ready.
+
+(iv) Seamless integration between UI and AI agent logic.
+
+**8. Code Versioning**
+
+In this video, we cover code versioning, which is the process of uploading and managing your code using a source version management (SVM) system. In our case, we are using GitHub. Code versioning allows you to track changes, build versions, and maintain a history of your project.
+
+First, in the root directory of your project, create a file named ".gitignore". This file specifies all the files and folders you don’t want to push to GitHub. Typically, you include the following:
+
+"venv/" – your virtual environment folder, because it is very large (1–1.5 GB) and exceeds GitHub limits.
+
+Project management files – any project-specific files you don’t want to upload.
+
+Logs – optional; you can include them if needed.
+
+".env" – contains sensitive information like API keys, so it should never be pushed.
+
+Save the .gitignore file after listing these entries.
+
+Next, create a GitHub account and a new repository. In this example, we name it "multi AI agent project". Do not add a README file initially, as this may conflict with the initial push commands.
+
+Download Git CLI from the official Git website according to your operating system (Windows in our case). Git CLI allows you to run Git commands in your terminal.
+
+Once installed, open a terminal in VS Code and run the following Git commands step by step:
+
+Initialize Git in your project folder:
+
+git init
+
+
+Rename your main branch to "main":
+
+git branch -M main
+
+
+Connect your local repository to the GitHub repository:
+
+git remote add origin <repository-URL>
+
+
+If a remote origin already exists, remove it first using:
+
+git remote remove origin
+
+
+Next, add all files for commit:
+
+git add .
+
+
+Commit the changes with a message:
+
+git commit -m "Initial commit"
+
+
+Push your code to GitHub:
+
+git push origin main
+
+
+Once done, refresh your GitHub repository page, and you will see all your project files uploaded, including directories like "app", "requirements.txt", setup files, and .gitignore.
+
+This process ensures that your code is properly versioned and tracked in GitHub. You can follow the same pattern for future projects, adjusting the project name as needed, while always excluding sensitive files like venv/ and .env.
+
+**Summary:**
+
+(i) Purpose
+
+Track changes, maintain project history, build versions, and manage code using GitHub.
+
+Prevent accidental upload of sensitive files like API keys or large files.
+
+(ii) Create .gitignore File
+
+In the root directory of your project, create a file named .gitignore.
+
+Add entries for files/folders you don’t want to push:
+
+venv/             # Virtual environment (1–1.5 GB)
+*.log             # Log files (optional)
+.env              # Sensitive environment variables
+Project-specific management files (optional)
+
+
+Save the .gitignore file.
+
+(iii) Set Up GitHub Repository
+
+Create a GitHub account (if not already done).
+
+Create a new repository, e.g., multi AI agent project.
+
+Do not add a README initially to avoid push conflicts.
+
+(iv) Install Git CLI
+
+Download Git CLI from the official Git website for your OS (Windows in this case).
+
+Git CLI enables running Git commands from your terminal.
+
+(v) Initialize Git in Your Project
+
+Open terminal in VS Code.
+
+Run the following commands step by step:
+
+git init                             # Initialize Git in project folder
+git branch -M main                    # Rename main branch to "main"
+git remote add origin <repository-URL>  # Connect local repo to GitHub
+
+
+If a remote already exists, remove it first:
+
+git remote remove origin
+
+
+(vi) Commit and Push Your Code
+
+Add all project files for commit:
+
+git add .
+
+
+Commit the changes with a message:
+
+git commit -m "Initial commit"
+
+
+Push the code to GitHub:
+
+git push origin main
+
+
+(vii) Verify Upload
+
+Refresh your GitHub repository page.
+
+You should see all project files, including:
+
+app folder
+
+requirements.txt
+
+Setup files
+
+.gitignore
+
+(viii) Best Practices
+
+Always exclude sensitive files (.env) and large folders (venv/).
+
+Follow this pattern for future projects, updating the project name and repository URL accordingly.
+
+**What we did:**
+
+(i) Ensures version control, backup, and collaboration.
+
+(ii) Keeps sensitive information and large files safe.
+
+(iii) Provides a clear history of project changes for future reference.
+
+**9. Dockerfile**
+
+In this video, we are creating a Docker file for the project. Start by creating a file named Dockerfile in the root directory. To save time, the instructor copies the code directly and explains it line by line. You can also copy the Docker file from the provided GitHub link or code resources.
+
+The Docker file starts with specifying a base image:
+
+FROM python:3.11-slim
+
+
+This is the parent image we will use for the project. We choose Python 3.11 slim because it is a stable, lightweight image suitable for deployment. Avoid using unstable Python versions like 3.13.
+
+Next, some environment variables are set:
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+
+These are essential for production-grade projects. PYTHONUNBUFFERED=1 ensures that logging is handled in real time, which helps in debugging and monitoring.
+
+The Docker file then defines a working directory:
+
+WORKDIR /app
+
+
+Inside the Docker container, the working directory will be /app. All files will be copied into this directory.
+
+Next, the Docker file installs system dependencies. It updates the system, installs essential libraries (like curl), and removes unnecessary files to save space. These steps are optional but recommended for production-grade projects.
+
+COPY . /app
+
+
+This line copies all contents from the local directory into the Docker container’s /app directory.
+
+To install Python dependencies, the Docker file runs:
+
+RUN pip install --no-cache-dir -e .
+
+
+This installs all required libraries specified in setup.py.
+
+--no-cache-dir ensures that no previous cache is used, which guarantees a fresh installation.
+
+Finally, the Docker file exposes the ports that the app uses:
+
+9999 for the backend (FastAPI)
+
+8501 for the frontend (Streamlit)
+
+The command to run the app inside the Docker container is the same as running it locally:
+
+CMD ["python", "app/main.py"]
+
+
+Make sure the ports are exposed; otherwise, the app will not work.
+
+With this, the Docker file setup is complete. This Dockerized project can now be deployed to any platform, ensuring consistency between local development and production environments.
+
+**Summary:**
+
+(i) Purpose
+
+Create a Docker image for the project to ensure consistent deployment across environments.
+
+Docker encapsulates all dependencies, Python version, and project files.
+
+(ii) Create Dockerfile
+
+In the root directory, create a file named Dockerfile.
+
+You can copy the code from GitHub or follow the instructor’s explanation.
+
+(iii) Specify Base Image
+
+FROM python:3.11-slim
+
+
+Uses Python 3.11 slim as a lightweight, stable base.
+
+Avoid unstable versions like Python 3.13.
+
+(iv) Set Environment Variables
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+
+PYTHONDONTWRITEBYTECODE=1: Prevents Python from writing .pyc files.
+
+PYTHONUNBUFFERED=1: Ensures real-time logging for debugging and monitoring.
+
+(v) Set Working Directory
+
+WORKDIR /app
+
+
+Inside the container, /app will be the working directory.
+
+All project files are copied here.
+
+(vi) Copy Project Files
+
+COPY . /app
+
+
+Copies all local project files into the Docker container’s /app directory.
+
+(vii) Install Dependencies
+
+RUN pip install --no-cache-dir -e .
+
+
+Installs all Python dependencies specified in setup.py.
+
+--no-cache-dir ensures a fresh install without using cached packages.
+
+(viii) Optional System Dependencies
+
+You can update the system and install essential libraries (like curl).
+
+Clean up unnecessary files to reduce Docker image size (recommended for production).
+
+(ix) Expose Ports
+
+EXPOSE 9999  # Backend FastAPI
+EXPOSE 8501  # Frontend Streamlit
+
+
+Expose ports so the app is accessible outside the container.
+
+9999 → FastAPI backend, 8501 → Streamlit frontend.
+
+(x) Run the App
+
+CMD ["python", "app/main.py"]
+
+
+Starts the app inside the container, same as running locally with Python.
+
+**What we did:**
+
+(i) Docker ensures environment consistency for local development and production.
+
+(ii) All dependencies, ports, and project structure are encapsulated in a single container.
+
+(iii) This Dockerized setup allows deployment on any platform without environment conflicts.
