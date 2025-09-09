@@ -14,6 +14,8 @@
 
 **B) Flipkart Product Recommender using Prometheus,Grafana,Minikube,AstraDB, LangChain (Will do Later)**
 
+**C. AI Travel Planner**
+
 **E. Celebrity Detector and QnA**
 
 **F. AI Music Composer**
@@ -929,9 +931,2361 @@ With this our project is completed
 
 In this video, we covered the cleanup process for the Anime Recommender project. First, we deleted the VM instance in Google Cloud that was used for hosting the Kubernetes cluster. Deleting the VM automatically disables the Kubernetes cluster, which in turn stops all Grafana Cloud monitoring. To confirm, we checked the Grafana Cloud dashboard, where the monitoring data was no longer active, and the interface reverted to the initial “Start sending data” steps. This process ensures that all cloud resources and running workloads are properly cleaned up, preventing unnecessary costs. Finally, this concludes the project, where we gained hands-on experience in setting up a VM, installing Docker, Minikube, and kubectl, deploying an application on Kubernetes, and integrating Grafana Cloud for monitoring. While Grafana Cloud’s free trial lasts 14 days, it provides full access to metrics, dashboards, alerts, and advanced Kubernetes monitoring features, allowing a complete end-to-end deployment experience.
 
+# **C) AI Travel Planner**
+
+**1. Introduction to the Project**
+
+In this lecture, we introduce the AI Travel Planner project, its tech stack, and the workflow for building, deploying, and monitoring the application.
+
+Step 1: Tech Stack Overview
+
+(i) Groq LLM (Llama 3.3) → Free-to-use language model powering travel itinerary generation.
+
+(ii) GCP VM - To deploy and run app on cloud within a Virtual Machine
+
+(iii) LangChain → Framework to interact with the Groq LLM.
+
+(iv) Minikube - Making a Kubernetes Cluster inside the VM
+
+(v) Docker → For containerizing the application.
+
+(vi) Streamlit → For building the UI (frontend of the app).
+
+(vii) kubectl → CLI tool to interact with Kubernetes.
+
+(viii) GitHub → Source Code Management (SCM) for versioning and code storage.
+
+(ix) Filebeat → Log Collector – collects logs from Kubernetes nodes and applications.
+
+(x) Logstash → Log Processor – cleans, filters, and enriches raw logs before forwarding.
+
+(xi) Elasticsearch → Log Storage & Indexing – stores logs in a searchable index format for fast retrieval.
+
+(xii) Kibana → Log Visualizer – provides dashboards, charts, and alerts to view logs interactively.
+
+Step 2: Virtual Machine Setup
+
+GCP VM → rented Linux machine where everything runs.
+
+Install:
+
+Docker Engine → build images & run containers.
+
+Minikube → create Kubernetes cluster inside VM.
+
+kubectl → interact with Kubernetes cluster.
+
+Step 3: Application Workflow
+Step 1: Project & API Setup
+
+Create virtual environment.
+
+Setup logging & custom exceptions.
+
+Configure API keys (stored as environment variables).
+
+Define project structure.
+
+Step 2: Configuration Code
+
+Access API keys from environment variables.
+
+Configure LLM parameters (e.g., temperature for creativity → range 0.3–0.7 recommended).
+
+Step 3: Itinerary Chain & Travel Planner
+
+Itinerary Chain (Helper Code) → defines functions to generate travel plans.
+
+Travel Planner (Core Code) → integrates LLM, prompts, and logic into the brain of the app.
+
+Step 4: Streamlit Application
+
+Build UI where users enter location & interests.
+
+Generate travel itinerary interactively.
+
+Step 4: Deployment Workflow
+Step 5: Dockerization
+
+Write Dockerfile → build image of Streamlit app.
+
+Expose Streamlit app at port 8501.
+
+Step 6: Kubernetes Deployment
+
+Write Kubernetes Deployment YAML:
+
+Define replicas.
+
+Expose service ports.
+
+Pull Docker image (local/remote).
+
+Step 5:ELK + Filebeat Setup
+Deployment Files
+
+Filebeat Deployment File → collects logs from all nodes (must install on each node).
+
+Logstash Deployment File → processes logs, applies filters, forwards cleaned logs.
+
+Elasticsearch Deployment File → stores logs as searchable indexes.
+
+Kibana Deployment File → visualizes logs via dashboards.
+
+Filebeat deployment file is the most important (watch carefully, line by line).
+
+Step 6: GitHub Integration
+
+Push code to GitHub repository.
+
+Link VS Code → GitHub → GCP VM for seamless syncing.
+
+Any code changes in VS Code automatically reflect in GitHub & VM.
+
+Step 7: Final Setup & Access
+
+Build Docker image from VM.
+
+Deploy to Minikube Kubernetes cluster.
+
+Use port forwarding to access the app in browser.
+
+Deploy ELK + Filebeat stack.
+
+Access Kibana dashboard to view, filter, and visualize logs.
+
+Summary:
+
+AI Travel Planner integrates LLM + LangChain + Streamlit for itinerary generation.
+
+Docker + Kubernetes ensure smooth deployment.
+
+ELK Stack + Filebeat provide enterprise-grade log management & monitoring.
+
+Workflow:
+Filebeat (Collector) → Logstash (Processor) → Elasticsearch (Storage/Index) → Kibana (Visualizer)
+
+**Summary:**
+
+Deployment follows a structured pipeline. The Dockerfile builds the Streamlit app image, exposing it on port 8501. A Kubernetes Deployment YAML manages replicas, services, and image pulling. To enable monitoring, Filebeat collects logs from nodes, Logstash processes them, Elasticsearch stores and indexes them, and Kibana visualizes them through dashboards and alerts. The Filebeat deployment is particularly important, as it ensures all application and Kubernetes node logs are captured.
+
+For version control, the project is pushed to GitHub, linking VS Code, GitHub, and the GCP VM for smooth syncing. This ensures that any code changes flow seamlessly from development to deployment.
+
+Finally, the complete system is deployed: Docker images are built on the VM, the application is deployed to the Minikube Kubernetes cluster, and the ELK + Filebeat stack is set up. Users can access the travel planner through a browser (via port forwarding) and monitor logs interactively in Kibana.
+
+Summary: The AI Travel Planner combines LLMs + LangChain + Streamlit for itinerary generation, uses Docker + Kubernetes for scalable deployment, and leverages Filebeat + ELK for enterprise-grade log management. The monitoring pipeline follows the flow: Filebeat (collector) → Logstash (processor) → Elasticsearch (storage/index) → Kibana (visualizer), ensuring reliability and transparency in the application lifecycle.
+
+**2. Project and API Setup ( Groq )**
+
+In this video, we will set up the project structure for our AI Travel Agent.
+
+Step 1: Create Project Folder and Open in VS Code
+
+First, create a new folder.
+Since we are building a Travel Agent, name the folder:
+
+travel_agent
 
 
+Now open this folder in VS Code. You can do this in two ways:
 
+Right-click and select Open with Code
+
+Or, open the terminal in that folder and type:
+
+code .
+
+
+This will open the folder directly in VS Code.
+
+Step 2: Create and Activate Virtual Environment
+
+Next, let’s create a virtual environment.
+Go to the top bar in VS Code → Terminal → New Terminal.
+
+Make sure the terminal is in Command Prompt mode, not PowerShell.
+
+Run the command:
+
+python -m venv env
+
+
+Once created, activate the environment by running:
+
+env\Scripts\activate
+
+
+If successful, you will see (env) in the terminal prompt.
+
+Step 3: Create Requirements File
+
+Now, create a file named requirements.txt.
+This file will contain all the libraries required for the project.
+
+Add the following:
+
+langchain
+langchain-core
+langchain-groq
+langchain-community
+python-dotenv
+streamlit
+
+
+langchain → main generative AI framework
+
+langchain-groq → to connect with Groq LLM
+
+langchain-community → community-supported integrations
+
+python-dotenv → for environment variable management
+
+streamlit → for building the user interface
+
+Step 4: Create setup.py
+
+Now create a setup.py file in the root folder.
+
+Instead of writing it manually, you can copy the setup.py file from the GitHub repository provided in the resource section.
+
+Make sure to:
+
+Change the project name (for example, travel_agent)
+
+Update the author name with your own
+
+This file ensures that dependencies and packages are properly installed.
+
+Step 5: Create Project Structure
+
+Inside the root folder, create a directory named src.
+This directory will contain all the application components.
+
+Since we want src to be treated as a package, create an empty file named:
+
+__init__.py
+
+
+Inside src, create the following subdirectories:
+
+utils → contains helper functions, logging, and custom exceptions
+
+Add __init__.py
+
+Add logger.py (copy code from GitHub repo)
+
+Add custom_exception.py (copy code from GitHub repo)
+
+config → contains configuration files like API handling
+
+Add __init__.py
+
+chains → contains the itinerary chain logic
+
+Add __init__.py
+
+core → contains the main logic of the application
+
+Add __init__.py
+
+This structure makes the project modular and organized.
+
+Step 6: Install Packages
+
+To install all requirements and make directories function as packages, run:
+
+pip install -e .
+
+
+This will trigger the setup.py file, install all requirements, and register packages.
+
+Step 7: Create Environment File
+
+Finally, create a .env file in the root folder.
+
+Inside it, add your API key:
+
+API_KEY=your_api_key_here
+
+
+To get this API key:
+
+Go to Groq Cloud website
+
+Sign up (it’s free)
+
+Generate a new API key
+
+Copy it and paste into .env
+
+Summary
+
+In this video, we:
+
+Created a virtual environment
+
+Added requirements
+
+Wrote a setup.py file
+
+Structured the project with src, utils, config, chains, and core
+
+Installed all dependencies
+
+Created a .env file to store the API key
+
+That’s it for the setup. In the next video, we will start building the core functionality.
+
+**Summary:**
+
+In this video, we set up the complete project structure for the AI Travel Agent. The process begins by creating a dedicated folder named travel_agent and opening it in VS Code, either by right-clicking and selecting Open with Code or using the code . command from the terminal. This establishes the workspace where all subsequent development will take place.
+
+The next step involves creating a virtual environment to ensure that project dependencies remain isolated. This is done using python -m venv env, followed by activating it with env\Scripts\activate. A successful activation is indicated by the (env) prefix in the terminal prompt. This environment will house all required libraries without interfering with global installations.
+
+Once the environment is ready, we create a requirements.txt file to list the project dependencies. Key packages include LangChain (the main generative AI framework), langchain-groq (for Groq LLM integration), langchain-community (community extensions), python-dotenv (for environment variables), and Streamlit (for the frontend UI). With these dependencies defined, a setup.py file is added to streamline installations, package registration, and project metadata.
+
+To maintain clean and modular development, we then build a structured project architecture. A src folder is created as the core package, containing subdirectories for different components:
+
+utils (logging, custom exceptions),
+
+config (configuration and API handling),
+
+chains (itinerary chain logic), and
+
+core (main application logic).
+
+Each directory is initialized with an __init__.py file to make it a Python package, while logger.py and custom_exception.py are added under utils for error handling and logging.
+
+After setting up the structure, we install dependencies and register the packages with the command pip install -e ., which executes the setup.py script and ensures everything is properly installed. Finally, a .env file is created in the root directory to securely store the Groq API key. This allows the application to authenticate with Groq Cloud without hardcoding sensitive credentials into the codebase.
+
+Summary: In this setup session, we created a virtual environment, defined dependencies in requirements.txt, added a setup.py file, structured the project into organized modules under src, installed all requirements, and configured an .env file for API keys. With this foundation in place, the project is now fully prepared to begin building the core functionality of the AI Travel Agent in the next phase.
+
+**3. Configuration Code**
+
+Hello everyone!
+In this video, we will be writing our configuration code. It is very simple and quick, and we will complete it within a minute.
+
+Step 1: Create the config.py File
+
+Go to your src directory. Inside the config folder, which already contains the __init__.py file, create a new file called:
+
+config.py
+
+Step 2: Import Required Libraries
+
+Inside config.py, import the necessary libraries.
+First, import the OS library:
+
+import os
+
+
+Then, import the dotenv library to load environment variables:
+
+from dotenv import load_dotenv
+
+Step 3: Load Environment Variables
+
+Now, call the function that loads all environment variables from the .env file:
+
+load_dotenv()
+
+
+With this line, all the variables defined in your .env file will be accessible in your code.
+
+Step 4: Access the API Key
+
+Currently, your .env file contains an environment variable, for example:
+
+API_KEY=your_api_key_here
+
+
+We want to convert this into a normal Python variable that can be used in the program. For that, write:
+
+API_KEY = os.getenv("API_KEY")
+
+
+Make sure the name inside os.getenv() exactly matches the variable name from the .env file.
+
+Step 5: Verify the Setup
+
+Now, your environment variable is successfully stored in a normal variable called API_KEY.
+This variable can be used throughout the project to connect with external services, such as the Groq API.
+
+Summary
+
+In this video, we:
+
+Created a new file config.py
+
+Imported os and dotenv
+
+Loaded environment variables using load_dotenv()
+
+Converted the API_KEY environment variable into a normal Python variable
+
+**Summary:** 
+
+In this video, we focus on writing the configuration code for our AI Travel Agent project. The process is simple and quick, and it ensures that sensitive information such as API keys can be accessed securely within our application.
+
+We begin by navigating to the src/config directory and creating a new file named config.py. This file will serve as the central place to handle environment variables and configuration details. Inside this file, we first import the required libraries: os, which allows interaction with environment variables, and dotenv, which makes it easy to load variables from the .env file.
+
+Next, we call the load_dotenv() function, which loads all the environment variables defined in the .env file into the program’s environment. With this setup, the API key stored in .env can now be accessed directly in Python. To achieve this, we use the line:
+
+API_KEY = os.getenv("API_KEY")
+
+
+This converts the environment variable into a standard Python variable named API_KEY, which can be used throughout the project. It is crucial to ensure that the name inside os.getenv() matches exactly with the variable defined in .env.
+
+Summary: In this configuration setup, we created config.py, imported the necessary libraries, loaded environment variables using load_dotenv(), and extracted the API_KEY into a reusable Python variable. This approach keeps sensitive credentials secure while making them easily accessible in our project.
+
+**4. Itinerary Chain Code**
+
+Hello everyone!
+In this video, we will be creating our itinerary chain.
+
+The goal here is to:
+
+Load our LLM model.
+
+Write the logic to generate a travel itinerary for a given city based on user interests.
+
+Step 1: Create the itinerary_chain.py File
+
+Go to your src directory. Inside the chains folder, create a new file:
+
+itinerary_chain.py
+
+Step 2: Import Required Libraries
+
+We need to import a few libraries.
+
+To interact with our LLM, import ChatGroq:
+
+from langchain_groq import ChatGroq
+
+
+Next, import the class for creating prompts:
+
+from langchain_core.prompts import ChatPromptTemplate
+
+
+Finally, import the API key we set up earlier in the configuration file:
+
+from src.config.config import API_KEY
+
+Step 3: Initialize the LLM
+
+Now we will initialize the LLM using ChatGroq:
+
+llm = ChatGroq(
+    groq_api_key=API_KEY,
+    model_name="llama-3.3-70b-versatile",
+    temperature=0.3
+)
+
+
+groq_api_key uses the key we loaded from .env.
+
+model_name is taken from Groq’s documentation.
+
+temperature controls creativity (range 0–1). Lower values give more factual responses, higher values make outputs more creative. A good balance is around 0.3.
+
+Step 4: Define the Prompt Template
+
+We need to tell the LLM how to respond. For that, we define a prompt:
+
+itinerary_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful travel assistant. Create a trip itinerary for the city {city}, "
+               "based on the user's interests: {interests}. Provide a brief, bulleted plan."),
+    ("human", "Create an itinerary for my trip.")
+])
+
+
+The system message tells the LLM its role and how to respond.
+
+The human message provides a starting point for the conversation.
+
+The placeholders {city} and {interests} will be replaced with user inputs.
+
+Step 5: Write the Generate Function
+
+Now let’s write the function that generates the itinerary:
+
+def generate_itinerary(city: str, interests: list[str]) -> str:
+    response = llm.invoke(
+        itinerary_prompt.format_messages(
+            city=city,
+            interests=", ".join(interests)
+        )
+    )
+    return response.content
+
+
+The function accepts city (a string) and interests (a list of strings).
+
+It formats the prompt with user inputs.
+
+It invokes the LLM with the prompt.
+
+Finally, it returns only the content from the response (the actual itinerary text).
+
+Step 6: How It Works
+
+Suppose the user passes city="Delhi" and interests=["Red Fort", "Lotus Temple"].
+
+The placeholders {city} and {interests} will be filled in the prompt.
+
+The LLM receives the prompt and generates a bulleted itinerary.
+
+The function returns just the itinerary text, without extra metadata.
+
+Summary
+
+In this video, we:
+
+Created itinerary_chain.py inside the chains folder.
+
+Imported necessary libraries.
+
+Initialized the LLM using the Groq API.
+
+Defined a prompt template with system and human messages.
+
+Wrote the generate_itinerary function to format the prompt, invoke the model, and return the itinerary.
+
+That completes our itinerary chain setup. In the next video, we will build on this to integrate it with our application.
+
+**Summary:**
+
+In this video, we set up the itinerary chain, which is responsible for generating personalized travel itineraries using our LLM model. The main goal here is to load the Groq LLM, define a prompt structure, and write the logic to return a travel plan for a city based on user interests.
+
+We start by creating a new file named itinerary_chain.py inside the src/chains directory. This file will contain the entire itinerary generation logic. After that, we import the required libraries: ChatGroq from langchain_groq to connect with the Groq LLM, ChatPromptTemplate from langchain_core.prompts to define prompt structures, and finally, the API_KEY from our configuration file to authenticate the model.
+
+Next, we initialize the LLM using the ChatGroq class. We provide three key parameters: the groq_api_key loaded from the .env file, the model_name which is set to "llama-3.3-70b-versatile", and the temperature which controls the creativity of responses. Setting the temperature to 0.3 ensures the outputs are factual but still somewhat flexible.
+
+Once the model is set up, we define our prompt template using ChatPromptTemplate.from_messages(). The system message instructs the LLM to act as a helpful travel assistant and generate an itinerary for a city based on user interests, while the human message provides a starting interaction. The placeholders {city} and {interests} will later be dynamically filled in with user inputs.
+
+With the model and prompt ready, we create a function called generate_itinerary. This function accepts two parameters: city (a string) and interests (a list of strings). Inside the function, we format the prompt with the given inputs, invoke the LLM, and return only the response.content, which contains the clean itinerary text without any extra metadata.
+
+For example, if the inputs are city="Delhi" and interests=["Red Fort", "Lotus Temple"], the placeholders in the prompt will be replaced, and the model will generate a concise, bulleted itinerary for Delhi based on these interests.
+
+Summary: In this video, we created the itinerary_chain.py file, imported the necessary libraries, initialized the Groq LLM, defined a structured prompt, and implemented the generate_itinerary function to produce customized travel itineraries. This completes the itinerary chain setup, which we will integrate into our main application in the next video.
+
+**5. Core Planner Code**
+
+In this video, we will be writing the core logic for our trip planner application.
+
+We have already created a code directory inside our src folder. Now, let’s create a new file inside it:
+
+planner.py
+
+
+This file will contain the main logic for planning trips.
+
+Step 1: Import Required Libraries
+
+We first need to import message classes from LangChain.
+
+from langchain_core.messages import HumanMessage, AIMessage
+
+
+These will help us keep track of the conversation history – what the user says and what the AI responds.
+
+Next, import the itinerary generator we built earlier:
+
+from src.chains.itinerary_chain import generate_itinerary
+
+
+Also, bring in logging and custom exception handling:
+
+from src.utils.logger import get_logger
+from src.utils.custom_exception import CustomException
+
+Step 2: Initialize the Logger
+
+We create a logger to record system events:
+
+logger = get_logger(__name__)
+
+Step 3: Define the TravelPlanner Class
+
+Now let’s create a class that will contain all our planner logic:
+
+class TravelPlanner:
+    def __init__(self):
+        self.messages = []         # stores conversation history
+        self.city = ""             # stores user’s city
+        self.interests = []        # stores user’s interests
+        self.itinerary = ""        # stores AI-generated itinerary
+        logger.info("Initialized TravelPlanner instance")
+
+
+Here:
+
+messages keeps the full chat history.
+
+city stores the city entered by the user.
+
+interests is a list of user interests.
+
+itinerary stores the final output from the AI.
+
+Step 4: Method to Set the City
+
+We now define a method for setting the city:
+
+def set_city(self, city: str):
+    try:
+        self.city = city
+        self.messages.append(HumanMessage(content=city))
+        logger.info("City set successfully")
+    except Exception as e:
+        logger.error(f"Error while setting city: {e}")
+        raise CustomException(f"Failed to set city: {e}")
+
+
+Takes the user’s city input.
+
+Saves it in self.city.
+
+Appends it as a human message to the conversation history.
+
+Step 5: Method to Set Interests
+
+Users will enter their interests as a comma-separated string (not a Python list). So we must convert that string into a list.
+
+def set_interests(self, interests_str: str):
+    try:
+        self.interests = [i.strip() for i in interests_str.split(",")]
+        self.messages.append(HumanMessage(content=interests_str))
+        logger.info("Interests set successfully")
+    except Exception as e:
+        logger.error(f"Error while setting interests: {e}")
+        raise CustomException(f"Failed to set interests: {e}")
+
+
+Splits the input string by commas.
+
+Removes extra spaces.
+
+Stores the cleaned values in a list.
+
+Keeps the original user input as a human message in history.
+
+Step 6: Method to Generate the Itinerary
+
+Finally, we create a method that calls our itinerary chain:
+
+def create_itinerary(self):
+    try:
+        logger.info(f"Generating itinerary for {self.city} with interests {self.interests}")
+        itinerary = generate_itinerary(self.city, self.interests)
+        self.itinerary = itinerary
+        self.messages.append(AIMessage(content=itinerary))
+        logger.info("Itinerary generated successfully")
+        return self.itinerary
+    except Exception as e:
+        logger.error(f"Error while creating itinerary: {e}")
+        raise CustomException(f"Failed to create itinerary: {e}")
+
+
+Calls generate_itinerary with city and interests.
+
+Stores the AI’s response in self.itinerary.
+
+Adds it as an AI message to the chat history.
+
+Returns the itinerary.
+
+Step 7: Summary
+
+In this lecture, we:
+
+Imported message classes, itinerary chain, logging, and exception handling.
+
+Created a TravelPlanner class.
+
+Added methods to set the city and interests with proper error handling.
+
+Converted user input (comma-separated interests) into a list.
+
+Wrote the create_itinerary method to call the AI and record its response.
+
+The messages list now holds the full conversation history, for example:
+
+Human: "Delhi"
+
+Human: "Red Fort, Lotus Temple, Qutub Minar"
+
+AI: Generated itinerary
+
+That completes our core planner code. In the next video, we will use this planner to build our application interface.
+
+**Summary:**
+
+In this video, we implemented the core logic of our trip planner application inside a new file called planner.py. This file brings together the key components of our project, including conversation handling, itinerary generation, logging, and error management.
+
+We began by importing the required libraries. From LangChain, we imported HumanMessage and AIMessage to maintain a proper record of the conversation between the user and the AI. We then brought in our generate_itinerary function from the itinerary chain, along with custom logging and exception handling utilities. After that, we set up a logger to capture system events throughout the process.
+
+Next, we created the TravelPlanner class, which serves as the brain of the trip planner. The class initializes attributes such as the conversation history, the user’s chosen city, their interests, and the final AI-generated itinerary. With this foundation, we defined methods to handle user input and generate outputs. The set_city method records the city name, saves it in the planner state, and logs it as a human message. The set_interests method accepts a comma-separated string of interests, cleans and converts it into a list, and also records the original input as a human message.
+
+The most important part of the class is the create_itinerary method, which calls our itinerary chain with the provided city and interests. The generated plan is saved in the itinerary attribute, appended as an AI message to the conversation history, and then returned to the user. This ensures that the full dialogue is preserved, with each human input followed by the AI’s response.
+
+Summary: In this lecture, we created the planner.py file, built the TravelPlanner class, and added methods for setting the city, setting interests, and generating the itinerary. We also ensured robust error handling and proper logging. The conversation history is now maintained as a sequence of human and AI messages, making it easier to trace inputs and outputs. With this, our trip planner logic is complete, and in the next step, we will integrate it into the application’s interface.
+
+**6. Main Application Code using Streamlit**
+
+In this video, we will be creating our main application using Streamlit. This app will connect with the TravelPlanner class we built earlier and provide a simple interface for users.
+
+Step 1: Create app.py
+
+In the root directory, create a new file:
+
+app.py
+
+
+This file will contain all our Streamlit logic.
+
+Step 2: Import Required Modules
+
+We start by importing Streamlit and our planner class:
+
+import streamlit as st
+from src.core.planner import TravelPlanner
+
+
+We also load environment variables to avoid errors when running in Docker:
+
+from dotenv import load_dotenv
+load_dotenv()
+
+
+Even though we already load environment variables in the configuration file, we add it here too because if app.py runs independently (e.g., inside a Docker container), it won’t automatically execute the config file.
+
+Step 3: Configure the Streamlit Page
+
+Before building the UI, we configure the page:
+
+st.set_page_config(page_title="Travel Planner", page_icon="🌍")
+st.title("Travel Itinerary Planner")
+st.write("✈️ Plan your day trip itinerary by entering your city and interests.")
+
+
+set_page_config sets the page title and icon.
+
+title creates a heading at the top.
+
+write adds a simple description.
+
+Step 4: Create the Input Form
+
+We now create a form for the user to enter details.
+
+with st.form("planner_form"):
+    city = st.text_input("Enter the city name for your trip")
+    interests = st.text_input("Enter your interests (comma separated)")
+    submitted = st.form_submit_button("Generate Itinerary")
+
+
+city stores the city entered by the user.
+
+interests stores user interests as text.
+
+submitted is triggered when the button is clicked.
+
+Step 5: Add the Submission Logic
+
+Now we write what happens when the user clicks the Generate Itinerary button:
+
+if submitted:
+    if city and interests:
+        planner = TravelPlanner()  
+        planner.set_city(city)  
+        planner.set_interests(interests)  
+        itinerary = planner.create_itinerary()  
+        st.subheader("📄 Your Itinerary")
+        st.markdown(itinerary)
+    else:
+        st.warning("⚠️ Please fill both city and interests to move forward.")
+
+
+Here’s the breakdown:
+
+If both city and interests are provided, we:
+
+Initialize TravelPlanner.
+
+Set the city using planner.set_city().
+
+Set the interests using planner.set_interests().
+
+Call planner.create_itinerary() to generate the itinerary.
+
+Display the itinerary using subheader and markdown.
+
+If either field is empty, we show a warning message.
+
+Step 6: Running the App
+
+To start the app, run this command in the terminal:
+
+streamlit run app.py
+
+
+The browser will open automatically. You’ll see:
+
+A title and description at the top.
+
+A form where you enter your city and comma-separated interests.
+
+A Generate Itinerary button.
+
+After submitting, the generated itinerary will appear as a formatted output.
+
+Step 7: Example Run
+
+If I enter:
+
+City: Delhi
+
+Interests: Red Fort, Lotus Temple, Qutub Minar
+
+The app might generate an itinerary like:
+
+9:00 AM – Start at Red Fort
+
+11:30 AM – Visit Lotus Temple
+
+1:30 PM – Break for lunch
+
+2:30 PM – Explore Qutub Minar
+
+4:30 PM – Shopping or local exploration
+
+This is a short itinerary because the prompt in our chain asks for a brief plan, but you can modify the prompt to request a detailed plan.
+
+Step 8: Summary
+
+In this lecture, we:
+
+Created app.py.
+
+Imported Streamlit, environment variables, and the planner class.
+
+Configured the Streamlit page.
+
+Built a user form for city and interests.
+
+Wrote submission logic to generate and display an itinerary.
+
+Tested the app with an example.
+
+This completes our Streamlit application setup. In the next video, we’ll look at how to enhance the interface and possibly add extra features.
+
+**Summary:**
+
+In this video, we created the main application for our AI Travel Planner using Streamlit. This app connects directly with the TravelPlanner class we developed earlier and provides an easy-to-use interface for users to generate personalized itineraries.
+
+We started by creating a new file called app.py in the project root. Inside it, we imported Streamlit, the TravelPlanner class, and also loaded environment variables using dotenv. Even though variables were already handled in the config, we explicitly loaded them here to ensure smooth execution, especially when running the app inside Docker.
+
+Next, we configured the Streamlit page with a title, an icon, and a short description at the top of the UI. We then built an input form, where users can type the city they want to visit and enter their interests as a comma-separated list. The form also included a button labeled Generate Itinerary.
+
+For the submission logic, we defined what should happen when the user clicks the button. If both city and interests are filled, a new TravelPlanner instance is created. The app sets the city and interests, calls the itinerary generator, and then displays the output neatly using Streamlit’s subheader and markdown. If any field is missing, a warning is shown instead.
+
+We also tested the app with an example: entering Delhi as the city and interests like Red Fort, Lotus Temple, Qutub Minar. The model generated a short, structured itinerary with times and places, demonstrating how the pipeline works end to end.
+
+Summary: In this lecture, we built the Streamlit application that serves as the user interface for the travel planner. We created app.py, configured the page, added form inputs, implemented submission logic, and tested the app with an example. This completes the setup of our Streamlit frontend. In the next step, we will focus on enhancing the interface and adding more features for a better user experience.
+
+**7. Dockerfile, Kubernetes Deployment File and Code Versioning using GitHub**
+
+In this video, we will go through three important parts of our project setup:
+
+Creating the Dockerfile
+
+Creating the Kubernetes Deployment file
+
+Doing code versioning using GitHub
+
+Step 1: Create a Dockerfile
+
+In the root directory, create a file named:
+
+Dockerfile
+
+
+Now open the Dockerfile and copy the template from the GitHub repository provided in the resources section.
+
+Let’s break it down:
+
+FROM python:3.10
+
+# Optional environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y curl build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY . /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -e .
+
+# Expose Streamlit default port
+EXPOSE 8501
+
+# Run the Streamlit application
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]
+
+Explanation:
+
+Base Image: We use python:3.10.
+
+Environment Variables: Prevents caching issues and improves debugging.
+
+Work Directory: Everything will live under /app inside the container.
+
+System Dependencies: Installs libraries like curl and build tools.
+
+Copy: Copies all project files except those in .gitignore.
+
+Pip Install: Installs all dependencies fresh (--no-cache-dir).
+
+Expose Port: Streamlit runs on 8501, so we expose it.
+
+CMD: Runs our app with Streamlit, accessible from anywhere (0.0.0.0), and avoids auto-opening the browser (headless=true).
+
+Step 2: Create a Kubernetes Deployment File
+
+Now, in the root directory, create a file:
+
+k8s_deployment.yaml
+
+
+Copy the template from the GitHub repo and paste it here.
+
+Here’s the structure:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+    spec:
+      containers:
+        - name: streamlit-container
+          image: streamlit-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8501
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-secrets
+                  key: OPENAI_API_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-service
+spec:
+  selector:
+    app: streamlit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
+  type: LoadBalancer
+
+Explanation:
+
+Deployment: Defines how the app runs inside Kubernetes.
+
+replicas: Number of pods (1 for testing, 2–3 for production).
+
+containers → image: Replace streamlit-app:latest with the actual image name you build.
+
+ports: Must match Streamlit’s port (8501).
+
+env: Loads API keys from Kubernetes secrets (llm-secrets).
+
+Service: Exposes the app externally using a LoadBalancer so it’s accessible from the internet.
+
+Step 3: GitHub Code Versioning
+
+Now let’s push our project to GitHub.
+
+Step 3.1: Create .gitignore
+
+In the root folder, create:
+
+.gitignore
+
+
+Add files and folders you don’t want to push:
+
+venv/
+.env
+logs/
+project_management/
+
+
+This prevents sensitive files (like .env) and heavy virtual environments from being uploaded.
+
+Step 3.2: Push Code to GitHub
+
+Install Git CLI (if not already installed).
+
+Search Install Git → follow instructions.
+
+Create a new repository on GitHub (e.g., itravel-itinerary-planner).
+
+Keep it public.
+
+Do not initialize with README.
+
+Open terminal in your project folder and run:
+
+git init
+git branch -M main
+git remote add origin https://github.com/your-username/itravel-itinerary-planner.git
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+
+After this, refresh your GitHub repository. You should see all project files uploaded, except the ones in .gitignore.
+
+Recap
+
+In this video, we:
+
+Created a Dockerfile for our Streamlit application.
+
+Created a Kubernetes Deployment and Service file.
+
+Did GitHub code versioning with .gitignore and pushed the project online.
+
+This sets up the foundation for deployment. In the next video, we’ll continue with deploying our app on a cloud virtual machine and connecting everything.
+
+**Summary:**
+
+In this video, we focused on three important parts of our project setup: creating a Dockerfile, creating a Kubernetes Deployment file, and performing code versioning with GitHub. These steps are crucial to prepare our application for deployment in a scalable and maintainable way.
+
+We started by creating a Dockerfile in the root directory. This file contains instructions to build a container image for our Streamlit application. The Dockerfile begins with the python:3.10 base image and defines environment variables to avoid caching issues and improve debugging. The working directory is set to /app, and system dependencies like curl and build tools are installed. We then copied all project files into the container and installed Python dependencies with pip in a clean way using --no-cache-dir. Finally, we exposed port 8501 for Streamlit and defined the command to run our application in headless mode, making it accessible from anywhere.
+
+Next, we created a Kubernetes Deployment file named k8s_deployment.yaml. This file defines how the application will run inside a Kubernetes cluster. The deployment specifies a single replica for now and sets up a container using our Streamlit image. We mapped port 8501, which is required by Streamlit, and securely passed in the OpenAI API key using Kubernetes secrets. Alongside the deployment, we also defined a Service of type LoadBalancer to expose our app externally so that users can access it through the internet.
+
+Finally, we moved on to GitHub code versioning. We created a .gitignore file in the project root to ensure sensitive files like .env, local environments, logs, and project management notes are excluded from version control. After that, we initialized a Git repository locally, connected it to a newly created GitHub repository, committed our code, and pushed it online. Once done, all project files appeared in GitHub, except the ignored ones, ensuring a clean and secure version history.
+
+Summary: In this lecture, we built the Dockerfile for containerizing our Streamlit app, set up a Kubernetes Deployment and Service for scalable orchestration, and performed GitHub code versioning to track and share our project. These steps establish the foundation for deploying our application in a cloud environment. In the next video, we’ll move forward with deploying the app on a cloud virtual machine and integrating everything.
+
+**8. Filebeat Deployment Code**
+
+In this video, we will be setting up Filebeat to ship logs from Kubernetes pods to Logstash.
+
+First, we create a ConfigMap. This tells Kubernetes what configuration Filebeat should use. For basic objects, the API version is "apiVersion: v1", and the kind is "kind: ConfigMap".
+
+Next, we add metadata, for example: "name: filebeat-config" and "namespace: logging". This identifies the ConfigMap.
+
+Inside the data section, we override Filebeat’s default config. We start with "filebeat.inputs:". Here we set "type: container" so Filebeat knows it should collect container logs. Then we define paths as "paths: ['/var/log/containers/*.log']". This matches all container log files on the node.
+
+To enrich the logs, we use processors. The most important one is "add_kubernetes_metadata". This processor automatically attaches information such as "pod.name", "namespace", and "node.name" to each log event. That way, when logs arrive in Logstash, you’ll know which pod produced them.
+
+Next, we configure the output. Instead of sending directly to Elasticsearch, we’ll ship logs to Logstash. For that, we use "output.logstash:" and inside it define "hosts: ['logstash-service:5044']". The 5044 port is the one Logstash listens to for Beats input.
+
+Now that our ConfigMap is ready, we need to deploy Filebeat itself. We’ll use a DaemonSet. Remember, a DaemonSet ensures that one Filebeat pod runs on every node in your cluster, so it can collect logs from all containers.
+
+When defining the DaemonSet, we start with "apiVersion: apps/v1" and "kind: DaemonSet". Under metadata, we give it "name: filebeat" and "namespace: logging".
+
+In the spec, we define the selector to match pods with the "app: filebeat" label. Then inside the template section, we again use "metadata: { labels: { app: filebeat } }".
+
+Under containers, we specify the container image: "docker.elastic.co/beats/filebeat:7.17.0". This is the official Filebeat image.
+
+We then mount the configuration. That means we use a volumeMount like "name: config, mountPath: /usr/share/filebeat/filebeat.yml, subPath: filebeat.yml". This takes the Filebeat config from our ConfigMap and mounts it into the container at the correct path.
+
+We also need access to container logs and system logs. For that, we mount two paths: "hostPath: /var/lib/docker/containers" and "hostPath: /var/log". These paths give Filebeat access to the actual log files on the node.
+
+Finally, we define the service account. Filebeat needs RBAC permissions to fetch Kubernetes metadata. So we create a "ServiceAccount" named "filebeat", a "ClusterRole" that allows "get, list, watch" on pods, and a "ClusterRoleBinding" that binds this role to the filebeat ServiceAccount.
+
+After applying all these manifests with "kubectl apply -f <filename>", Filebeat pods will start on every node. You can check them with "kubectl get pods -n logging".
+
+If everything is set up correctly, logs will flow from Kubernetes pods into Filebeat, then into Logstash at port 5044, and finally into Elasticsearch and Kibana for visualization.
+
+So that’s the complete setup of Filebeat with DaemonSet in Kubernetes!
+
+**Summary:**
+
+In this video, we set up Filebeat in Kubernetes to ship logs from pods to Logstash. We started by creating a ConfigMap named filebeat-config in the logging namespace. This configuration overrides the default Filebeat settings, telling it to collect container logs with type: container and paths: ['/var/log/containers/*.log']. To enrich the log data, we enabled the add_kubernetes_metadata processor, which automatically attaches details like pod name, namespace, and node name. For the output, we configured Filebeat to send logs to Logstash using output.logstash and defined the host as logstash-service:5044, where Logstash listens for Beats input.
+
+Next, we deployed Filebeat as a DaemonSet, ensuring that one Filebeat pod runs on every node in the cluster to capture all container logs. In the DaemonSet manifest, we used the official Filebeat image docker.elastic.co/beats/filebeat:7.17.0 and mounted the configuration from the ConfigMap into the container. We also mounted the host paths /var/lib/docker/containers and /var/log so Filebeat could access container and system logs directly. To allow Filebeat to fetch Kubernetes metadata, we created a ServiceAccount, a ClusterRole with get, list, and watch permissions on pods, and a ClusterRoleBinding to bind these permissions to the Filebeat ServiceAccount.
+
+Finally, we applied all the manifests with kubectl apply -f <filename> and verified that Filebeat pods were running on each node using kubectl get pods -n logging. Once the setup was complete, logs started flowing from Kubernetes pods into Filebeat, then into Logstash at port 5044, and from there into Elasticsearch and Kibana for visualization.
+
+Summary: In this lecture, we created a ConfigMap for Filebeat, deployed it as a DaemonSet with the necessary volume mounts and RBAC permissions, and successfully set up the log pipeline from Kubernetes → Filebeat → Logstash → Elasticsearch/Kibana.
+
+**9. Logstash Deployment Code**
+
+In this video we will be writing our Logstash deployment code. In the previous video we have done our Filebeat deployment and in this video we will be talking about our Logstash deployment code.
+
+So in the root directory you will create one file. Let's name it "logstash.yaml".
+
+Okay. So before going into the code let me give you a brief summary of what Logstash is basically. So basically "Logstash" is a type of processor. I have already explained in detail in the introduction video, so you can just go and watch. Basically our "Filebeat" is a shipper. So it will ship the logs from all the nodes to your Logstash. Now it's the work of "Logstash" to filter the logs, make them clean and then send them to "Elasticsearch". So that's the use of Logstash.
+
+So you can just go to the GitHub repository that I have given. Just copy the code from there for "logstash.yaml", paste it here, and now I will be explaining the code one by one. Basically this code will contain three things: your "ConfigMap", your "Deployment", and your "Service".
+
+First of all, "ConfigMap" is for the custom configuration. You have done the same thing with Filebeat also in the previous video. Basically you create custom configuration because by default if you install Logstash it will come with the default configuration, but we want to overwrite those default configurations with our own custom configuration.
+
+So first of all we have that "ConfigMap". The name of our config map is "logstash-config". And I already told you in the Filebeat also that we will be making a new "namespace" in which all the things will be there — your Filebeat, your Logstash, Elasticsearch service and your Kibana also — so that all will be inside this "logging" namespace.
+
+Now this is the "data" section. What is this data? Basically this is your custom configuration that we want to replace. Logstash comes with the default configuration, so this "data" is our custom configuration that we want to replace the default one with.
+
+Now let's talk about it. First of all this is "input". What is this input? Let me open the Filebeat also if I can check. Now what is this "5044" port? If you go to the Logstash deployment, you can see below we have set the "containerPort: 5044" and "targetPort: 5044". It means our Logstash will run on port "5044".
+
+Now you can check the "filebeat.yaml" which you made in the previous video. You can see it is sending the logs to "5044" port. It means to our Logstash, right. So that’s what we have defined here. It means our Logstash is accepting the inputs into this "5044" port from the Filebeat. So we are getting the logs from anywhere and they will reach this port, which is for our Logstash.
+
+Then this is your "filter" section. We have kept it blank. We have not assigned any filters. You can assign them. You can just ask ChatGPT and create custom filters for your Logstash. We have not done it, we have kept it simple. Basically what is the use of those filters? You can make filters to modify or clean your logs. Suppose your logs have some underscores and you don’t want those underscores, you can create a filter here to remove them. So that’s the use of filter.
+
+Now this is the "output". Output means where you want to send these logs. You got the logs from Filebeat on this "5044" port, now where do you want to send them? I already told you in the introduction video: you want to send it to "Elasticsearch". And Elasticsearch will be running on "9200" port that we will be making in the next video. So it is sending all the logs that it got from Filebeat to this particular address, which is the address for Elasticsearch.
+
+Now what is this "index"? Basically it is a way in which it will store the output. Suppose, cause, okay it’s something like that only. If you show your normal logs you can see there is a datetime and everything. So it will send those logs in this index format. For example, if it is sending logs to Elasticsearch, Elasticsearch uses indexes to store them. So the index format will be "filebeat-%{+YYYY.MM.dd}".
+
+So for example, if you send a log at a particular date, say "2025-07-04", your index will look like "filebeat-2025.07.04". So that’s how your index will be stored in Elasticsearch.
+
+Let me explain again. It’s the "ConfigMap". ConfigMap name is "logstash-config". It will be inside the "logging" namespace. This is the custom configuration that will replace the default configuration. First of all "input" means where you will receive all the inputs. We will receive all the inputs on our "5044" port. Then it is "filter". We have not defined any filter here, but you can define filters for cleaning and modifying your logs. Then you have "output". Basically this is where you want to send the logs that you received. So first of all you receive the logs, then you can apply filters, and then you want to send it. We are sending them to Elasticsearch, and our Elasticsearch is running on "9200" port. The "index" will be stored in this particular format.
+
+Now this is your "Deployment". I told you it will be in three parts: ConfigMap, Deployment and Service. So now rest is easy. Basically it will be a deployment. Our deployment "name" is "logstash". It will be inside the "logging" namespace. We want only one replica, it means we want only one instance of Logstash running. For Filebeat we will have many replicas because each node will have a replica of its own — each node will have Filebeat installed inside it. But for Logstash we want only one.
+
+This is the name "logstash". Make sure you keep the name same everywhere — "logstash". Now, you know that Logstash will not automatically get installed, so you have to pass the Docker Hub image ID from where you want to install Logstash. So we are passing the name of the image "docker.elastic.co/logstash/logstash:7.17.0". This file will automatically install Logstash from this particular Docker image. Make sure this name is exactly the same, otherwise it will not work.
+
+Now these are two container ports: "5044" and "9600". "5044" is for Filebeat input — Filebeat will send some output which will act as input for Logstash, and Logstash will receive it on port "5044". Now what is "9600"? "9600" is the Logstash monitoring API. We have to define it because Logstash will help you in monitoring also, so we define this port for that.
+
+Now what is this whole code doing? Basically we are mounting a volume inside the deployment. That volume contains the data of our "logstash-config". We have defined our Logstash config and custom configurations, and this custom configuration will act as the configuration for our image. So as soon as Logstash gets installed, it will replace the default configuration with our custom configuration. For that we have set up the "volumeMount".
+
+Then we have created one "Service". Because to run our deployment we need a service to expose that deployment. The name of that service is "logstash". On which app deployment will it work? It will work on "logstash". So you can see the "app: logstash". Make sure whatever your app name is, you pass the same name here. In our case the service name is "logstash", the app name is "logstash", and so we pass "logstash". The service will also be inside our "logging" namespace.
+
+And you already know where our Logstash will run — it will run on "5044" port. You can see our Logstash will run on "5044" port, basically where it will receive the inputs from Filebeat.
+
+So yeah, I think that was it for this video. Let me give you a brief summary. Basically you have three components: first one is your "ConfigMap", the name of the config map is "logstash-config", and all the things will be inside the "logging" namespace. This is your custom configuration: input is on "5044" port, no filter is defined (but you can add), output is Elasticsearch on "9200" port, and index format is "filebeat-%{+YYYY.MM.dd}".
+
+Then you have "Deployment". We want only one replica. Our deployment name is "logstash". We will be using the image "docker.elastic.co/logstash/logstash:7.17.0". Our Logstash has two container ports: "5044" for Filebeat input, and "9600" for the Logstash monitoring API. Then this whole code mounts a volume and replaces the default config with our custom config.
+
+Then we have "Service". Service name is "logstash". It is applied to the deployment "logstash". And the service runs on "5044" port, which is the port for Logstash.
+
+So what we have done till now: first of all we created the Filebeat deployment file which is our log shipper, basically it collects the logs and ships them to Logstash. Now Logstash will collect the logs from Filebeat, filter them (although we have not applied filters here), and then send them to Elasticsearch.
+
+So in the next video we will be seeing the code for Elasticsearch. So let’s meet in the next video.
+
+**Summary:**
+
+In this video, we focused on setting up the Logstash deployment in Kubernetes. In the previous session, we had completed the Filebeat deployment, which acts as the log shipper. Now, the role of Logstash is to receive these logs, optionally filter and clean them, and then forward them to Elasticsearch for storage and analysis. To achieve this, we created a single Kubernetes manifest file named logstash.yaml, which contains three key components: a ConfigMap, a Deployment, and a Service.
+
+We began with the ConfigMap, named logstash-config, inside the logging namespace. The ConfigMap overrides Logstash’s default configuration with our custom setup. In the configuration, the input section specifies that Logstash listens on port 5044, which matches the output from Filebeat. The filter section was left empty for simplicity, but filters can be defined to clean or transform logs. The output section directs logs to Elasticsearch, which will be running on port 9200. Logs are indexed in the format filebeat-%{+YYYY.MM.dd}, meaning each day’s logs are stored in a separate index based on the date.
+
+Next, we set up the Deployment. The deployment runs a single replica of Logstash, since unlike Filebeat, which runs on every node, only one Logstash instance is required to process incoming logs. We used the Docker image docker.elastic.co/logstash/logstash:7.17.0 to install Logstash. Two container ports were defined: 5044 for receiving logs from Filebeat and 9600 for the Logstash monitoring API. To ensure Logstash uses our custom configuration, we mounted a volume containing the logstash-config ConfigMap, which replaces the default settings inside the container.
+
+Finally, we created a Service named logstash, also inside the logging namespace. This service exposes the deployment on port 5044, making it possible for Filebeat pods across the cluster to send logs to Logstash. Both the service and deployment use the same app label, logstash, to ensure proper connectivity.
+
+Summary: In this lecture, we built the Logstash setup with three components — a ConfigMap defining the input (5044), filters (optional), and output (Elasticsearch on 9200), a Deployment using the Logstash 7.17.0 image with one replica and two ports (5044 for input, 9600 for monitoring), and a Service exposing Logstash on port 5044. With Filebeat already shipping logs, Logstash now receives them, processes them, and forwards them to Elasticsearch. In the next video, we’ll set up Elasticsearch itself to complete the logging pipeline.
+
+**10. ElasticSearch Deployment Code**
+
+In this video we will be writing our deployment code for our "Elasticsearch". So what you will do is come to the root directory. You will create one file here. Let's keep it "elasticsearch.yaml".
+
+So basically this file will contain the deployment code for your "Elasticsearch". First of all, let's talk about Elasticsearch. Although I have already explained in the introduction video, previously you created "Filebeat". Filebeat collects the logs and ships them to "Logstash". Then Logstash does the filtering and ships them to Elasticsearch. Now what’s the use of Elasticsearch? Basically, Elasticsearch converts those logs that it received from Logstash into "indexes". Why convert them into indexes? So that when a user is searching for a particular index, he can easily find it. Suppose you want to search for your app one logs, he can easily find it, search it, and filter certain logs. So it makes it easy to search among the nodes.
+
+Now go to the GitHub resource section that I have given. Copy the "elasticsearch.yaml" and paste it here. Now I will be explaining the full code here. It's not that big of a file. Your Filebeat file was very big.
+
+So basically this also contains three things. First one is "PersistentVolumeClaim", then there is "Deployment", then there is "Service". You are already familiar with Deployment and Service. Now what is this PersistentVolumeClaim? What type of kind is this? Basically, your Deployment is used to run your Elasticsearch, your Service is used to expose your Elasticsearch. Now this PersistentVolumeClaim is used for "storage".
+
+Now what's the use of storage? Basically, you want to store indexes somewhere, right? You can’t store indexes anywhere. So we are creating one disk — we can say one "PersistentVolume" — to store our indexes for Elasticsearch. That’s what this is doing. It is related to the storage part to store our indexes somewhere.
+
+So our storage name is "elasticsearch-pvc". "PVC" means PersistentVolumeClaim. The name says it will be inside the "logging" namespace. We have already seen in the previous two deployments — Filebeat and Logstash — they were also inside the "logging" namespace. Now what is this "accessMode"? "ReadWriteOnce". Basically, we are giving permission that only one pod can read or write at a time. You cannot read and write from two pods at the same time. Only one pod will be allowed.
+
+Now these are your "resources" allocations. What is this 2? Basically it’s slightly bigger than 2 GB. We are giving 2 GB of storage from the cluster. If your Kubernetes cluster is of 10 GB, we are giving 2 GB for storing our indexes. What is this "storageClassName: standard"? Basically it is using our default storage class. That is given by Minikube only. We will be using Minikube to create our Kubernetes cluster. It’s not that necessary, just remember these three things: the PersistentVolumeClaim will be used for creating the storage to store our indexes, this is the name of our storage, it will be inside the "logging" namespace, "ReadWriteOnce" means only one pod at a time can read or write, and we are giving 2 GB of cluster storage to store our indexes.
+
+Got it?
+
+Now coming to the "Deployment". Since it is a Deployment, our Deployment name is "elasticsearch", it is inside the "logging" namespace, and we want only one replica of it. Same as Logstash, we have only one replica for Elasticsearch. These are your "template" and "metadata". I have already explained template and metadata many times in the previous files, so I hope you have understood.
+
+Now what is this "spec"? "Containers" — "Elasticsearch". You already know. Basically we will be using this particular Docker image to install our Elasticsearch. We will be using this Docker image from Docker Hub. The version of Elasticsearch is "7.17.0". Got it?
+
+Now what are these "environment variables"? We are defining some environment variables for Elasticsearch. First one is "discovery.type", and we have set it to "single-node". It means we are telling Elasticsearch to run in single-node mode. We are making it for development purpose or testing first. That’s why it is single-node, not multi-node. We have set "discovery.type" to "single-node". Basically we are making some changes in the configuration of Elasticsearch. Elasticsearch comes with default configurations, and we are changing some of them.
+
+Now another environment variable. What is this 512m? It is your 512 MB, minimum and maximum. We are setting memory allocation for the Java Virtual Machine because Elasticsearch depends on JVM. So minimum 512 MB, maximum 512 MB.
+
+Another environment variable is "xpack.security.enabled" set to "false". We are disabling built-in security. That way when you open Elasticsearch, you don’t need username and password. We are doing this for development and testing purposes. For production, you would not set it to false because it would cause security issues. But for learning purposes, it’s fine.
+
+Now the "ports". Our Elasticsearch will run on "9200" port. As seen in "logstash.yaml" output section, it is sending logs to "9200", which is the port for Elasticsearch.
+
+We have some "resource" limitations. "requests" is the starting allocation: you will get 1 GB of memory and 500 MB of CPU. "limits" is the maximum allocation: you can expand up to 2 GB of memory and 1 GB of CPU.
+
+Now "volumeMounts". We are creating one volume for our Elasticsearch storage where we can store our indexes. We are mounting it with our PVC. Basically we are creating one directory "elasticsearch-storage" and connecting it to the PVC that we created at the top. This way whatever we store in PVC will be accessible inside this volume mount. You are connecting your volume with your PVC.
+
+Finally "Service". Service name is "elasticsearch". It will work on the deployment "elasticsearch". Elasticsearch will run on port "9200". Container port is "9200".
+
+So that was it for Elasticsearch.
+
+Let me give you a brief summary. First we created one PVC — "PersistentVolumeClaim" — named "elasticsearch-pvc" inside "logging" namespace. This PVC is used to store indexes. Then we created one "Deployment": replicas set to 1, deployment name "elasticsearch", using Docker image "docker.elastic.co/elasticsearch/elasticsearch:7.17.0", set some custom configurations (single-node mode, disabled security), set ports (9200), initial and maximum resource limits, created one volume "elasticsearch-storage" connected to PVC. Then we created "Service" connected to deployment "elasticsearch" and exposed it on port "9200".
+
+So in summary: first you are collecting logs using "Filebeat", shipping them to "Logstash", filtering logs in Logstash, sending them to Elasticsearch, which converts logs into indexes. These indexes are stored in PVC and can be viewed on Kubernetes.
+
+In the next video, you will be doing your "Kibana" deployment code.
+
+**Summary:**
+
+In this video, we focused on writing the Elasticsearch deployment code in Kubernetes. Elasticsearch receives logs from Logstash and converts them into indexes, making it easy to search, filter, and analyze logs. We created a Kubernetes manifest file named elasticsearch.yaml, which contains three main components: a PersistentVolumeClaim (PVC), a Deployment, and a Service.
+
+We started with the PersistentVolumeClaim, named elasticsearch-pvc, inside the logging namespace. The PVC provides storage for Elasticsearch indexes, ensuring that logs are safely stored in a persistent volume. We set the accessModes to ReadWriteOnce, which allows only one pod to read or write to the volume at a time. The requested storage size is 2 GB, and we used the default Minikube storage class standard. This ensures that our Elasticsearch indexes persist even if the pod restarts.
+
+Next, we configured the Deployment. The deployment runs a single replica of Elasticsearch, similar to Logstash. We used the Docker image docker.elastic.co/elasticsearch/elasticsearch:7.17.0. Several environment variables were defined for development purposes: discovery.type is set to single-node so Elasticsearch runs in single-node mode, JVM memory is allocated with ES_JAVA_OPTS=-Xms512m -Xmx512m, and built-in security is disabled (xpack.security.enabled=false) to simplify access. The container exposes port 9200, which is used by Logstash to send logs. Resource requests and limits were set to ensure efficient memory and CPU usage, while volume mounts connect the deployment to the PVC we created for storing indexes.
+
+Finally, we set up the Service. The service is named elasticsearch, targets the Elasticsearch deployment, and exposes port 9200, making it accessible to Logstash and other components in the logging pipeline.
+
+Summary: In this lecture, we created a complete Elasticsearch setup with three components: a PersistentVolumeClaim for storing indexes, a Deployment using the official Elasticsearch 7.17.0 image with single-node configuration, and a Service exposing Elasticsearch on port 9200. With this setup, logs collected by Filebeat and processed by Logstash are converted into searchable indexes and safely stored in Kubernetes. In the next video, we will deploy Kibana to visualize these logs.
+
+**11. Kibana Deployment Code**
+
+In this video we will be writing our deployment code for "Kibana". So till now you have made your "Filebeat", you have made your "Logstash", you have made your "Elasticsearch" also. Now it's time for "Kibana".
+
+Kibana deployment is simple and easy. Basically, "Kibana" is a dashboard service. You can visualize all the logs that are stored inside "Elasticsearch" in a more graphical, user-friendly way.
+
+So what you will do is, in the root directory, create one more file. Let's name it "kibana.yaml". Together, these four are known as the "ELK stack". ELK stack with "Filebeat" means "Elasticsearch", "Logstash", "Kibana", and "Filebeat" for extracting logs. I have already explained it in the introduction.
+
+Now go to the GitHub resource section that I have given. Copy "kibana.yaml" and paste it here. You can see it’s a very simple code, divided into two parts: "Deployment" and "Service".
+
+First, let's talk about the "Deployment". Our Deployment name is "kibana" and it will be inside the "logging" namespace. All components are in the "logging" namespace: "Filebeat", "Logstash", "Elasticsearch", and "Kibana". We want only one instance of "Kibana" running, so we set "replicas: 1".
+
+This deployment includes a "template" and "metadata". We are matching the labels using that template. You already know this from the previous "filebeat.yaml", "logstash.yaml", and "elasticsearch.yaml" explanations.
+
+We are fetching the "Kibana" Docker Hub image to install Kibana in our Kubernetes cluster. We are using version "7.7.0".
+
+Now the "environment variables". Basically, we are changing some of the default configuration values. When you install Kibana from the Docker Hub image, it comes with default configurations and default environment variables. We are changing one environment variable: "ELASTICSEARCH_HOSTS". This tells Kibana from where to fetch the indexes it will visualize. Our Elasticsearch is running on port "9200", as seen in the previous video, so we pass that address.
+
+Now the "ports". This is the port for Kibana. "5601" is the port where Kibana will be running.
+
+Next, we are creating the "Service" for Kibana. Service name is "kibana" and it is inside the "logging" namespace. It is a "NodePort" service, and it will work on our Kibana deployment. Deployment name is "kibana", so the service will also be associated with "kibana". The container port is "5601".
+
+What is this "nodePort"? NodePort is the port you can access via the node IP. You can give it any number. Here we gave "30601". This node port is not mandatory, but since we are defining a NodePort service, it’s good to include one.
+
+Let me give a brief summary. The "kibana.yaml" is divided into two parts: "Deployment" and "Service". Deployment name is "kibana", inside the "logging" namespace, with one replica. We are using this Docker image to install Kibana. We have changed some configurations, like setting "ELASTICSEARCH_HOSTS" to the address of our Elasticsearch. Port is "5601".
+
+The "Service" is a NodePort type. Service name is "kibana", applicable on the Kibana deployment. Container port is "5601" and the node port is "30601".
+
+That was it for the Kibana deployment code.
+
+Before moving forward, make sure since you have made changes to the GitHub repo, you do version control again. Run "git add .", then "git commit -m 'elk'", then "git push origin main". This will push all four newly made files to your GitHub.
+
+Now you are good to go to the next video.
+
+**Summary:**
+
+In this video, we wrote the deployment code for Kibana. So far, we have set up Filebeat, Logstash, and Elasticsearch. Kibana is the final component of the ELK stack and provides a dashboard to visualize logs stored in Elasticsearch in a graphical, user-friendly way.
+
+We created a Kubernetes manifest file named kibana.yaml, which contains two main components: a Deployment and a Service.
+
+First, the Deployment:
+
+Name: kibana
+
+Namespace: logging (same as Filebeat, Logstash, and Elasticsearch)
+
+Replicas: 1, since only one instance of Kibana is required.
+
+Docker Image: docker.elastic.co/kibana/kibana:7.7.0
+
+Environment Variable: ELASTICSEARCH_HOSTS is set to point to our Elasticsearch service (http://elasticsearch:9200) so that Kibana can fetch the indexes for visualization.
+
+Port: Container exposes 5601, which is the default Kibana port.
+
+Next, the Service:
+
+Name: kibana
+
+Namespace: logging
+
+Type: NodePort, allowing access to Kibana via the node’s IP.
+
+Container Port: 5601
+
+Node Port: 30601 (optional, but defined for consistent access).
+
+The service connects to the Kibana deployment, making the dashboard accessible externally.
+
+Summary: In this lecture, we completed the Kibana setup as part of the ELK stack. The kibana.yaml manifest includes a Deployment with one replica, using the official Kibana Docker image, configured to connect to Elasticsearch, and exposing port 5601. The Service is a NodePort type, which allows access to Kibana on port 30601 from the node IP.
+
+Finally, after creating all four ELK stack files (Filebeat, Logstash, Elasticsearch, Kibana), remember to commit and push your changes to GitHub:
+
+git add .
+git commit -m "elk"
+git push origin main
+
+
+This ensures your project is up to date with version control.
+
+**12. GCP VM Instance Setup with Docker Engine,Minikube,Kubectl**
+
+In this video, we will be doing our "VM instance setup" and configuring the "VM instance". We are using Google Cloud Platform (GCP), but you can also use "AWS VM instances" or "Azure VM instances". My recommendation is GCP because it is more cost-efficient and easy to implement.
+
+First, go to your Google Cloud account and search for "VM instances". Click to create a new VM instance. You can keep the default "name", "region", and "zone" as suggested.
+
+For machine type, select "e2" because it is a low-cost computing type. In "machine type", choose "standard" and allocate "16 GB memory" (you can also use 8 GB, but 16 GB is recommended). For "CPUs", select 4. Minikube requires 2 CPUs, so 2 will be used by Minikube, and the other 2 will be available for computation.
+
+Next, go to OS and storage. Click "Change" and select "Ubuntu" as your operating system. Choose version "24.04 LTS" with "x86_64" architecture. LTS stands for Long-Term Support, which is stable and reliable. For disk size, give around "150 GB", which is sufficient for our setup. You can see the cost on the right side.
+
+Under Networking, allow all three default options and enable IP forwarding. Leave other settings as default. Click "Create" to launch your VM instance. It will take a few moments to start. Once you see the green tick under Status, your VM instance is running.
+
+Next, connect to your VM instance using "SSH". This will open a web-based terminal and transfer the keys to the VM. Authorize when prompted. You can clear the screen with "clear" and maximize the terminal for better visibility.
+
+Installing Docker Engine
+
+First, we need to install "Docker Engine" inside our Ubuntu VM. Go to your browser and search "Docker install on Ubuntu". Open the official Docker website and scroll to the Setup Docker Repository section. Copy the commands provided there and paste them into your VM terminal, one by one.
+
+After installing Docker, run the command:
+
+docker run hello-world
+
+
+Initially, this will give a "permission denied" error because Docker requires "sudo". Run it with "sudo":
+
+sudo docker run hello-world
+
+
+It will work correctly.
+
+To avoid typing "sudo" every time, scroll to Post-Installation Steps on the Docker page. Copy and run the four commands one by one in your VM. This will allow Docker to run without "sudo". Test again with:
+
+docker run hello-world
+
+
+You should see "Hello from Docker" confirming Docker is installed.
+
+Finally, configure Docker to start automatically on boot using systemd by running the two commands from the Docker setup page. This ensures that Docker services start automatically whenever the VM starts. Verify installation with:
+
+docker version
+
+Installing Minikube
+
+Next, install "Minikube". Minikube relies on Docker, so Docker must be installed first. Go to the Minikube website and select Linux x86_64 stable binary. Copy the two installation commands and paste them into your VM terminal. These commands will install Minikube and start your Minikube cluster, which essentially forms a local "Kubernetes" cluster inside your VM using Docker.
+
+Installing kubectl
+
+Finally, install "kubectl" (or "cube ctl"). Go to the official Kubernetes website, select Linux x86_64, and copy the commands to install kubectl. On Ubuntu, kubectl can also be installed via "snap", which simplifies installation. Copy the installation command and run it in your VM. Optionally, run the validation command to confirm installation:
+
+kubectl version --client
+
+
+This will show the client version of kubectl. Kubectl is now ready to run Kubernetes commands, manage Docker containers, and deploy resources in your Minikube cluster.
+
+Summary
+
+In this video, we:
+
+Created a VM instance in GCP with 16 GB memory, 4 CPUs, Ubuntu 24.04 LTS, and 150 GB disk.
+
+Installed and configured "Docker Engine", including running Docker without "sudo" and enabling Docker on boot.
+
+Installed "Minikube" to create a local Kubernetes cluster inside the VM.
+
+Installed "kubectl" to interact with Kubernetes and manage deployments.
+
+Now, your VM instance is fully prepared with Docker Engine, Minikube, and kubectl. You can move on to deploying your ELK stack or other applications on Kubernetes.
+
+**Summary:**
+
+In this video, we set up a VM instance and configured it to run Docker, Minikube, and kubectl. We used Google Cloud Platform (GCP), but you can also use AWS or Azure. GCP is recommended for cost-efficiency and ease of use.
+
+Step 1: Create a VM Instance
+
+Go to GCP → VM instances → Create Instance.
+
+Keep the default name, region, and zone.
+
+Machine type: e2-standard with 16 GB memory and 4 CPUs.
+
+2 CPUs will be used by Minikube, 2 CPUs for general computation.
+
+OS and storage:
+
+OS: Ubuntu 24.04 LTS, x86_64
+
+Disk size: 150 GB
+
+Networking: Keep defaults and enable IP forwarding.
+
+Click Create. Wait until the VM status shows a green tick.
+
+Step 2: Connect via SSH
+
+Click SSH to open a web-based terminal.
+
+Authorize if prompted, clear the screen (clear), and maximize terminal for better visibility.
+
+Step 3: Install Docker Engine
+
+Follow official Docker installation steps for Ubuntu.
+
+Test installation:
+
+sudo docker run hello-world
+
+
+Optional: Configure Docker to run without sudo by following the post-installation steps on Docker website.
+
+Enable Docker to start on boot using systemd.
+
+Verify installation:
+
+docker version
+
+Step 4: Install Minikube
+
+Minikube requires Docker, so ensure Docker is installed first.
+
+Go to Minikube website → Linux x86_64 stable binary.
+
+Copy installation commands and run in your VM terminal.
+
+Minikube will create a local Kubernetes cluster inside your VM using Docker.
+
+Step 5: Install kubectl
+
+Go to Kubernetes website → Linux x86_64 or use snap.
+
+Install kubectl and verify installation:
+
+kubectl version --client
+
+
+kubectl is now ready to manage Kubernetes deployments in your Minikube cluster.
+
+Summary
+
+In this video, we:
+
+Created a VM instance in GCP: 16 GB memory, 4 CPUs, Ubuntu 24.04 LTS, 150 GB disk.
+
+Installed and configured Docker Engine (run without sudo, enable on boot).
+
+Installed Minikube to create a local Kubernetes cluster.
+
+Installed kubectl to interact with Kubernetes and manage deployments.
+
+The VM is now fully prepared to deploy applications like the ELK stack or other Kubernetes workloads.
+
+**13. GitHub Integration with VM**
+
+In this video, we will be doing GitHub integration with our VM instance.
+
+In the previous video, we completed the initial setup:
+
+Pushed our code to GitHub.
+
+Created a Dockerfile and Kubernetes deployment files.
+
+Set up our VM instance, and installed Docker, Minikube, and kubectl.
+
+Now, we will connect your GitHub repository with both your local system and VM instance so that any updates you make locally can be reflected on the VM instance after pulling changes.
+
+Step 1: Clone the GitHub repository on the VM
+
+Copy the URL of your GitHub repository.
+
+On your VM terminal, run:
+
+git clone <repository-url>
+
+
+Navigate into your project directory:
+
+cd <repository-folder>
+
+
+Verify the files are present:
+
+ls
+
+
+You should see your Dockerfile, deployment files, pipeline, requirements, setup, and other project files.
+
+Step 2: Interlink Local, GitHub, and VM
+
+The goal is to connect your local PC, GitHub repository, and VM instance. This allows you to:
+
+Make changes locally.
+
+Push changes to GitHub.
+
+Pull changes on the VM to update your environment.
+
+Steps to link:
+
+Configure Git with your email and username:
+
+git config --global user.email "your-email@example.com"
+git config --global user.name "your-github-username"
+
+
+Add, commit, and push changes from your local machine:
+
+git add .
+git commit -m "your commit message"
+git push origin main
+
+
+Authentication:
+
+Do not use your GitHub password directly.
+
+Go to GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (Classic) → Generate new token.
+
+Give it a name and select required permissions: repo, workflow, admin:repo_hook, etc.
+
+Copy the token and use it as your password when Git asks on the VM.
+
+Step 3: Pull changes on the VM
+
+After pushing from local, you can pull updates on the VM:
+
+git pull origin main
+
+
+Any new files pushed from your local system will appear on the VM.
+
+You can verify by running:
+
+ls
+
+
+If you delete a file locally and push it, you can pull the update on the VM and the file will be removed accordingly.
+
+Example Workflow
+
+Create a new file locally:
+
+touch test.py
+
+
+Commit and push changes:
+
+git add test.py
+git commit -m "Add test.py"
+git push origin main
+
+
+Pull changes on VM:
+
+git pull origin main
+ls
+
+
+You will see test.py on the VM.
+
+Delete test.py locally, commit, push, and then pull on VM:
+
+git pull origin main
+ls
+
+
+The file is removed on the VM as well.
+
+Summary
+
+You cloned your GitHub repository on the VM.
+
+Configured Git to link your local PC, GitHub repo, and VM instance.
+
+Demonstrated push and pull workflow for syncing code between local and VM.
+
+This setup ensures that any updates made locally can be reflected on the VM with a simple git pull.
+
+This process is applicable for all projects where GitHub-VSCode-VM interlinking is required.
+
+Now your VM, local PC, and GitHub repository are fully connected, and you are ready to move on to the next video.
+
+**Summary:**
+
+In this video, we set up GitHub integration with our VM instance so that any updates made locally can be reflected on the VM after pulling changes.
+
+Step 1: Clone the GitHub Repository on the VM
+
+Copy your GitHub repository URL.
+
+On your VM terminal, run:
+
+git clone <repository-url>
+
+
+Navigate into your project directory:
+
+cd <repository-folder>
+
+
+Verify files are present:
+
+ls
+
+
+You should see your Dockerfile, Kubernetes deployment files, pipeline scripts, requirements, setup, and other project files.
+
+Step 2: Interlink Local PC, GitHub, and VM
+
+The goal is to connect your local machine → GitHub → VM for seamless updates:
+
+Make changes locally → push to GitHub → pull on VM.
+
+Steps to link:
+
+Configure Git globally on your system or VM:
+
+git config --global user.email "your-email@example.com"
+git config --global user.name "your-github-username"
+
+
+Add, commit, and push changes from your local machine:
+
+git add .
+git commit -m "your commit message"
+git push origin main
+
+
+Authentication:
+
+Do not use your GitHub password directly.
+
+Go to GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (Classic) → Generate new token.
+
+Give it a name, select permissions: repo, workflow, admin:repo_hook, etc.
+
+Copy the token and use it as your password when Git prompts on the VM.
+
+Step 3: Pull Changes on the VM
+
+After pushing from local, pull updates on the VM:
+
+git pull origin main
+
+
+Any new files pushed from local will appear on the VM:
+
+ls
+
+
+Deleting files locally and pushing changes will also remove them on the VM after pulling.
+
+Example Workflow:
+
+Create a new file locally:
+
+touch test.py
+
+
+Commit and push changes:
+
+git add test.py
+git commit -m "Add test.py"
+git push origin main
+
+
+Pull changes on VM:
+
+git pull origin main
+ls
+
+
+You will see test.py on the VM.
+
+Delete test.py locally, commit, push, and then pull on VM:
+
+git pull origin main
+ls
+
+
+File will be removed on the VM as well.
+
+Summary
+
+Cloned GitHub repository on the VM.
+
+Configured Git to link local PC → GitHub → VM.
+
+Demonstrated push and pull workflow for syncing code.
+
+Any updates made locally can now be reflected on the VM with a simple git pull.
+
+This setup applies to all projects requiring GitHub-VSCode-VM interlinking.
+
+Your VM, local PC, and GitHub repository are now fully connected and ready for development or deployment.
+
+**14. GCP Firewall Rule Setup**
+
+In this video, we will be setting up a firewall rule in Google Cloud.
+
+A firewall rule is necessary to allow traffic to your VM instances, especially if you want to access services like Kubernetes, Docker containers, or ELK stack components externally.
+
+Step 1: Open the Firewall section
+
+Go to your Google Cloud Console.
+
+In the search bar, type Firewall.
+
+Open the Firewall rules section in a new tab.
+
+Step 2: Create a new firewall rule
+
+Click on Create Firewall Rule.
+
+Give the firewall rule any name you prefer.
+
+Keep the network as default.
+
+Set the direction to Ingress (incoming traffic).
+
+Set Action on match to Allow.
+
+Specify the targets:
+
+Select All instances in the network.
+
+Set the source filter to IPv4 ranges.
+
+Enter the source IP range:
+
+0.0.0.0/0
+
+
+This means allow traffic from all IPs.
+
+Allow all ports so that any service running on your VMs can be accessed externally.
+
+Click Create to finalize the firewall rule.
+
+Summary
+
+The firewall rule allows incoming traffic from any IP to all your VM instances in the default network.
+
+This is required for accessing services like Docker, Minikube, Kubernetes, and ELK stack components from outside the VM.
+
+After creating this rule, your VM instances are accessible externally on the ports you expose.
+
+**Summary:**
+
+In this video, we will be setting up a firewall rule in Google Cloud to allow external access to your VM instances and services like Kubernetes, Docker containers, or ELK stack components.
+
+Step 1: Open the Firewall Section
+
+Go to your Google Cloud Console.
+
+In the search bar, type Firewall.
+
+Open the Firewall rules section in a new tab.
+
+Step 2: Create a New Firewall Rule
+
+Click Create Firewall Rule.
+
+Give the firewall rule a name of your choice.
+
+Keep the network as default.
+
+Set Direction to Ingress (incoming traffic).
+
+Set Action on match to Allow.
+
+Specify the targets:
+
+Select All instances in the network.
+
+Set the source filter to IPv4 ranges.
+
+Enter the source IP range:
+
+0.0.0.0/0
+
+
+This allows traffic from all IPs.
+
+Allow all ports so that any service running on your VMs can be accessed externally.
+
+Click Create to finalize the firewall rule.
+
+Summary
+
+The firewall rule allows incoming traffic from any IP to all VM instances in the default network.
+
+This is required for accessing services like Docker, Minikube, Kubernetes, and ELK stack components from outside the VM.
+
+After creating this rule, your VM instances are accessible externally on the ports you expose.
+
+**15. Deploy your Application on Kubernetes**
+
+In this video, we will build a Docker image for our application and then deploy it on the internet so it’s accessible externally.
+
+This assumes you have already completed the previous videos:
+
+Set up your VM instance.
+
+Integrated GitHub with your VM instance.
+
+Installed Docker, Minikube, and kubectl on your VM.
+
+Step 1: Connect Docker to Minikube
+
+First, you need to point your Docker environment to your Minikube cluster. Run the following command inside your project directory:
+
+eval $(minikube docker-env)
+
+
+This ensures that any Docker image you build will be available to Minikube.
+
+Step 2: Build the Docker image
+
+Check that you are in the project directory (e.g., i_travel_itinerary_planner) and that the Dockerfile exists:
+
+ls
+
+
+Build your Docker image with a specific name, for example:
+
+docker build -t streamlit_app:latest .
+
+
+Note: Use the same image name as referenced in your Kubernetes deployment file (test_deployment.yaml) to avoid mismatches.
+
+After a few minutes, check if the image was created successfully:
+
+docker images
+
+
+You should see your streamlit_app:latest image listed.
+
+Step 3: Create Kubernetes secrets
+
+If your deployment requires environment variables (like API keys), create a secret first to avoid configuration errors:
+
+Copy your API key from your environment variable file.
+
+Run the command to create the secret in Kubernetes:
+
+kubectl create secret generic <secret-name> --from-literal=<key>=<value>
+
+
+Make sure <secret-name> matches the secret name used in your test_deployment.yaml.
+
+Step 4: Apply the Kubernetes deployment
+
+Apply the deployment file:
+
+kubectl apply -f test_deployment.yaml
+
+
+Your deployment name (e.g., streamlit_app) and service name (e.g., streamlit_service) will be created.
+
+Check that the pod is running:
+
+kubectl get pods
+
+
+You should see one pod running if your replicas are set to 1.
+
+Step 5: Expose the application to the internet
+
+To make your app accessible externally, run:
+
+kubectl expose deployment streamlit_app --type=NodePort --name=streamlit_service
+
+
+Note the port your app is exposed on (e.g., 8501).
+
+Copy the external IP of your VM instance and access your app in a browser:
+
+http://<external-ip>:8501
+
+
+Test the application by entering inputs and generating outputs.
+
+Step 6: Verification
+
+Try different inputs (e.g., cities, interests) to ensure the app works.
+
+Your Streamlit app should now be fully functional and accessible from the internet.
+
+Summary
+
+Connected Docker to Minikube.
+
+Built the Docker image for the application.
+
+Created Kubernetes secrets for environment variables.
+
+Applied the deployment and service YAML files.
+
+Exposed the app externally via NodePort.
+
+Verified that the app is working correctly from the internet.
+
+In the next video, we will deploy the ELK stack (Elasticsearch, Logstash, Kibana) to monitor logs from this application.
+
+**Summary:**
+
+In this video, we will build a Docker image for our application and deploy it on the internet so it’s accessible externally.
+
+This assumes you have completed the previous videos:
+
+Set up your VM instance.
+
+Integrated GitHub with your VM.
+
+Installed Docker, Minikube, and kubectl on your VM.
+
+Step 1: Connect Docker to Minikube
+
+Point your Docker environment to your Minikube cluster so the images you build are available to Kubernetes:
+
+eval $(minikube docker-env)
+
+Step 2: Build the Docker Image
+
+Ensure you are in the project directory (e.g., i_travel_itinerary_planner) and the Dockerfile exists:
+
+ls
+
+
+Build your Docker image with a name matching your deployment file:
+
+docker build -t streamlit_app:latest .
+
+
+Verify the image creation:
+
+docker images
+
+
+You should see streamlit_app:latest listed.
+
+Note: Use the same image name as referenced in your Kubernetes deployment file (test_deployment.yaml) to avoid mismatches.
+
+Step 3: Create Kubernetes Secrets
+
+If your app requires environment variables like API keys:
+
+Copy your API key.
+
+Create a Kubernetes secret:
+
+kubectl create secret generic <secret-name> --from-literal=<key>=<value>
+
+
+Ensure <secret-name> matches what is used in test_deployment.yaml.
+
+Step 4: Apply the Kubernetes Deployment
+
+Deploy your application:
+
+kubectl apply -f test_deployment.yaml
+
+
+Check the pod status:
+
+kubectl get pods
+
+
+You should see one pod running if replicas: 1.
+
+Step 5: Expose the Application Externally
+
+Make the app accessible outside the cluster:
+
+kubectl expose deployment streamlit_app --type=NodePort --name=streamlit_service
+
+
+Note the NodePort assigned (e.g., 8501).
+
+Access your app using your VM’s external IP:
+
+http://<external-ip>:8501
+
+Step 6: Verification
+
+Test the application by entering different inputs (e.g., cities, interests).
+
+Ensure the app is fully functional and accessible from the internet.
+
+Summary
+
+Connected Docker to Minikube.
+
+Built the Docker image for the application.
+
+Created Kubernetes secrets for environment variables.
+
+Applied the deployment and service YAML files.
+
+Exposed the app externally via NodePort.
+
+Verified the app is working correctly from the internet.
+
+In the next video, we will deploy the ELK stack (Elasticsearch, Logstash, Kibana) to monitor logs from this application.
+
+**16.  Logging Management using ELK Stack with Filebeat**
+
+Hello everyone!
+
+In the previous video, we successfully deployed our Streamlit application.
+
+Now, in this video, we will set up the ELK stack (Elasticsearch, Logstash, Kibana) with Filebeat so that we can collect, process, store, and visualize logs from our Kubernetes cluster.
+
+Note: Since your previous terminal is occupied with port forwarding for the app, we will open a new terminal to work on this setup.
+
+Step 1: Connect to your VM and navigate to the project directory
+
+Open a new terminal and authorize your connection to the VM.
+
+Go inside your GitHub project directory:
+
+cd i_travel_itinerary_planner
+
+
+Clear the terminal for a clean view:
+
+clear
+
+Step 2: Create a separate namespace for ELK stack
+
+We don’t want to deploy ELK in the same default namespace as the application.
+
+kubectl create namespace logging
+
+
+Verify the namespace creation:
+
+kubectl get ns
+
+
+You should see the new namespace logging listed alongside default namespaces.
+
+Step 3: Deploy Elasticsearch
+
+Apply the Elasticsearch YAML file:
+
+kubectl apply -f elasticsearch.yaml -n logging
+
+
+Verify the pods in the logging namespace:
+
+kubectl get pods -n logging
+
+
+Ensure the Elasticsearch pod is running.
+
+Check the Persistent Volume Claims (PVC) to confirm storage is bound:
+
+kubectl get pvc -n logging
+kubectl get pv
+
+Step 4: Deploy Kibana
+
+Apply the Kibana YAML file:
+
+kubectl apply -f kibana.yaml -n logging
+
+
+Verify the Kibana pod:
+
+kubectl get pods -n logging
+
+
+Wait until the pod status changes to Running.
+
+Expose the Kibana service to the internet:
+
+kubectl expose deployment kibana --type=NodePort --name=kibana-service -n logging
+
+
+Access Kibana via your browser:
+
+http://<external-ip>:5601
+
+
+Port 5601 is used for Kibana.
+
+Step 5: Deploy Logstash
+
+Apply the Logstash YAML file:
+
+kubectl apply -f logstash.yaml -n logging
+
+
+Verify the deployment:
+
+kubectl get pods -n logging
+
+
+Wait for the Logstash pod to be Running.
+
+Logstash handles processing and filtering logs from Filebeat before sending them to Elasticsearch.
+
+Step 6: Deploy Filebeat
+
+Filebeat collects logs from your Kubernetes cluster and sends them to Logstash.
+
+Apply the Filebeat YAML file:
+
+kubectl apply -f filebeat.yaml -n logging
+
+
+This will create multiple resources like: ConfigMap, DaemonSet, ClusterRole, RoleBinding, ServiceAccount.
+
+Verify Filebeat deployment:
+
+kubectl get all -n logging
+
+
+Ensure the DaemonSet is ready and all pods are running.
+
+Step 7: Create index patterns in Kibana
+
+Open Kibana in your browser.
+
+Navigate to Stack Management → Index Patterns.
+
+Create a new index pattern. For example:
+
+filebeat-*
+
+
+Select the timestamp field (@timestamp) and click Create Index Pattern.
+
+Step 8: Explore and visualize logs
+
+Go to Analytics → Discover in Kibana.
+
+You will see all logs collected by Filebeat and processed by Logstash.
+
+You can filter logs by:
+
+Container name
+
+Pod name
+
+Host or cloud account
+
+Log type
+
+You can also set up alerts, dashboards, and visualizations to monitor your Kubernetes cluster effectively.
+
+Step 9: Cleanup
+
+Since this is for learning purposes, delete your VM instance to avoid extra charges:
+
+Go to your VM instances dashboard.
+
+Delete the VM instance.
+
+All associated terminals and resources will be shut down automatically.
+
+When running projects in a company environment, resources may run permanently. For learning, always clean up to save costs.
+
+Summary
+
+Created a logging namespace in Kubernetes.
+
+Deployed Elasticsearch, Logstash, Kibana in the logging namespace.
+
+Deployed Filebeat to collect logs from Kubernetes.
+
+Created index patterns in Kibana for visualization.
+
+Monitored logs using Kibana’s Discover panel.
+
+Learned how to filter, search, and visualize logs.
+
+Cleaned up resources to save costs.
+
+**Summary:**
+
+In the previous video, we successfully deployed our Streamlit application.
+
+Now, in this video, we will set up the ELK stack (Elasticsearch, Logstash, Kibana) with Filebeat to collect, process, store, and visualize logs from our Kubernetes cluster.
+
+Note: Since your previous terminal may be occupied with port forwarding for the app, open a new terminal for this setup.
+
+Step 1: Connect to your VM and navigate to the project directory
+
+Open a new terminal and connect to your VM.
+
+Go inside your project directory:
+
+cd i_travel_itinerary_planner
+
+
+Clear the terminal for a clean view:
+
+clear
+
+Step 2: Create a separate namespace for ELK stack
+
+Deploy ELK in its own namespace to separate it from the application:
+
+kubectl create namespace logging
+
+
+Verify the namespace:
+
+kubectl get ns
+
+
+You should see logging listed alongside default namespaces.
+
+Step 3: Deploy Elasticsearch
+
+Apply the Elasticsearch deployment:
+
+kubectl apply -f elasticsearch.yaml -n logging
+
+
+Verify the pods:
+
+kubectl get pods -n logging
+
+
+Ensure the Elasticsearch pod is Running.
+
+Check Persistent Volume Claims (PVC) and storage:
+
+kubectl get pvc -n logging
+kubectl get pv
+
+Step 4: Deploy Kibana
+
+Apply the Kibana deployment:
+
+kubectl apply -f kibana.yaml -n logging
+
+
+Verify the pod:
+
+kubectl get pods -n logging
+
+
+Wait until the pod status changes to Running.
+
+Expose the Kibana service to the internet:
+
+kubectl expose deployment kibana --type=NodePort --name=kibana-service -n logging
+
+
+Access Kibana in your browser:
+
+http://<external-ip>:5601
+
+
+Port 5601 is used for Kibana.
+
+Step 5: Deploy Logstash
+
+Apply the Logstash deployment:
+
+kubectl apply -f logstash.yaml -n logging
+
+
+Verify the pod:
+
+kubectl get pods -n logging
+
+
+Wait for the Logstash pod to be Running.
+
+Logstash processes and filters logs from Filebeat before sending them to Elasticsearch.
+
+Step 6: Deploy Filebeat
+
+Filebeat collects logs from your Kubernetes cluster and sends them to Logstash:
+
+kubectl apply -f filebeat.yaml -n logging
+
+
+This will create multiple resources: ConfigMap, DaemonSet, ClusterRole, RoleBinding, ServiceAccount.
+
+Verify deployment:
+
+kubectl get all -n logging
+
+
+Ensure the DaemonSet is ready and all pods are running.
+
+Step 7: Create index patterns in Kibana
+
+Open Kibana in your browser.
+
+Navigate to Stack Management → Index Patterns.
+
+Create a new index pattern, e.g.:
+
+filebeat-*
+
+
+Select the timestamp field (@timestamp) and click Create Index Pattern.
+
+Step 8: Explore and visualize logs
+
+Go to Analytics → Discover in Kibana.
+
+You will see all logs collected by Filebeat and processed by Logstash.
+
+Filter logs by:
+
+Container name
+
+Pod name
+
+Host or cloud account
+
+Log type
+
+You can also set up alerts, dashboards, and visualizations to monitor your Kubernetes cluster effectively.
+
+Step 9: Cleanup
+
+Since this setup is for learning purposes, delete your VM instance to avoid extra charges:
+
+Go to your VM instances dashboard.
+
+Delete the VM instance.
+
+All associated terminals and resources will be shut down automatically.
+In production environments, resources may run permanently. For learning, always clean up to save costs.
+
+Summary
+
+Created a logging namespace in Kubernetes.
+
+Deployed Elasticsearch, Logstash, and Kibana in the logging namespace.
+
+Deployed Filebeat to collect logs from Kubernetes.
+
+Created index patterns in Kibana for visualization.
+
+Monitored logs using Kibana’s Discover panel.
+
+Learned to filter, search, and visualize logs.
+
+Cleaned up resources to save costs.
 
 
 
