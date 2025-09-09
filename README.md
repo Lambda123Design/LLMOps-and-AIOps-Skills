@@ -66,6 +66,871 @@
 
 **2. Project and API Setup ( Groq and HuggingFace )**
 
+Hello everyone. So this is the project setup video of this project. In this video basically we will be doing our project structure, then our API setup, and everything else like logging, custom exception, and virtual environment formation. Okay. So first of all just come to any of your folder and let’s create one new folder here and let’s name it okay. Let’s name it. Since we are making an anime recommender system, let’s name it Anime recommender okay, like this. Now open your anime recommender. Just right click on the folder and open it in terminal and you can just write "code ." (make sure it is in small letters "code full stop"). So basically it will trigger your VS Code automatically. Let’s click it. You can see our VS Code has been opened automatically. Let’s give the permission.
+
+Now open the terminal on the top, you will get new terminal. Let me maximize the terminal first of all and make sure you open the terminal in command prompt. Okay, let me increase the size so that you can see correctly. First of all, let’s create a virtual environment. So I will write "python -m venv venv" and whatever you want to name your virtual environment. So let’s name it "venv" only. Okay, press enter. On the left pane you can see a venv has been created. So after it has been created, we will activate it. Okay, let’s wait. Why is it taking too much time? Okay, it has been created. Now we have to activate. First of all, give the virtual environment name, we have given "venv", then you have to give the backslash, then "Scripts", then again a backslash and "activate". So it will basically activate your virtual environment. Okay okay I have written the wrong spelling for Scripts, it is "Scripts". Ah I press enter. You can see in the bracket you are getting "venv". It means your virtual environment has been activated. So let me clear the screen with "cls".
+
+Okay now let’s do our API setup. Basically we will be needing two APIs for this project. So first of all in the root directory let’s create one .env file. So I will create one environment file. So what are these two APIs? First of all, we will be needing our Grok API key, "GROK_API_KEY". Then, in between these quotes we will be placing our Grok API key. Another thing we need is Hugging Face API, so I will write "HUGGINGFACEHUB_API_TOKEN". Make sure the spelling is correct. And most importantly, this one, this Hugging Face, it should be exactly what I have done: "HUGGINGFACEHUB_API_TOKEN". Like this.
+
+Now where will you get these APIs? Just go to your browser. Open a new tab and search for Grok Cloud API. Just make an account on Grok Cloud, and just go to the API key section, create an API key, and give any name. Since we are making an anime recommender, let’s name it "anime" only. Submit it and copy it, and in the VS Code, paste it here. Done. Now coming to Hugging Face, let’s search for Hugging Face. You have to do the same, you have to make an account on Hugging Face first of all. When you make your account, then you have to sign in into your particular account. Then click on the profile section and you will get access tokens. Just click on access tokens. Basically it will ask your password for identity confirmation, and you have to create a new token. Make sure it is in write mode. There are three modes: fine grain, read, and write. It should be in write mode. Give the token name "anime" only and create the token. You are getting the token, just copy this token again and come to VS Code and paste it here. Okay then.
+
+So these were your two APIs that you need. You have set up your virtual environment also. Now let’s come to our basic project structure. Our project will look like this. First of all, we will be needing some data. We will be needing some data on which we will make our vector store and everything. Our recommender will work on something, right? So we will be working on an anime data. So let’s create one "data" folder here. From where will you get the data? Just come to the resource section. In the resource section you will get one GitHub link. In the GitHub link you will get one data folder here same, and you will get this "anime_with_synopsis.csv". I will provide it in the resource section directly. Also, make sure you open this "anime_with_synopsis.csv" so it will look like this. Basically these are your MAL IDs (MAL means MyAnimeList, a very popular anime website). So these are your anime names, then these are your genres, and these are your synopsis. On the basis of this genre and the synopsis, we will be recommending anime.
+
+For example, let’s say Naruto. The most similar anime related to Naruto is Black Clover. And we can also say Bleach. Bleach is also an anime, and the most similar anime to Bleach is, I think, Jujutsu Kaisen. Right? So let’s download this CSV file. Now let me open this download folder, and what you can do is just minimize it, open your downloads, and copy it from here inside your data directory. Okay, now your data is inside your data directory.
+
+Then, now let’s make our project structure also. First of all let’s make one "requirements.txt". Basically this file will contain all your requirements, all your libraries that you need during your project. So make sure you name it "requirements.txt". Okay. Now what are the libraries that you need? First of all it’s "langchain", we will be using LangChain. Then we will be using "langchain_community". Then we will be using "langchain_groq", basically we are interacting with our Grok API, right, so we need a particular library for that. It is basically a modified version of LangChain only that is particularly made to handle Grok API key. Then we need "chromadb". So basically this will be used to create our vector store. In one of the projects we used FAISS vector store. In this project we are using ChromaDB. Okay. Then we need "streamlit". We need Streamlit for making the UI part. Then we need "pandas" also. Basically this is a CSV file, right? So we can’t directly connect with our CSV files. We have to use pandas, convert it into dataframe, then okay. After that we need "python-dotenv". Basically this library will be used to load our environment variables. You can see we have two environment variables, so how can you load them inside your project? By using python-dotenv. Then we need "sentence-transformers". After sentence-transformers we need LangChain but in LangChain we need "langchain_huggingface". Basically you have two APIs: Grok and Hugging Face. For interacting with Grok you will be needing "langchain_groq", and for interacting with Hugging Face you need "langchain_huggingface". Clear? So these are your requirements, all the requirements.
+
+Now you will be creating one "setup.py". What’s the use of setup.py file? To install all your requirements, install all your dependencies, install all your packages. Right. So I have already explained the code for setup.py, so I will be directly writing the code. You can just go to the GitHub link that I have given, you will see their setup.py file. Just copy it and paste it here. Okay, let’s change the name of the setup to something like "Anime Recommender". Like this. Okay, now how can you trigger your setup.py? For that you will write "pip install -e ." in your terminal. So basically it will automatically trigger your setup.py file. Press enter. So it has started building all the dependencies. It will install all the requirements. Also, currently we don’t have any packages so it will not install packages okay. But we will make packages also, and then again we will run the same command "pip install -e ." again and again whenever we will create one package. Right. Let’s keep it running. Let me cancel the setup.py right now.
+
+Now let’s make our project structure for now. Come to the root directory only and create one "src" folder here. Basically inside the src folder your main components will be there, like your data loader, your prompt templates, your recommender, your vector store, like that. And since src will be treated as a package, you have to create one "__init__.py" inside it. So this was all about your src package. Now you have to create another folder that is "utils". Utils basically means utilities. Inside that you can create your helper functions, your logger function, and your custom exception functions. Since we also want to import functions from utils folder, we have to make it as a package. For making a package you will create "__init__.py" and inside utils you will create two more files like "logger.py" and "custom_exception.py". I have already explained these two files in the starting of the course, so I will directly copy-pasting them to the utils. Go to the logger.py, just copy it, come to the logger.py and paste the code here. Okay. Come to the custom exception, do the same, just copy paste the code. Done. Let me close all the files. So these are your utils. These are basically your utilities. If suppose moving forward we want to create some helper functions also, we will create them inside utils only. You can just name another file "helpers.py", and inside that you can create your helper functions.
+
+Then let’s create one another folder. Let’s name it "config". Inside config you will be giving all your configurations basically like your API setups, your Hugging Face setup, and suppose if you are using a database, you can do the database setup also inside this configuration folder. And since configuration folder will also be treated as a package, make sure you convert it into "__init__.py". Then okay. Now we will create one "app" folder also, and let’s keep it also as a package. Basically inside this folder we will be creating our main application, mainly our Streamlit application. Then we have another folder also, let’s make it "pipeline". Basically here we will be making our whole pipeline. Basically, in the src directory you will be creating all the components, and in the pipeline directory you will be joining all the components to form a pipeline. And since pipeline will also be treated as a package, make sure you convert it into "__init__.py".
+
+I think this was it. I think we need app, we need configuration, we created it. We already have data folder, we have pipeline, we have src, we have utils. Yeah, everything is done. So this was all your setup. This app folder will be required for creating your application, config for configuration, data has data inside it, pipeline will be used to join all the components that are inside this src folder. In utils you will create your helper function, your logger function, custom exception function like that. This is your .env which contains two APIs, then your requirements, then setup.py. Currently your requirements are getting installed. Once these requirements get installed, you have to again run that "pip install -e ." command. Why? Because we have created packages. This app is a package. This config is a package. This pipeline is a package. Whenever you will get an init file, that folder is a package. This data directory is a folder, but this pipeline directory is a package. Understand? Then src is also a package. Then utils is also a package. So you have to again run that "pip install -e ." so that all these folders will be created as packages from now on. Okay. So I will not be doing it here. Once these are all installed and once you again run the pip install -e command, then you can move to our next video.
+
+**Summary:**
+
+The first step in setting up the Anime Recommender System project is to create a dedicated folder named Anime Recommender. This folder is opened in VS Code using the command code .. A virtual environment is then created inside this folder using python -m venv venv and activated with venv\Scripts\activate. This ensures that all the project dependencies are isolated and managed properly.
+
+Next, the project requires API setup. A .env file is created in the root directory to store API keys securely. Two APIs are needed: the Grok API and the Hugging Face API. Users must create accounts on their respective platforms, generate API keys or tokens, and paste them into the .env file under GROK_API_KEY and HUGGINGFACEHUB_API_TOKEN. The Hugging Face token should have write permissions.
+
+The project’s data is organized in a data folder. The main dataset, anime_with_synopsis.csv, contains anime IDs, names, genres, and synopses. This dataset will be used to build the vector store for recommendations. Users download the CSV from a provided GitHub link and place it in the data folder.
+
+The project structure also includes several key folders and files. A requirements.txt lists all necessary Python libraries, such as langchain, langchain_community, langchain_groq, chromadb, streamlit, pandas, python-dotenv, sentence-transformers, and langchain_huggingface. A setup.py file is used to install these dependencies and register the project packages. The main folders include src for core components like data loaders, prompt templates, and vector stores, pipeline to connect components into a complete workflow, utils for helper functions, logging, and custom exceptions, config for API and database configurations, and app for the Streamlit application. Each folder that contains Python code is converted into a package with an __init__.py file.
+
+Finally, after setting up the folders, APIs, and requirements, the command pip install -e . is run to install all dependencies and register the packages. This command needs to be re-run whenever new packages are added. With this setup complete, the project is ready for further development, including building the recommender logic, connecting the APIs, and creating the UI.
+
+**3. Configuration Code**
+
+Hello everyone. So in this video we will be doing our configurations, right? But before going to the configuration, I already told you that you have to again run "pip install -e ." so that it will install all the packages. Also, we have made our app as a package, config as a package, pipeline as a package, src as a package, and utils as a package also. So you have to again run this "pip install -e ." and it will generally run fast. Fast. Okay.
+
+So till it’s getting all the packages installed, just come to your config directory and you will create one file here that is "config/config.py". And inside it we will be creating our configurations. Okay. You can see it has started installing, okay successfully built and done. Okay. Now you can close the terminal.
+
+Now for configuration we have to import some things. First of all, we have to import OS library. Then we have to import our dotenv by writing "from dotenv import load_dotenv". And we have to load it like this: "load_dotenv()". Now what this "load_dotenv" is doing is basically loading all our environment variables. You can see we have two environment variables. Now these two environment variables have been successfully loaded inside our project using this command "load_dotenv()".
+
+Now let’s create one variable here. Let’s name our variable as "API_KEY". Currently, this Grok API key is not a Python variable. It’s an environment variable. We have to convert it into a Python variable, so we are doing that only. So this "API_KEY" and the Grok API key inside the .env are different. This is an environment variable, and inside this config, this is a normal variable. So I will write "API_KEY = os.getenv('GROK_API_KEY')". Now what this line is basically doing is fetching that particular environment variable "GROK_API_KEY" and storing its value inside this simple Python variable. Okay, now our API key is stored inside this normal variable.
+
+Now another thing is "MODEL_NAME". Basically Grok offers us a wide range of models. I can show you also. Just come to the browser and write "Grok Cloud models" like this. Just go on the first site "Supported Models". And you can see these are your models which are supported. These are production models, and then there are preview models also. Let’s talk about the production models right now. So basically, these two are widely used: "3.3 70B Versatile" and "3.18B Instant". So let’s use a normal model only. Let’s use a small model. So we will be using "8,000,000,001". Okay, let’s copy its name, come to your VS Code and paste that name here like this: "MODEL_NAME = '8,000,000,001'".
+
+So this was basically all your configurations. Basically, we configured our API key, and we configured our model name only. These are the two things that you need to configure. Okay. Now let’s move to our next video.
+
+**Summary:**
+
+Before starting the configuration, it’s important to run pip install -e . again to ensure all packages and project folders (app, config, pipeline, src, utils) are registered and installed properly. Once the packages are installed, you can proceed to create the configuration file inside the config directory as config/config.py.
+
+In this file, the OS library is imported along with load_dotenv from the dotenv library. By running load_dotenv(), all environment variables stored in the .env file (like the Grok API key and Hugging Face token) are loaded into the project.
+
+Next, the environment variables are converted into Python variables for easier use in the project. For example, the Grok API key from the .env file is assigned to a variable using API_KEY = os.getenv('GROK_API_KEY'). Similarly, the model to be used from Grok Cloud is configured by setting a variable MODEL_NAME to one of the supported models, such as '8,000,000,001'.
+
+In summary, the configuration step involves loading environment variables and defining Python variables for the API key and the Grok model name. With this configuration in place, the project is ready to start integrating the APIs and building the recommender system.
+
+**4. Data Loader Class Code**
+
+Hello everyone. So in this video we will be doing our code for the data loader. So come to your "src" folder, and inside "src", create one file here that is "data_loader.py". Now let's write the code for this data loader. First of all, we need pandas since we are dealing with our CSV files. Okay, "import pandas as pd". Like this.
+
+Let's create one class here. Let's name the class as "AnimeDataLoader". Okay, that's my anime data loader. Like this. Let's make the constructor "__init__". First of all, there will be a "self" parameter. Then we will give our original CSV and make sure the path is in string, and then we will be giving our processed CSV, and it should also be string. Okay. So basically this class requires two things: you have to pass the path of the original CSV, and you have to give the path for the processed CSV. Basically, we will be using this original CSV that is "anime_with_synopsis.csv", and after doing some changes with this CSV, we will be making one new CSV.
+
+Because, as you can see, this "anime_with_synopsis.csv" has some unnecessary columns. Also, you can see this "MAL_ID"—we don't require it. This "score"—we don't require it either. You can see these are unnecessary columns. We can also combine the "genre" and "synopsis" into one column only. We can do this as a form of data construction, feature construction, as you have learned in machine learning. Right?
+
+So I will write some instance variables: "self.original_csv = original_csv" and "self.processed_csv = processed_csv". Okay, so this was your constructor. Now let's make our first method, that is "load_and_process". "def load_and_process(self):". Now what you will be basically doing: first of all, let's read the CSV. Basically, you can't make changes to a CSV file directly. You have to convert it into a pandas DataFrame. So I will write "df = pd.read_csv(self.original_csv, encoding='utf-8', error_bad_lines=False)".
+
+Now what this line is doing: first, we are reading the original CSV, then we are specifying the encoding as "utf-8" because sometimes a CSV can be in some other encoding, like Latin encoding. But we want UTF-8 because UTF-8 is a standard encoding. Then "error_bad_lines=False" will skip any bad lines. Bad lines are lines where you might get a deprecation warning or malformed rows. After that, we will do "df = df.dropna()" to drop all rows that have null values so that our data is clean.
+
+Now let's give a variable "required_columns" because we only require some columns. I will write "required_columns = ['name', 'genre', 'synopsis']". Make sure you copy the names properly; there should be no mistakes in the column names. Now we can check if any column is missing: "missing = set(required_columns) - set(df.columns)". If "missing", then raise a value error: "raise ValueError('Missing column in CSV file')". What this is doing is: first, we set up the required columns. Then we check if the DataFrame contains all of them. If any required column is missing, the "missing" set will have some value, and the error will be raised. If all columns are present, the set "missing" will be empty and this block will be skipped.
+
+Now let's create a new column. We will create "df['combined_info'] = df['name'] + ' ' + df['overview'] + ' ' + df['synopsis'] + ' ' + df['genre']". What is happening here: we are combining the three columns "name", "genre", and "synopsis" into a single column called "combined_info". For example, the first row "Cowboy Bebop" will have its title, then the overview, then synopsis, then genre all combined into one string in the "combined_info" column. This is how our final combined column will look.
+
+Now we will create a new CSV file that will only consist of this combined info. We will remove the original "name", "genre", and "synopsis" columns, and save a new CSV which only has "combined_info". So I will write "df[['combined_info']].to_csv(self.processed_csv, index=False, encoding='utf-8')". Finally, we return "self.processed_csv".
+
+So this was all your "AnimeDataLoader" class. To summarize: first, we made our data loader class which accepts two parameters: the original CSV and the processed CSV path. We read the original CSV, selected required columns, performed a check for missing columns, dropped null rows, combined "name", "genre", and "synopsis" into a single column, exported the DataFrame with only "combined_info" to a CSV with "index=False" and "encoding='utf-8'", and returned the processed CSV path.
+
+This was all your "AnimeDataLoader" class. Now let's move to our next video.
+
+**Summary:**
+
+In this video, the focus is on creating a data loader for the Anime Recommender System. Inside the src folder, a file named data_loader.py is created, and a class AnimeDataLoader is implemented. This class requires two parameters: the path to the original CSV (anime_with_synopsis.csv) and the path for the processed CSV. The purpose of this class is to read the original CSV, clean it, and prepare a processed version for the recommender system.
+
+The load_and_process method reads the CSV into a pandas DataFrame using UTF-8 encoding and skips any malformed lines. It then drops rows with null values to ensure data quality. Only the necessary columns (name, genre, synopsis) are selected, and a check is performed to raise an error if any required column is missing. To prepare the data for recommendation, the method combines the name, genre, and synopsis columns into a new column called combined_info. This combined information is then saved into a new CSV containing only the combined_info column, which is returned as the output of the method.
+
+In summary, the AnimeDataLoader class efficiently handles CSV reading, cleaning, validation, and feature construction by combining relevant columns into a single processed dataset, making it ready for building the recommendation system.
+
+**5. Vector Store Code using Chroma**
+
+So in this video we will be dealing with our vector store. First, come to your "src" folder and create a file called "vector_store.py". Here we will write the logic for our vector store. First, we need to do some imports. From LangChain, we import the text splitter using "from langchain.text_splitter import CharacterTextSplitter". This splitter will help separate our text; since we combined "name", "genre", and "synopsis" in the previous step, the splitter will separate text like "action, adventure, comedy, drama" and the whole synopsis as well.
+
+Next, we need the vector store itself. For this, we import Chroma using "from langchain.vectorstores import Chroma". We also need to import the CSV loader because the processed CSV saved in the previous video must be loaded to convert into a vector store, using "from langchain.document_loaders import CSVLoader".
+
+To convert the text into embeddings, we use Hugging Face embeddings. We import it with "from langchain.embeddings import HuggingFaceEmbeddings". Hugging Face embeddings automatically fetch your API token from environment variables. To load these environment variables, we write "from dotenv import load_dotenv" and then "load_dotenv()".
+
+Now, let's create a class for our vector store just like we did for the data loader. We define the class with "class VectorStoreBuilder:" and a constructor "def init(self, csv_path: str, persist_directory: str):". Inside the constructor, we define three instance variables: "self.csv_path = csv_path", "self.persist_directory = persist_directory", and "self.embedding = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')". Here, the embedding model "all-MiniLM-L6-v2" is from Hugging Face sentence transformers, which we installed earlier using "sentence-transformers".
+
+Next, we create a method to build and save the vector store, defined as "def build_and_save_vectorstore(self):". First, we load the CSV using "loader = CSVLoader(file_path=self.csv_path, encoding='utf-8', metadata_columns=[])" and "data = loader.load()". Then we split the loaded data using the character text splitter: "splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)" and "texts = splitter.split_documents(data)". After splitting, we save the text into the vector store with embeddings using "db = Chroma.from_documents(documents=texts, embedding=self.embedding, persist_directory=self.persist_directory)" and persist it locally with "db.persist()".
+
+We also create a method to load an existing vector store if we already have one. This method is defined as "def load_vectorstore(self):" and simply returns "Chroma(persist_directory=self.persist_directory, embedding_function=self.embedding)".
+
+In summary, first we import necessary modules, then define the class "VectorStoreBuilder" with CSV path, persist directory, and Hugging Face embeddings as instance variables. The "build_and_save_vectorstore" method loads CSV data, splits it into chunks, converts chunks into embeddings, and saves them locally in Chroma. The "load_vectorstore" method allows loading the existing vector store directly without rebuilding.
+
+This is how we create and manage the vector store for our anime recommender system, and this sets the stage for building the pipeline in the next step.
+
+**Summary:**
+
+In this video, the focus is on creating a vector store for the Anime Recommender System. Inside the src folder, a file named vector_store.py is created, and a class VectorStoreBuilder is implemented. This class is responsible for converting processed text data into embeddings and storing them in a persistent vector database using Chroma. Required imports include CharacterTextSplitter for splitting text, Chroma for the vector store, CSVLoader for loading the processed CSV, and HuggingFaceEmbeddings to generate embeddings from text. Environment variables are loaded using dotenv to access the Hugging Face API token.
+
+The class constructor takes the CSV path and a persist directory as input and initializes the Hugging Face embedding model (all-MiniLM-L6-v2). The build_and_save_vectorstore method first loads the processed CSV, splits the combined text into chunks using the character text splitter, converts the chunks into embeddings, and saves them in the Chroma vector store. A separate method, load_vectorstore, allows loading an existing vector store directly without rebuilding, which saves time for subsequent runs.
+
+In summary, the VectorStoreBuilder class handles loading processed CSV data, text splitting, embedding generation using Hugging Face, and persistent storage with Chroma, forming the backbone for similarity search in the anime recommender system. This setup prepares the project for building the recommendation pipeline in the next steps.
+
+**6. Prompt Templates Code**
+
+So in this video we will be creating our prompt template. First, go to your "src" directory and create a file named "prompt_template.py". I won’t write the full prompt template file here because it is very long and tedious. I have generated it using ChatGPT as well, so you can just go to the GitHub directory mentioned in the resource section, open "prompt_template.py", and copy the full file. I will explain it here.
+
+First of all, we do an import with "from langchain.prompts import PromptTemplate". Prompt templates are basically instructions to the LLM (Large Language Model) telling it how to perform a particular task. In our case, we are making an anime recommender system, so the prompt tells the LLM to act as an expert anime recommender.
+
+We define a function called "get_prompt()". Inside it, we define the template text: "You are an expert anime recommender. Your job is to help users find the perfect anime based on their preferences. Whatever the user wants, like if they want a similar anime to Attack on Titan, your job is to give a perfect recommendation that is similar to Attack on Titan. Use the following context and provide a detailed and engaging response. For each recommendation, give the anime title, a 2–3 sentence plot summary, and a clear explanation why this anime matches the user’s input. Present your recommendations in a numbered list. If you don’t know the answer, respond honestly by saying that you don’t know. Do not fabricate answers."
+
+Next, we define the input variables for the template. We have two input variables: "context" and "question". Here, "context" is the data source (from our vector store), and "question" is the user’s query, like "Give me suggestions similar to Naruto". Finally, we return the prompt template object using "PromptTemplate(template=template, input_variables=['context','question'])".
+
+This setup ensures that the LLM receives both the context (from the vector store) and the user’s question and outputs a structured, accurate, and engaging anime recommendation. You can also modify the template to improve its instructions or make it more descriptive using ChatGPT or other tools. You can even write it manually if needed.
+
+That’s it for the prompt template. Once this is ready, the next video will cover an important part of the pipeline, which builds on this prompt template for actual recommendations.
+
+**Summary:**
+
+In this video, the focus is on creating a prompt template for the Anime Recommender System. Inside the src folder, a file named prompt_template.py is created. The prompt template serves as the instruction set for the Large Language Model (LLM), guiding it to behave as an expert anime recommender. The langchain.prompts.PromptTemplate module is used to define the template.
+
+A function get_prompt() is created, which contains the template text instructing the LLM to provide anime recommendations based on user preferences. The prompt specifies that recommendations should include the anime title, a short plot summary, and a clear explanation of why the anime matches the user’s query. Input variables for the template include context (data from the vector store) and question (the user’s query, e.g., “Give me suggestions similar to Naruto”). The function returns a PromptTemplate object that combines both the context and the user query to generate accurate, structured, and engaging recommendations.
+
+In summary, the prompt template ensures the LLM receives both the relevant data and user input, producing meaningful anime recommendations. This template forms a key part of the recommendation pipeline, guiding how the LLM interprets and responds to queries.
+
+**7. Recommender Class Code**
+
+In this video we will be making our anime recommender class. First, go to your "src" directory and create a file named "recommender.py". Then we start with the imports. We need "from langchain.chains import RetrievalQA" to create the retrieval question-answer chain. We also need "from langchain.chat_models import ChatGrok" to interact with our LLM using ChatGrok. Finally, we import our prompt template with "from src.prompt_template import get_prompt" which we created in the previous video.
+
+Next, we create a class called "AnimeRecommender". First, we define the constructor with "def init(self, retriever, api_key: str, model_name: str)". These are the inputs: a retriever, the API key, and the model name, which we already have in our configuration.
+
+Inside the constructor, we first initialize our LLM using ChatGrok: "self.lm = ChatGrok(api_key=api_key, model=model_name, temperature=0)". Here, temperature is set to 0 to restrict the LLM’s creativity. This ensures it provides clear and factual recommendations without making up answers if it doesn’t know something.
+
+Next, we load the prompt template using "self.prompt = get_prompt()". Then we create the retrieval question-answer chain: "self.qa_chain = RetrievalQA.from_chain_type(llm=self.lm, chain_type='stuff', retriever=retriever, return_source_documents=True, chain_type_kwargs={'prompt': self.prompt})". Here, the chain type "stuff" ensures all documents in the retriever are pulled as context for the prompt, and "return_source_documents=True" keeps track of the documents used.
+
+Next, we define the recommendation method: "def get_recommendation(self, query)". Here, "query" is the user’s question. We get the recommendation using "result = self.qa_chain.run(query)". The result is a dictionary containing multiple keys, but we only return the final recommendation using "return result['result']".
+
+To summarize: we imported ChatGrok, RetrievalQA, and our prompt template. We initialized the LLM with API key, model name, and temperature. We loaded the prompt template and created the QA chain using the retriever and chain type. Finally, we defined the "get_recommendation" method which runs the user query through the QA chain and returns only the recommendation.
+
+This completes the Anime Recommender class. In the next video, we will integrate all the modules together into a working anime recommendation pipeline.
+
+**Summary:**
+
+In this video, the focus is on creating the AnimeRecommender class inside the src/recommender.py file. The class integrates the previously built modules—vector store, prompt template, and LLM—into a working recommendation engine. Required imports include RetrievalQA from LangChain for building a retrieval-based question-answer chain, ChatGrok to interact with the LLM, and the get_prompt function from the prompt template.
+
+The AnimeRecommender class constructor takes a retriever, API key, and model name as inputs. It initializes the ChatGrok LLM with the API key and model name, setting temperature=0 to ensure factual and consistent responses. The prompt template is loaded, and a RetrievalQA chain is created using the retriever. This chain uses the “stuff” chain type to provide all relevant documents as context and keeps track of the source documents used.
+
+The class includes a get_recommendation(query) method that accepts a user query, runs it through the QA chain, and returns the generated anime recommendation. In summary, this class brings together the LLM, prompt template, and vector store retriever to deliver structured, accurate, and context-aware anime recommendations, forming the core of the recommendation pipeline.
+
+**8. Training and Recommendation Pipeline**
+
+In this video, we will be creating our pipeline. Now, what is a pipeline? We have already created the data loader, prompt template, recommender, and vector store. The pipeline combines all these source files in a sequential way so that we can run just the pipeline and all components get processed in order. First, go to the "pipeline" directory and create a file named "pipeline.py".
+
+We start with the imports. First, we import the vector store builder using "from src.vector_store import VectorStoreBuilder". Next, we import our anime recommender using "from src.recommender import AnimeRecommender". From the configuration file, we import the API key and model name using "from config.config import API_KEY, MODEL_NAME". We also import logging and custom exceptions using "from utils.logger import get_logger" and "from utils.custom_exception import CustomException".
+
+Next, we initialize our logger using "logger = get_logger('magic_method')".
+
+Now we create a class for the pipeline called "AnimeRecommendationPipeline". In its constructor "def init(self, persist_directory='chroma_db')", we use a try-except block to handle exceptions. First, we log "logger.info('Initializing recommendation pipeline')". Then, we create the vector store builder object using "vector_builder = VectorStoreBuilder(csv_path='', persist_directory=persist_directory)". Here, the CSV path is empty because we only want to load an existing vector store, not create a new one.
+
+Next, we load the retriever using "retriever = vector_builder.load_vector_store().as_retriever()". This retriever is passed to the anime recommender class: "self.recommender = AnimeRecommender(retriever=retriever, api_key=API_KEY, model_name=MODEL_NAME)". After that, we log "logger.info('Pipeline initialized successfully')". In case of exceptions, we catch them with "except Exception as e" and log "logger.error(f'Failed to initialize pipeline: {str(e)}')" and optionally raise "CustomException('Error during pipeline initialization')".
+
+Next, we define the recommendation method "def recommend(self, query: str) -> str". Inside a try-except block, we log the received query using "logger.info(f'Received query: {query}')". Then we call the recommender method to get the recommendation: "recommendation = self.recommender.get_recommendation(query)". Once the recommendation is generated, we log "logger.info('Recommendation generated successfully')" and return the recommendation using "return recommendation". In case of exceptions, we log "logger.error(f'Failed to get recommendation: {str(e)}')" and raise "CustomException('Error during getting recommendation')".
+
+Now let’s discuss the build pipeline. This is in "build_pipeline.py". We import the data loader using "from src.data_loader import AnimeDataLoader" and the vector store builder again using "from src.vector_store import VectorStoreBuilder". We also load environment variables using "from dotenv import load_dotenv" and initialize the logger similarly.
+
+Inside a main function "def main()", we use a try-except block. First, we log "logger.info('Starting to build pipeline')". Then, we create the data loader object using "loader = AnimeDataLoader(original_csv='data/anime_with_synopsis.csv', process_csv='data/anime_updated.csv')" and call "processed_csv = loader.load_and_process()". After that, we create the vector store builder object using "vector_builder = VectorStoreBuilder(csv_path=processed_csv)" and build the vector store using "vector_builder.build_and_save_vector_store()". We log "logger.info('Vector store built successfully')" and "logger.info('Pipeline build successfully')". In case of exceptions, we log the error and raise a custom exception.
+
+The difference between these two pipelines is important. The "build_pipeline.py" is our training pipeline—it loads the data using the data loader and creates the vector store. The "pipeline.py" is our prediction pipeline—it uses the existing vector store to generate recommendations during runtime.
+
+Finally, to execute the build pipeline, run "if name == 'main': main()". This ensures that the main method is executed when running "python pipeline/build_pipeline.py". After fixing any CSV read errors (e.g., using "on_bad_lines='skip'"), the logs will show "Data loaded and processed" and "Vector store built successfully", confirming that the pipeline is working.
+
+Now you have your vector store ready. In the next video, we will create our main application which will use this "pipeline.py" for recommendations.
+
+**Summary:**
+
+In this video, the focus is on creating the pipeline for the Anime Recommender System, which integrates all previously built components—data loader, vector store, prompt template, and recommender—into a sequential workflow. A file named pipeline.py is created in the pipeline directory, and the AnimeRecommendationPipeline class is implemented. Required imports include the VectorStoreBuilder, AnimeRecommender, API key and model name from the configuration, as well as logging and custom exception utilities.
+
+The pipeline class constructor initializes the pipeline by loading an existing vector store and creating a retriever. This retriever is then passed to the AnimeRecommender class along with the API key and model name. Logging is used to track the initialization process, and any exceptions are caught and handled using a custom exception. The pipeline also includes a recommend(query) method, which logs the user query, runs it through the recommender, and returns the generated recommendation while handling potential errors.
+
+Additionally, a build pipeline (build_pipeline.py) is created for training purposes. This pipeline uses the AnimeDataLoader to process the original CSV, then builds and saves the vector store using VectorStoreBuilder. Logging ensures that each step is tracked, confirming successful data loading and vector store creation. The key distinction is that the build pipeline is used for creating the vector store (training phase), whereas pipeline.py is used for generating recommendations in runtime (prediction phase).
+
+In summary, the pipeline consolidates all components into a structured workflow, enabling seamless data processing, vector store handling, and recommendation generation. Once the vector store is ready, the system is prepared for integration into the main application.
+
+**9. Main Application Code**
+
+In this video, we will be creating our main application. First, go to your "app" directory and create a file named "app.py". This file will contain all the logic for running our Streamlit-based anime recommender application.
+
+We start by importing Streamlit using "import streamlit as st". Next, we import our prediction pipeline using "from pipeline.pipeline import AnimeRecommendationPipeline". We also load environment variables using "from dotenv import load_dotenv".
+
+Let me briefly explain the recommendation pipeline again. The pipeline initializes the vector store that we have already created and loads it as a retriever. The retriever fetches relevant documents when a user query is passed—for example, if someone asks for recommendations similar to Naruto, it fetches related anime documents. Then, the language model uses these retrieved documents along with the prompts to generate recommendations.
+
+We import the pipeline class "AnimeRecommendationPipeline" and call "load_dotenv()" to ensure all environment variables are loaded. Although we already loaded environment variables in the config file, we do it here again because, when deploying via Docker on platforms like AWS or GCP, the app.py file is the entry point. Loading environment variables ensures the API key and Hugging Face hub token are accessible.
+
+Next, we set the Streamlit page configuration using "st.set_page_config(page_title='Anime Recommender', layout='wide')". This step is mandatory for a proper Streamlit UI.
+
+To initialize the recommendation pipeline efficiently, we define a function with caching:
+
+@st.cache_resource
+def init_pipeline():
+    return AnimeRecommendationPipeline()
+
+
+This ensures the pipeline is initialized only once at app start, saving time for repeated queries. We then call "pipeline = init_pipeline()" to have a ready-to-use pipeline instance.
+
+Next, we set the title of the app using "st.title('Anime Recommender')". We ask the user for input using "query = st.text_input('Enter your anime preferences', 'A light-hearted anime with school setting')". This provides a text input box for the user to type their anime preference or query.
+
+Once the user enters a query, we use a Streamlit spinner to indicate processing:
+
+if query:
+    with st.spinner('Fetching recommendations for you...'):
+        response = pipeline.recommend(query)
+        st.markdown('### Recommendations')
+        st.write(response)
+
+
+Here, the pipeline's "recommend" method is called with the user query, and the recommendations are displayed on the app using "st.write" or "st.markdown" to format the heading.
+
+In summary, the app works as follows:
+
+We import Streamlit and the prediction pipeline.
+
+Environment variables are loaded.
+
+Page configuration is set.
+
+A cached function initializes the anime recommendation pipeline only once.
+
+A title and input box are displayed for the user.
+
+When the user enters a query, a spinner is shown while the recommendations are fetched.
+
+The recommendations are displayed in the UI.
+
+To run the app, open a terminal and execute "streamlit run app/app.py". The first run may take slightly longer because the pipeline is being initialized and cached. After that, recommendations are fetched quickly.
+
+You can try queries like "A light-hearted anime with school setting", "Similar anime to Naruto", or "Similar anime to Bleach". The app will fetch and display recommendations accordingly.
+
+With this, your Streamlit application is complete! In the next video, we will create the Dockerfile, Kubernetes deployment files, and cover CI/CD, code versioning, and production deployment using Docker, Kubernetes, and cloud platforms.
+
+**Summary:**
+
+In this video, the focus is on creating the main application for the Anime Recommender System using Streamlit. A file named app.py is created inside the app directory. The application integrates the prediction pipeline, which loads the pre-built vector store as a retriever and uses the LLM along with the prompt template to generate anime recommendations based on user queries. Environment variables are loaded using load_dotenv() to ensure the API key and Hugging Face token are accessible, especially for deployment scenarios like Docker.
+
+The Streamlit page configuration is set with a wide layout and a proper page title. A caching function init_pipeline() is defined using @st.cache_resource to initialize the pipeline only once, improving performance for repeated queries. The app displays a title and a text input box for the user to enter anime preferences. When the user submits a query, a Streamlit spinner indicates that recommendations are being fetched. The pipeline’s recommend method is then called, and the results are displayed in the UI using st.write and formatted headings.
+
+In summary, the main application brings together the pipeline and the Streamlit interface, providing a user-friendly way to enter queries and receive anime recommendations in real-time. The app can be run using streamlit run app/app.py, with the first run taking slightly longer due to pipeline initialization, and subsequent queries fetching results quickly. This completes the user-facing application, ready for deployment with Docker, Kubernetes, and cloud platforms in the next steps.
+
+**10. Dockerfile , Kubernetes Deployment File and Code Versioning**
+
+In this video, we will be creating the Dockerfile, the Kubernetes deployment file, and implementing code versioning using GitHub for our anime recommender project.
+
+First, let’s start with the Dockerfile. In your root directory, create a file named "Dockerfile". This file will allow us to containerize our project so it can be deployed on Kubernetes or any cloud platform. You don’t need to write it from scratch; you can copy a pre-written Dockerfile from the GitHub repository linked in the resources section.
+
+Here’s the breakdown of the Dockerfile:
+
+We use a base image "python:3.11-slim".
+
+Essential environment variables are defined for production purposes.
+
+We set up a working directory inside the container using "WORKDIR /app".
+
+Dependencies are installed by copying the project files into the container and running "pip install -e . --no-cache-dir". The --no-cache-dir ensures a fresh installation without using cached packages, avoiding conflicts with old dependencies.
+
+The Dockerfile exposes port 8501, which is the default Streamlit port.
+
+The command to run the app is defined as "streamlit run app/app.py --server.port 8501 --server.address 0.0.0.0 --server.headless true".
+
+Explanation of the command arguments:
+
+--server.port 8501 specifies the port.
+
+--server.address 0.0.0.0 allows the app to be accessible externally.
+
+--server.headless true prevents Streamlit from opening a browser automatically, which is important for production environments on Linux machines.
+
+Next, let’s create the Kubernetes deployment file. In your project directory, create a YAML file, e.g., "lm_ops_k8s.yaml". A Kubernetes deployment file typically consists of two main sections: deployment and service. You can also create them separately, but in this project, we’ll combine them into a single YAML file.
+
+Here’s a summary of the important configurations in the Kubernetes YAML file:
+
+Deployment:
+
+replicas: 1 (number of pod instances; can be increased depending on your server capacity).
+
+containers: define the container name and image name.
+
+imagePullPolicy: IfNotPresent ensures Kubernetes uses the local Docker image if available.
+
+Environment variables are injected as Kubernetes secrets, so sensitive information like API keys are not pushed to GitHub.
+
+Service:
+
+type: LoadBalancer exposes the application to the internet. Other options are ClusterIP (internal) or NodePort (external).
+
+Ports configuration: port: 80 (external) and targetPort: 8501 (Streamlit container port).
+
+The service links to the deployment using the same app name.
+
+This setup allows the application to run in a scalable, production-ready Kubernetes environment while keeping secrets secure.
+
+Finally, let’s handle code versioning using GitHub.
+
+In the root directory, create a ".gitignore" file and list files/folders you don’t want to push, such as:
+
+env/ (environment variables)
+
+__pycache__/ (cached Python files)
+
+logs/ (log files)
+
+Initialize a Git repository:
+
+git init
+git branch -M main
+git remote add origin <your_github_repo_url>
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+
+This pushes your project to GitHub, excluding files specified in ".gitignore", so your API keys and local dependencies remain secure.
+
+Additionally, we have an updated CSV file, "anime_updated.csv", which contains the anime dataset with columns like title, overview, and genre. Make sure this file is included in your repository.
+
+With this, you have successfully created the Dockerfile, Kubernetes deployment file, and implemented code versioning on GitHub. Your project is now ready for production deployment.
+
+**Summary:**
+
+In this video, the focus is on preparing the Anime Recommender Project for production deployment using Docker, Kubernetes, and GitHub for code versioning. First, a Dockerfile is created in the root directory to containerize the project. The Dockerfile uses the base image python:3.11-slim, sets up a working directory /app, installs dependencies using pip install -e . --no-cache-dir, exposes port 8501, and defines the command to run the Streamlit app with --server.port 8501, --server.address 0.0.0.0, and --server.headless true. These configurations ensure that the app runs in a headless, production-ready environment and is externally accessible.
+
+Next, a Kubernetes deployment YAML file, e.g., lm_ops_k8s.yaml, is created. This file defines both the deployment and service. The deployment specifies the number of replicas, container details, and image pull policies, while sensitive environment variables like API keys are injected securely as Kubernetes secrets. The service exposes the application using a LoadBalancer on port 80, linking it to the container’s Streamlit port 8501. This setup allows scalable deployment of the app in a production-ready Kubernetes cluster.
+
+Finally, code versioning is implemented using GitHub. A .gitignore file is created to exclude sensitive files such as environment variables, Python caches, and logs. The repository is initialized with git init, a main branch is set, and the project is pushed to GitHub using standard Git commands. The updated CSV dataset anime_updated.csv is included in the repository. With these steps, the project is now fully containerized, deployable on Kubernetes, and version-controlled, making it ready for production use.
+
+**11. GCP VM Instance Setup with Docker Engine , Minikube and Kubectl**
+
+In this video, we will set up a VM instance for our project. We will be using Google Cloud Platform (GCP), although you can also use AWS or Azure. GCP is recommended because it is cost-efficient and easy to implement.
+
+First, log in to your Google Cloud account, search for VM instances, and create a new instance. You can keep the default name, region, and zone. For the machine type, select E2 Standard and allocate 16 GB memory with 4 CPUs. This configuration ensures that Minikube, which requires at least 2 CPUs, can run efficiently while leaving resources available for other computations. You will also receive $300 free credits on GCP, which makes it affordable for testing.
+
+Next, configure the OS and storage:
+
+Select Ubuntu 24.04 LTS (x86_64). LTS stands for long-term support, which is stable and reliable. Avoid the newer 25 version as it may be unstable.
+
+Allocate 150 GB of disk space, which is sufficient for our needs.
+
+In the networking section, enable all three checkboxes and enable IP forwarding. Leave other options as default and create the VM instance. Once it is running (green tick appears), connect using SSH, which opens a browser-based terminal. Authorize the connection and clear the screen with the clear command.
+
+Step 1: Install Docker Engine
+
+We need Docker first because Minikube depends on it.
+
+Go to the official Docker installation page for Ubuntu and copy the commands for setting up Docker’s repository. Paste and run them in your VM terminal.
+
+Install Docker using the commands and authorize with yes.
+
+Test Docker installation with:
+
+sudo docker run hello-world
+
+
+This works, but we don’t want to run Docker with sudo every time.
+
+Follow the post-installation steps from Docker documentation:
+
+Add your user to the Docker group
+
+Reload the group membership
+
+Test Docker again:
+
+docker run hello-world
+
+
+Now Docker runs without sudo.
+
+Enable Docker to start automatically on boot using systemd commands, ensuring Docker service is active whenever the VM starts.
+
+You can verify the installation with:
+
+docker version
+
+Step 2: Install Minikube
+
+Minikube will create a local Kubernetes cluster on your VM and relies on Docker to run containers.
+
+Go to the Minikube Linux installation page and copy the stable binary commands. Paste them one by one in your VM terminal.
+
+Start the Minikube cluster:
+
+minikube start
+
+
+This will initialize your local Kubernetes cluster.
+
+Step 3: Install kubectl
+
+kubectl is the command-line tool to manage Kubernetes clusters.
+
+Go to the official Kubernetes documentation, select Linux, and copy the installation commands. Paste them in the terminal.
+
+On Ubuntu, an easier approach is to install kubectl via Snap:
+
+sudo snap install kubectl --classic
+
+
+Verify installation:
+
+kubectl version --client
+
+
+At this point, your VM instance is ready with all necessary tools:
+
+Docker Engine – for building and running container images
+
+Minikube – for running a local Kubernetes cluster
+
+kubectl – for managing Kubernetes deployments
+
+Everything is installed, and your Minikube cluster is running. Docker is set up and can run containers without sudo. This VM is now ready for deploying your Dockerized anime recommender application.
+
+This completes the VM setup video. Next, we will move on to deploying the application on this VM using Docker and Kubernetes.
+
+**Summary:**
+
+In this video, we set up a virtual machine (VM) instance on Google Cloud Platform (GCP) to prepare for deploying the Anime Recommender application. Although AWS or Azure could also be used, GCP is recommended for its cost-efficiency and ease of implementation. After logging into GCP, we create a new VM instance with the default name, region, and zone. We select an E2 Standard machine type with 16 GB memory and 4 CPUs, ensuring sufficient resources for running Minikube alongside other processes. For the operating system, we choose Ubuntu 24.04 LTS (x86_64) for stability and allocate 150 GB of disk space. In networking, all checkboxes are enabled, including IP forwarding. Once the VM is running, we connect via SSH to access a browser-based terminal.
+
+The first step is to install Docker Engine, which is required by Minikube. Following the official Docker installation instructions for Ubuntu, we set up the Docker repository, install Docker, and authorize post-installation steps to allow running Docker without sudo. Docker is also enabled to start automatically on boot and verified using docker version. Next, we install Minikube, which creates a local Kubernetes cluster on the VM and relies on Docker to run containers. Using the stable Minikube binaries, we start the Minikube cluster. Finally, we install kubectl, the Kubernetes command-line tool, either via official Linux installation commands or Snap, and verify the installation.
+
+At this point, the VM is fully set up with all necessary tools: Docker Engine for container management, Minikube for running a local Kubernetes cluster, and kubectl for managing Kubernetes deployments. Docker is configured to run without sudo, and the Minikube cluster is operational. This VM is now ready to deploy the Dockerized Anime Recommender application in a Kubernetes environment, completing the VM setup for production deployment.
+
+**12. GitHub Integration with Local and VM**
+
+In this video, we will integrate GitHub with our VM instance.
+
+As you saw in the previous video, we have already done the initial setup:
+
+Our code has been pushed to GitHub.
+
+We have created the Dockerfile and the Kubernetes deployment file.
+
+Our VM instance is created, and we have installed Docker, Minikube, and kubectl on it.
+
+Now, the next step is to connect your GitHub repository with both your local machine (VSCode) and your VM instance, so that changes made locally can be pushed to GitHub and then pulled to the VM automatically.
+
+Step 1: Clone the GitHub Repository to the VM
+
+Copy your repository URL from GitHub.
+
+On your VM terminal, run:
+
+git clone <your-github-repo-url>
+
+
+Navigate into the cloned repository:
+
+cd <repository-folder-name>
+
+
+Run ls to verify all files are present (Dockerfile, deployment files, app code, setup scripts, etc.).
+
+Step 2: Connect Local Repository to GitHub
+
+To ensure changes made on your local machine can sync with GitHub:
+
+Configure Git with your email and username:
+
+git config --global user.email "your-email@example.com"
+git config --global user.name "your-github-username"
+
+
+Add, commit, and push changes from your local machine:
+
+git add .
+git commit -m "Commit message"
+git push origin main
+
+
+Important: GitHub no longer accepts your normal password for HTTPS authentication. You need to generate a Personal Access Token (PAT):
+
+Go to GitHub → Profile → Settings → Developer Settings → Personal Access Tokens → Tokens (Classic) → Generate New Token.
+
+Provide a name, select permissions (repo, workflow, admin:repo_hook), and generate the token.
+
+Use this token as your password when pushing from Git.
+
+Step 3: Pull Changes on VM Instance
+
+Whenever you push new changes from your local machine, pull them on the VM using:
+
+git pull origin main
+
+
+Example workflow:
+
+Create a test file on your local machine: test.py
+
+Add, commit, and push:
+
+git add test.py
+git commit -m "Add test file"
+git push origin main
+
+
+On the VM, pull the changes:
+
+git pull origin main
+ls
+
+
+You will now see test.py in the VM repository.
+
+If you delete the file locally, commit and push again, then pull on the VM, the deletion will reflect automatically.
+
+This process interlinks your local machine, GitHub repository, and VM instance, allowing seamless synchronization. This workflow can be applied to all future projects.
+
+Now your VM is ready to always stay in sync with your GitHub repository, ensuring that the latest code is deployed and ready for Docker/Kubernetes tasks.
+
+**Summary:**
+
+In this video, we integrated GitHub with our VM instance to enable seamless synchronization between the local machine, GitHub repository, and the VM. Starting from the previous setup, we already had the code pushed to GitHub, the Dockerfile and Kubernetes deployment file ready, and the VM configured with Docker, Minikube, and kubectl. The first step is to clone the GitHub repository onto the VM by copying the repository URL and running git clone <repository-url> in the VM terminal. After navigating into the repository folder, we can verify that all files, including Dockerfile, deployment scripts, and application code, are present.
+
+Next, we ensure the local machine is connected to GitHub. This involves configuring Git with the user’s email and username, and then using git add, commit, and push commands to synchronize local changes. Since GitHub no longer supports password authentication, a Personal Access Token (PAT) is required for HTTPS pushes. The PAT is generated in GitHub under Developer Settings, with appropriate permissions such as repo, workflow, and admin hooks, and is used as a password when pushing changes.
+
+Finally, to keep the VM repository in sync, any updates pushed from the local machine can be pulled on the VM using git pull origin main. For example, creating a new file locally, committing, and pushing it to GitHub allows it to appear on the VM after pulling changes. Similarly, deletions or modifications in the local repository are reflected on the VM after a pull. This workflow ensures that the local development environment, GitHub, and VM instance remain synchronized, allowing the latest code to be deployed efficiently for Docker and Kubernetes tasks, and can be applied to future projects for smooth version control and deployment.
+
+**13. GCP Firewall Rule Setup**
+
+In this video, we will be setting up a firewall rule for our VM instance.
+
+Step 1: Open Firewall Settings
+
+Go to your Google Cloud Console and search for Firewall in the search bar.
+
+Open the Firewall page in a new tab.
+
+Step 2: Create a Firewall Rule
+
+Click Create Firewall Rule.
+
+Give your firewall rule a name (any name is fine).
+
+Keep the Network set to default.
+
+Set Direction of traffic to Ingress.
+
+Set Action on match to Allow.
+
+For Targets, select All instances in the network.
+
+Set the Source filter to IPv4 ranges.
+
+Enter the Source IP range as:
+
+0.0.0.0/0
+
+
+This will allow traffic from any IP address.
+
+Step 3: Allow All Ports
+
+Under Protocols and ports, select Allow all.
+
+Click Create to finalize the firewall rule.
+
+Once the rule is created, your VM instance will allow incoming traffic from all IPs on all ports. This is essential when you want your services, such as Docker containers or Kubernetes deployments, to be accessible externally.
+
+**Summary:**
+
+In this video, we set up a firewall rule for our VM instance on Google Cloud Platform to allow external access to our services. First, we navigated to the Firewall page in the Google Cloud Console and clicked on “Create Firewall Rule.” We gave the rule a name, kept the network as default, and set the direction of traffic to Ingress with the action set to Allow. For the targets, we selected all instances in the network, and for the source filter, we chose IPv4 ranges, entering 0.0.0.0/0 to allow traffic from any IP address. Under protocols and ports, we selected Allow all to ensure that all incoming ports are open. After clicking Create, the firewall rule was finalized, enabling the VM to accept incoming traffic on all ports from any IP. This setup is crucial for making services such as Docker containers and Kubernetes deployments externally accessible.
+
+**14. Deployment of App on the Kubernetes**
+
+In this video, we will be building our Docker image and deploying our app on the VM instance inside our Kubernetes cluster using Minikube.
+
+Step 1: Point Docker to Minikube
+
+Run the following command on your VM instance:
+
+eval $(minikube -p minikube docker-env)
+
+
+This ensures that Docker builds images specifically for the Minikube environment.
+
+Step 2: Build the Docker Image
+
+Make sure you are inside your GitHub repository where the Dockerfile exists.
+
+Run the Docker build command:
+
+docker build -t lm-ops:latest .
+
+
+You can change the image name according to your preference.
+
+This process may take a few minutes depending on your project size.
+
+To verify, run:
+
+docker images
+
+
+You should see your lm-ops:latest image with its size listed.
+
+Step 3: Inject Environment Variables into Kubernetes
+
+Copy your API keys (e.g., Grok API, Hugging Face token) into a notepad.
+
+Create a Kubernetes secret by running a command like:
+
+kubectl create secret generic lm-secrets \
+--from-literal=GROK_API_KEY=<your_grok_api> \
+--from-literal=HUGGING_FACE_KEY=<your_hf_token>
+
+
+In your deployment YAML, reference the secrets under envFrom::
+
+envFrom:
+  - secretRef:
+      name: lm-secrets
+
+Step 4: Apply the Kubernetes Deployment
+
+Apply your deployment and service YAML file:
+
+kubectl apply -f LM_ops.yaml
+
+
+This will create both the deployment and the service (since both are defined in the YAML).
+
+Step 5: Verify the Deployment
+
+Check the status of your pods:
+
+kubectl get pods
+
+
+You should see lm-ops running with the number of replicas you defined (e.g., 1).
+
+Step 6: Setup Minikube Tunnel for External Access
+
+Run:
+
+minikube tunnel
+
+
+Keep this terminal dedicated to the tunnel. You will need a separate SSH session for other commands.
+
+Open a new terminal to your VM if needed.
+
+Step 7: Access Your App
+
+Get the external IP of your service:
+
+kubectl get service lm-service
+
+
+Open your browser and navigate to:
+
+http://<external-ip>:8501
+
+
+Your Streamlit app should now be running externally.
+
+Step 8: Test API Integration
+
+Try a sample query like “anime similar to Naruto”.
+
+Verify that both Grok and Hugging Face APIs are working correctly.
+
+Once you see the app running and APIs working, your Docker + Kubernetes deployment on Minikube is successful.
+
+**Summary:**
+
+In this video, we deployed our Anime Recommender app on a VM instance inside a Kubernetes cluster using Minikube. First, we configured Docker to point to Minikube by running eval $(minikube -p minikube docker-env), ensuring that Docker images are built specifically for the Minikube environment. Next, we built the Docker image using docker build -t lm-ops:latest . and verified it with docker images. To securely provide API keys for Grok and Hugging Face, we created a Kubernetes secret using kubectl create secret generic lm-secrets and referenced it in our deployment YAML under envFrom. We then applied the deployment and service configuration with kubectl apply -f LM_ops.yaml and verified the pods with kubectl get pods. To allow external access, we ran minikube tunnel and obtained the external IP of our service using kubectl get service lm-service. Finally, we accessed the app in a browser at http://<external-ip>:8501 and tested the API integration with sample queries like “anime similar to Naruto”. The successful response confirmed that the Dockerized app, integrated with Grok and Hugging Face APIs, is running smoothly in the Kubernetes cluster.
+
+**15. Monitoring Kubernetes using Grafana Cloud**
+
+In this video, we will be setting up Grafana Cloud monitoring for our project. This is the main part of the project where we monitor our Kubernetes cluster and applications.
+
+Step 1: Create a Namespace for Monitoring
+
+Connect to a new terminal on your VM instance (since other terminals are in use for Minikube tunnel and app port forwarding).
+
+Check existing namespaces:
+
+kubectl get ns
+
+
+Create a new namespace called monitoring:
+
+kubectl create namespace monitoring
+
+
+Verify:
+
+kubectl get ns
+
+
+You should see both default and monitoring namespaces.
+
+Step 2: Install Helm
+
+Grafana Cloud deployment requires Helm.
+
+Search for “Install Helm” online and go to the official Helm site.
+
+Follow the commands under the “From Script” section:
+
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+
+This will install Helm on your VM instance.
+
+Step 3: Create a Grafana Cloud Account
+
+Go to Grafana Cloud
+ and create an account.
+
+You get a 14-day free trial which is sufficient for this setup.
+
+Launch Grafana Cloud after logging in.
+
+Step 4: Configure Kubernetes Observability
+
+Go to Observability → Kubernetes → Start Sending Data.
+
+Install the backend agent as instructed.
+
+Provide your cluster name and namespace:
+
+Cluster Name: minikube (default for Minikube clusters)
+
+Namespace: monitoring (the namespace we created)
+
+Create a new access token for Helm deployment (e.g., Grafana token).
+
+Copy and save the token safely.
+
+Step 5: Deploy Monitoring Resources via Helm
+
+Grafana provides a Helm chart for deployment.
+
+On your VM, create a values.yaml file:
+
+vi values.yaml
+
+
+Copy the Helm chart content into values.yaml after removing unnecessary parts like EOF and extra headers.
+
+Save the file:
+
+:wq!
+
+
+Deploy the Helm chart:
+
+helm upgrade --install grafana-monitoring -n monitoring -f values.yaml grafana/grafana
+
+
+Verify deployment:
+
+kubectl get pods -n monitoring
+
+
+All Grafana pods should be running.
+
+Step 6: Verify Grafana Cloud Monitoring
+
+Go to your Grafana Cloud dashboard.
+
+Refresh the page to see your Kubernetes cluster metrics.
+
+You should see:
+
+Namespaces: 5 (default + monitoring + others)
+
+Workloads: 13
+
+Pods: 17
+
+Containers: 21
+
+Your deployed LM ops application and other Minikube resources will be visible.
+
+Step 7: Explore Monitoring Features
+
+View nodes, workloads, pods, and containers in Grafana.
+
+Create alerts for specific metrics if needed.
+
+Monitor each namespace and pod separately.
+
+Use debug metrics like kube_pod_info to get detailed container-level data.
+
+With this, your Kubernetes cluster is now connected to Grafana Cloud, and you can monitor all workloads and resources graphically.
+
+Make sure to clean up resources after your monitoring to avoid unnecessary costs.
+
+**Summary:**
+
+In this video, we set up Grafana Cloud monitoring for our Kubernetes cluster and deployed applications. First, we created a new namespace called monitoring on the VM instance using kubectl create namespace monitoring to isolate monitoring resources. Next, we installed Helm via the official script to manage Kubernetes deployments. After that, we created a Grafana Cloud account, which provides a 14-day free trial, and configured Kubernetes observability by providing the cluster name (minikube) and the monitoring namespace. We generated an access token for Helm deployment and created a values.yaml file with Grafana Helm chart configuration. Using helm upgrade --install grafana-monitoring -n monitoring -f values.yaml grafana/grafana, we deployed Grafana monitoring resources to the cluster. Deployment was verified with kubectl get pods -n monitoring, ensuring all Grafana pods were running. Finally, in the Grafana Cloud dashboard, we could visualize our cluster metrics, including namespaces, workloads, pods, and containers. The setup allowed monitoring of all Minikube resources, workloads, and the LM ops application, with features to create alerts, debug metrics, and observe container-level data. This setup ensures full observability of the Kubernetes cluster while maintaining a separate namespace for monitoring.
+
+**16. Cleanup Process**
+
+Now let’s talk about the cleanup process for this project.
+
+Step 1: Delete Your VM Instance
+
+Go to your VM instance in Google Cloud.
+
+Select the VM you created for this project and click Delete.
+
+As soon as you delete your VM instance, your Kubernetes cluster will also get disabled automatically. This means that all monitoring on Grafana Cloud will stop.
+
+Step 2: Verify Grafana Cloud
+
+After the VM is deleted, open your Grafana Cloud dashboard.
+
+You’ll notice that your Kubernetes monitoring is no longer active, and the interface will show the initial “Start sending data” steps again.
+
+This confirms that disabling your Kubernetes cluster automatically disables its Grafana monitoring.
+
+Step 3: Final Notes
+
+This concludes our project. You now have hands-on experience with:
+
+Setting up a VM instance
+
+Installing Docker, Minikube, and kubectl
+
+Deploying an application on Kubernetes
+
+Integrating Grafana Cloud for monitoring
+
+Grafana Cloud is paid after the 14-day free trial, but the cost is generally manageable. In most companies, the company handles the subscription, so you don’t need to worry about payments.
+
+During your trial, you can explore:
+
+Metrics monitoring
+
+Alerts
+
+Dashboards
+
+Advanced Kubernetes monitoring
+
+With this our project is completed
+
+**Summary:**
+
+In this video, we covered the cleanup process for the Anime Recommender project. First, we deleted the VM instance in Google Cloud that was used for hosting the Kubernetes cluster. Deleting the VM automatically disables the Kubernetes cluster, which in turn stops all Grafana Cloud monitoring. To confirm, we checked the Grafana Cloud dashboard, where the monitoring data was no longer active, and the interface reverted to the initial “Start sending data” steps. This process ensures that all cloud resources and running workloads are properly cleaned up, preventing unnecessary costs. Finally, this concludes the project, where we gained hands-on experience in setting up a VM, installing Docker, Minikube, and kubectl, deploying an application on Kubernetes, and integrating Grafana Cloud for monitoring. While Grafana Cloud’s free trial lasts 14 days, it provides full access to metrics, dashboards, alerts, and advanced Kubernetes monitoring features, allowing a complete end-to-end deployment experience.
+
+
+
 
 
 
