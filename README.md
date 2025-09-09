@@ -20,7 +20,7 @@
 
 **G) Multi AI Agent using,Jenkins,SonarQube,FastAPI,Langchain,Langgraph,AWS ECS (Will do Later)**
 
-**A. AI Anime Recommender Project**
+# **A. AI Anime Recommender Project**
 
 **1. Introduction to the Project:**
 
@@ -940,7 +940,7 @@ In this video, we covered the cleanup process for the Anime Recommender project.
 
 
 
-**E. Celebrity Detector and QnA**
+# **E. Celebrity Detector and QnA**
 
 1. Groq - LLM (LLama 4 Vision Transformer)
 
@@ -2850,7 +2850,7 @@ Always clean up cloud resources like clusters and repositories to prevent unexpe
 
 This setup ensures a secure, automated, and cost-efficient deployment workflow for the Celebrity Detector and QA system.
 
-**F. AI Music Composer**
+# **F. AI Music Composer**
 
 **Tech Stack:**
 
@@ -3350,7 +3350,7 @@ And that’s it — your full CI/CD deployment pipeline is now complete.
 
 
 
-**G) Multi AI Agent using,Jenkins,SonarQube,FastAPI,Langchain,Langgraph,AWS ECS**
+# **G) Multi AI Agent using,Jenkins,SonarQube,FastAPI,Langchain,Langgraph,AWS ECS**
 
 **1. Introduction to the Project**
 
