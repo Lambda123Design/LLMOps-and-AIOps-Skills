@@ -16,6 +16,8 @@
 
 **C. AI Travel Planner**
 
+**D. Study Buddy AI**
+
 **E. Celebrity Detector and QnA**
 
 **F. AI Music Composer**
@@ -3288,11 +3290,2590 @@ Learned to filter, search, and visualize logs.
 Cleaned up resources to save costs.
 
 
+# **D. Study Buddy AI**
+
+**1. Introduction to the Project:**
+
+**Tech Stack:**
+
+(i) Groq - LLM
+
+(ii) DockerHub - Platform for Storing our Docker Images
+
+(iii) Langchain - Generative AI Framework to interact with LLM
+
+(iv) Git-Ops - Deploy and manage infrastructure or applications using Git as the single source of truth
+
+(v) Minikube - For making a Kubernetes cluster where we can deploy our application
+
+(vi) Streamlit - To make UI or frontend of the app
+
+(vii) Docker - For containerization of the app during deployment
+
+(viii) Jenkins - For making CI (Continuous Integration) part of CI/CD Pipeline
+
+(ix) ArgoCD - For making CD (Continuous Deployment) part of CI/CD Pipeline
+
+(x) GCP VM - Virtual Machine that can be accessed on cloud. It is a service offered by Google Cloud
+
+(xi) GitHub - It will work as a SCM for our project
+
+Welcome back! Now, let’s move on to the introduction of our project.
+
+In this project, we will be creating a Study Buddy. Essentially, this tool will help you generate questions related to any topic. You can also set the difficulty level, as you saw in the demo video. Moreover, it supports generating both fill-in-the-blank questions and multiple-choice questions (MCQs).
+
+Key Components / Tech Stack
+
+Our project will involve the following key components:
+
+Minikube – for creating a Kubernetes cluster.
+
+Jenkins – our CI/CD tool, widely used across thousands of companies.
+
+Argo CD – for continuous deployment in a GitOps workflow.
+
+GitOps – a concept where Git acts as the single source of truth. We’ll dive into this shortly.
+
+Groq LLM – for question generation. It’s free to use and we’ll be using LLaMA 3.3.
+
+Docker Hub – to store our Docker images.
+
+Streamlit – to create the user interface.
+
+Docker – for containerization.
+
+GCP Cloud – to host a virtual machine where we deploy our Kubernetes cluster and application.
+
+Tech Stack in Detail
+
+1. Groq LLM
+
+A platform to use LLMs free of cost (100 API requests/day).
+
+We’ll use LLaMA 3.3 for generating questions.
+
+2. Docker Hub
+
+A hub to store your Docker images after building them.
+
+3. LangChain
+
+Our framework for interacting with the LLM, making question generation easier.
+
+4. GitOps Explained
+
+GitOps = Git as a source of truth.
+
+Traditional CI/CD pipelines: If a deployment fails, your app stops working until fixed.
+
+GitOps pipeline (with Argo CD): If deployment fails, Argo CD automatically rolls back to the last successful version.
+
+This ensures your app keeps running even if the latest pipeline fails.
+
+5. Minikube & GCP
+
+GCP VM: Rent a virtual PC with OS, RAM, CPU, and storage of your choice.
+
+Minikube: Create a Kubernetes cluster inside the VM.
+
+6. Streamlit
+
+To create a clean and interactive user interface.
+
+7. Docker
+
+For containerizing the application before deployment.
+
+8. Jenkins & Argo CD
+
+Jenkins handles Continuous Integration (CI): copying code from GitHub, building Docker images, and pushing them to Docker Hub.
+
+Argo CD handles Continuous Deployment (CD): deploying the Docker image on Kubernetes, and managing rollback in case of failures.
+
+Workflow Overview
+
+Project & API Setup
+
+Create a virtual environment.
+
+Install necessary libraries (LangChain, Streamlit, etc.).
+
+Set up project structure: utils/, src/, prompts/, retriever/, helper_class/.
+
+Configure Grok API key and select the model.
+
+Store API keys in environment variables.
+
+Schemas & Models
+
+Using Pydantic, define data models to structure inputs/outputs for the LLM.
+
+Prompt Templates
+
+Define instructions for the LLM: behavior, output format, question type (MCQ or fill-in).
+
+Client Setup
+
+Set API parameters like temperature (creativity). Recommended: 0.3–0.7.
+
+Question Generator & Helper Functions
+
+Question generation logic lives here.
+
+Utility/helper functions keep the main app code clean.
+
+Main Application (Streamlit)
+
+Import helper functions to keep the UI code tidy.
+
+Code Versioning
+
+Push your code to GitHub to track changes and commits.
+
+Dockerization
+
+Create a Dockerfile specifying base image, dependencies, exposed port (Streamlit default: 8501), and run commands.
+
+Kubernetes Manifest Files
+
+deployment.yaml – defines deployment logic.
+
+service.yaml – exposes the application on a specific port (8501).
+
+GCP Setup
+
+Install Docker Engine, Minikube, and kubectl to manage your Kubernetes cluster.
+
+CI/CD Pipeline
+
+CI (Jenkins): extract code from GitHub, build Docker image, push to Docker Hub.
+
+CD (Argo CD): deploy image to Kubernetes, handle rollback automatically.
+
+Webhooks
+
+Automatically trigger Jenkins pipeline when new code is pushed to GitHub, eliminating manual builds.
+
+Conclusion
+
+This workflow ensures that:
+
+Your application is stable and continuously running, even if a deployment fails.
+
+Code is well-structured and versioned.
+
+Deployment is fully automated through CI/CD with GitOps.
+
+Next, you’ll dive into the project setup and start building your Study Buddy step by step. Make sure to watch the Argo CD setup, Kubernetes manifest, and Zipkin setup videos carefully, as they are crucial for deployment.
+
+**Summary:**
+
+Welcome back! In this project, we will be creating a Study Buddy, a tool designed to generate questions on any topic. The application allows users to set the difficulty level and supports both fill-in-the-blank questions and multiple-choice questions (MCQs), providing flexibility in assessment and practice. The project involves several key components and technologies. We will use Minikube to create a local Kubernetes cluster for deployment, Jenkins as our CI/CD tool for continuous integration, and Argo CD for continuous deployment in a GitOps workflow, where Git serves as the single source of truth. Grok LLM will be used for question generation, leveraging the LLaMA 3.3 model, which is free to use. Docker Hub will store our Docker images, Streamlit will provide the user interface, and Docker will handle containerization. The entire deployment will be hosted on a GCP VM, which allows us to run Minikube and Kubernetes clusters efficiently.
+
+Grok LLM is a free platform (with 100 API requests per day) and will be used to generate questions using LLaMA 3.3. Docker Hub acts as a repository for storing our built Docker images. LangChain simplifies the interaction with the LLM and eases the question-generation process. GitOps ensures application stability; unlike traditional CI/CD pipelines where deployment failures can stop the application, the GitOps workflow with Argo CD automatically rolls back to the last successful deployment, maintaining uptime even if the latest pipeline fails. Minikube, in conjunction with a GCP VM, allows us to create a Kubernetes cluster on a virtual machine with custom RAM, CPU, and storage. Streamlit is used to build a clean and interactive user interface, and Docker is used to containerize the application for deployment. Jenkins handles continuous integration by extracting code from GitHub, building Docker images, and pushing them to Docker Hub, while Argo CD manages continuous deployment on Kubernetes and handles automatic rollbacks in case of failures.
+
+The workflow begins with project and API setup, where we create a virtual environment, install necessary libraries (such as LangChain and Streamlit), and set up the project structure with folders like utils/, src/, prompts/, retriever/, and helper_class/. We configure the Grok API key and select the LLM model, storing API keys securely in environment variables. Using Pydantic, we define schemas and models to structure inputs and outputs for the LLM. Prompt templates are created to instruct the LLM regarding behavior, output format, and question type. The client setup includes configuring parameters such as temperature, which affects creativity, with recommended values between 0.3 and 0.7. The question generator and helper functions contain the logic for generating questions and maintain a clean main application code. The main Streamlit application imports these helper functions for a tidy UI implementation.
+
+Next, code versioning is implemented by pushing all project code to GitHub, ensuring change tracking and commit history. The project is dockerized by creating a Dockerfile specifying the base image, dependencies, exposed port (Streamlit default 8501), and run commands. Kubernetes manifest files (deployment.yaml and service.yaml) define the deployment logic and expose the application on the designated port. On the GCP VM, we install Docker Engine, Minikube, and kubectl to manage the Kubernetes cluster. In the CI/CD pipeline, Jenkins extracts code from GitHub, builds the Docker image, and pushes it to Docker Hub, while Argo CD deploys the image on Kubernetes and manages rollbacks automatically. Webhooks are configured to trigger the Jenkins pipeline automatically whenever new code is pushed to GitHub, eliminating the need for manual builds.
+
+In conclusion, this workflow ensures that the Study Buddy application remains stable and continuously running, even if a deployment fails. The code is well-structured, versioned, and containerized, and the deployment process is fully automated through CI/CD with GitOps. The combination of Jenkins, Argo CD, Docker, Minikube, and Streamlit ensures a smooth, efficient, and maintainable project workflow. The next step involves diving into project setup, building the Study Buddy step by step, and carefully following the Argo CD setup, Kubernetes manifest, and Zipkin setup videos, which are crucial for successful deployment.
+
+**2. Project and API Setup ( Groq )**
+
+Hello everyone,
+Welcome to the Project Setup video for this project.
+
+Step 1: Create Project Folder
+
+First, create a new folder on any disk.
+
+Let’s name it study_buddy (you can choose any name).
+
+Open this folder in VSCode. You can either:
+
+Right-click → Open with Code, or
+
+Open a terminal, type code . and press Enter.
+
+Step 2: Create Virtual Environment
+
+Open a new terminal in VSCode. Make sure you select Command Prompt.
+
+Run the command:
+
+python -m venv venv
 
 
+This will create a virtual environment named venv.
+
+To activate it:
+
+venv\Scripts\activate
 
 
+You should now see (venv) in your terminal, which means the environment is active.
 
+Step 3: Create requirements.txt
+
+In the root directory, create a file named requirements.txt.
+
+Add the following libraries:
+
+langchain
+grok
+pandas
+streamlit
+python-dotenv
+
+
+These are the main libraries needed for this project. Others can be added later if required.
+
+Step 4: Create setup.py
+
+In the root directory, create a setup.py file.
+
+Copy the code provided in the GitHub repository.
+
+The purpose of this file is to:
+
+Install all libraries from requirements.txt
+
+Treat folders as Python packages
+
+To run it, use:
+
+pip install -e .
+
+
+This will install the dependencies and register your folders as packages.
+
+Step 5: Set Up Project Structure
+
+Create the following structure inside src/ folder:
+
+src/
+├── common/      # Logger & Custom Exception
+├── config/      # API configurations
+├── lm/          # Language Model setup
+├── generator/   # Question generation logic
+├── models/      # Model definitions
+├── prompts/     # Prompt templates
+└── utils/       # Helper functions
+
+
+Make sure every folder has an __init__.py file so Python treats it as a package.
+
+Inside common/ folder:
+
+Create logger.py and custom_exception.py.
+
+Copy the code for these files from the GitHub repo.
+
+Step 6: Create Environment File
+
+In the root directory, create a .env file.
+
+Add your Grok API key:
+
+GROK_API_KEY=<your-api-key>
+
+
+To get this API key:
+
+Go to the Grok API website.
+
+Create an account and sign in.
+
+Generate a new API key (you can name it Study Buddy) and paste it in .env.
+
+Step 7: Finalize Packages
+
+Run pip install -e . again to ensure all folders (src, common, etc.) are treated as packages.
+
+This will complete the setup so Python recognizes src and all subfolders as proper modules.
+
+Step 8: Summary
+
+We created a virtual environment.
+
+Installed required libraries via requirements.txt.
+
+Created setup.py to manage dependencies and packages.
+
+Defined project structure: common, config, lm, generator, models, prompts, utils.
+
+Added .env file for API keys.
+
+This setup will allow you to organize your code cleanly and prepare for the next steps: LM setup, API integration, and question generation logic.
+
+In the next video, we’ll dive deeper into configuring the Language Model and setting up the API for your Study Buddy.
+
+**Summary:**
+
+Hello everyone! In this video, we set up the project environment for our Study Buddy application. First, we created a project folder named study_buddy (you can choose any name) and opened it in VSCode, either through right-click → Open with Code or via the terminal using code .. Next, we created a Python virtual environment by running python -m venv venv and activated it with venv\Scripts\activate, ensuring all dependencies are installed in an isolated environment. We then created a requirements.txt file in the root directory, adding the main libraries required for this project: langchain, grok, pandas, streamlit, and python-dotenv. Following that, we created a setup.py file, copied from the GitHub repository, which allows us to install all libraries from requirements.txt and register folders as Python packages using pip install -e ..
+
+We structured the project inside the src/ folder to maintain clean organization, creating the following subfolders: common/ for logger and custom exceptions, config/ for API configurations, lm/ for Language Model setup, generator/ for question generation logic, models/ for model definitions, prompts/ for prompt templates, and utils/ for helper functions. Each folder contains an __init__.py file to make Python treat them as packages. Inside the common/ folder, we created logger.py and custom_exception.py, copying code from the GitHub repository. We also added a .env file in the root directory to store sensitive information, including the Grok API key. This key can be generated by creating an account on the Grok API website and generating a new API key, which is then added to .env as GROK_API_KEY=<your-api-key>.
+
+Finally, we ran pip install -e . again to ensure all folders and submodules are recognized as Python packages. In summary, we created a virtual environment, installed necessary libraries, set up setup.py for managing dependencies, organized the project structure with subfolders and packages, and added a .env file for API keys. This setup provides a clean, modular foundation for the Study Buddy application and prepares us for the next steps: configuring the Language Model, integrating the API, and implementing the question generation logic.
+
+**3. Configuration Code**
+
+Hello everyone,
+
+In this video, we will create the configuration file for our project.
+
+Step 1: Make config a Package
+
+Go to your config directory.
+
+Create an __init__.py file inside it so Python treats it as a package.
+
+Run:
+
+pip install -e .
+
+
+This ensures the newly added package is registered.
+
+Step 2: Create settings.py
+
+Inside the config directory, create a file called settings.py.
+
+Open it in VSCode.
+
+Step 3: Import Libraries
+
+We need the following imports at the top of the file:
+
+import os
+from dotenv import load_dotenv
+
+
+Purpose: We will load all environment variables here, such as our Grok API key.
+
+Step 4: Load Environment Variables
+
+First, load the .env file using:
+
+load_dotenv()
+
+Step 5: Define the Configuration Class
+
+Create a class named Settings to store all configurations:
+
+class Settings:
+    # Load Grok API key from environment variables
+    GROK_API_KEY = os.getenv("GROK_API_KEY")
+    # Define the model to use (check Grok API docs for supported models)
+    MODEL_NAME = "llama-3-18b"
+    # Temperature controls creativity (0 = low, 1 = high)
+    TEMPERATURE = 0.9
+    # Maximum retries for API calls in case of failure
+    MAX_RETRIES = 3
+
+
+Explanation:
+
+GROK_API_KEY – fetched from environment variables.
+
+MODEL_NAME – the Grok model to use; we are using a small LLaMA 3.18B model.
+
+TEMPERATURE – controls creativity; higher values make the model more creative.
+
+MAX_RETRIES – number of times the API will retry in case of network failure.
+
+Step 6: Create an Instance
+
+Finally, create an instance of this class so it can be used throughout the project:
+
+settings = Settings()
+
+Summary
+
+We made config a package.
+
+Created settings.py to centralize all project configurations.
+
+Loaded environment variables.
+
+Defined API key, model name, temperature, and max retries.
+
+Created a Settings instance to use throughout the code.
+
+This completes the configuration setup.
+
+Next, we will move on to setting up the Language Model (LM) and API integration.
+
+**Summary:**
+
+Hello everyone! In this video, we set up the configuration file for our Study Buddy project. First, we made the config folder a Python package by creating an __init__.py file inside it and then ran pip install -e . to register the newly added package. Next, we created a file named settings.py within the config directory and opened it in VSCode. At the top of settings.py, we imported the necessary libraries: os and load_dotenv from dotenv, which will allow us to load all environment variables, including the Grok API key. We then loaded the .env file using load_dotenv().
+
+After that, we defined a Settings class to centralize all project configurations. Inside this class, we defined the GROK_API_KEY by fetching it from environment variables, specified the MODEL_NAME as "llama-3-18b" for the Grok LLaMA model, set the TEMPERATURE to 0.9 to control creativity, and defined MAX_RETRIES as 3 to handle API call retries in case of network failures. Finally, we created an instance of this class named settings, which can be used throughout the project to access configuration values. In summary, we converted the config folder into a package, created settings.py to centralize configurations, loaded environment variables, defined key parameters like API key, model name, temperature, and max retries, and instantiated the Settings class for use across the project. This completes the configuration setup and prepares us for the next step: setting up the Language Model (LM) and integrating the API.
+
+**4. Question Schemas Models Code**
+
+Hello everyone!
+
+In this video, we will set up the models part of our project, which will define Pydantic models for our questions.
+
+Step 1: Make models a Package
+
+Go to the models directory.
+
+Create an __init__.py file to make it a package.
+
+Run:
+
+pip install -e .
+
+
+This ensures that any changes in the package are recognized.
+
+Step 2: Create question_schemas.py
+
+In the models directory, create a file called question_schemas.py.
+
+Here, we will define the structure of the questions that the LLM generates.
+
+Why?
+We want the questions to follow a fixed format, so MCQs behave like MCQs, and fill-in-the-blanks behave correctly.
+
+Step 3: Import Libraries
+from typing import List
+from pydantic import BaseModel, Field, validator
+
+
+List is for storing multiple options in MCQs.
+
+BaseModel, Field, and validator are used to define and validate data models.
+
+Step 4: MCQ Question Model
+
+Create a class MCQQuestion for multiple-choice questions:
+
+class MCQQuestion(BaseModel):
+    question: str = Field(..., description="Question text")
+    options: List[str] = Field(..., description="List of four options")
+    correct_answer: str = Field(..., description="The correct answer from options")
+    @validator("question", pre=True)
+    def clean_question(cls, v):
+        # Sometimes the LM returns a dictionary instead of a string
+        if isinstance(v, dict):
+            return v.get("description", "")
+        return str(v)
+
+
+Explanation:
+
+question – The text of the question.
+
+options – A list of four options.
+
+correct_answer – The correct option.
+
+validator – Cleans the question if the LLM returns it as a dictionary instead of a string.
+
+Step 5: Fill-in-the-Blanks Question Model
+
+Create a class FillBlankQuestion for fill-in-the-blank questions:
+
+class FillBlankQuestion(BaseModel):
+    question: str = Field(..., description="Question text with a blank line '_' for fill-in")
+    answer: str = Field(..., description="Correct word or phrase for the blank")
+    @validator("question", pre=True)
+    def clean_question(cls, v):
+        if isinstance(v, dict):
+            return v.get("description", "")
+        return str(v)
+
+
+Explanation:
+
+question – The question text with a blank represented by _.
+
+answer – The correct word or phrase for the blank.
+
+validator – Cleans the question in case the LLM returns a dictionary.
+
+Summary
+
+We created two data models: MCQQuestion and FillBlankQuestion.
+
+Both use validators to clean input from the LLM.
+
+MCQs have question, options, and correct answer.
+
+Fill-in-the-blanks have question with blank and answer only.
+
+These schemas ensure consistent structure for your LLM-generated questions.
+
+This completes the models and question schemas setup.
+
+Next, we will move on to integrating these schemas with the generator module to create actual questions.
+
+**Summary:**
+
+Hello everyone! In this video, we set up the models part of our Study Buddy project by defining Pydantic models for our questions. First, we made the models directory a Python package by creating an __init__.py file and running pip install -e . to ensure that any changes in the package are recognized. Next, we created a file named question_schemas.py inside the models directory, where we define the structure of the questions generated by the LLM. This is important to ensure that multiple-choice questions (MCQs) behave correctly and fill-in-the-blank questions follow a consistent format. We imported necessary libraries: List from typing to store multiple options in MCQs, and BaseModel, Field, and validator from Pydantic to define and validate data models.
+
+We then created the MCQQuestion class for multiple-choice questions. This class includes a question field for the question text, an options field for a list of four options, and a correct_answer field for the correct option. A validator is included to clean the question in case the LLM returns it as a dictionary instead of a string. Similarly, we created the FillBlankQuestion class for fill-in-the-blank questions, which includes a question field containing a blank represented by _ and an answer field for the correct word or phrase. This class also includes a validator to clean the input if the LLM returns a dictionary. In summary, we created two data models: MCQQuestion and FillBlankQuestion, both with validators to clean LLM output, ensuring consistent structure for all generated questions. This completes the models and question schemas setup and prepares us to integrate these schemas with the generator module to create actual questions.
+
+**5. Prompt Templates Code**
+
+Hello everyone!
+
+In this video, we will be working on prompt templates for our LLM.
+
+Step 1: Make prompts a Package
+
+Go to the prompts directory.
+
+Create an __init__.py file to make it a package.
+
+Open your terminal and run:
+
+pip install -e .
+
+
+This ensures that the package is installed and any changes are recognized.
+
+Step 2: Create templates.py
+
+Inside the prompts directory, create a file called templates.py.
+
+This file will contain the prompt templates for generating questions via the LLM.
+
+Note:
+You can copy the templates directly from the GitHub directory. These were created using ChatGPT to ensure proper formatting and examples.
+
+Step 3: Import Libraries
+from langchain.prompts import PromptTemplate
+
+
+We use PromptTemplate from LangChain to define structured prompts.
+
+Step 4: MCQ Template
+
+We create a template for multiple-choice questions (MCQs).
+
+The template structure ensures the LLM generates questions in a consistent JSON format.
+
+Template highlights:
+
+Generate an MCQ based on user-provided difficulty and topic.
+
+Return only a JSON object.
+
+JSON fields:
+
+question – The question text.
+
+options – Array of four possible answers.
+
+correct_answer – The correct option.
+
+Provide examples to guide the LLM for more accurate output, e.g.:
+
+{
+  "question": "What is the capital of France?",
+  "options": ["London", "Berlin", "Paris", "Madrid"],
+  "correct_answer": "Paris"
+}
+
+
+Input variables: difficulty and topic (passed by the user).
+
+Step 5: Fill-in-the-Blank Template
+
+Similar to MCQs, we create a template for fill-in-the-blank questions.
+
+Key points:
+
+Generate a question based on difficulty and topic.
+
+Return only a JSON object.
+
+JSON fields:
+
+question – Question text with a blank _ to fill.
+
+answer – Correct word or phrase for the blank.
+
+Provide examples to help the LLM understand the required output format.
+
+Input variables remain the same: difficulty and topic.
+
+Step 6: Why Examples?
+
+We are using a smaller LLM instance (Llama 3, 3.18B parameters).
+
+Providing examples ensures the model understands the structure and generates accurate questions efficiently.
+
+Examples guide both MCQ and fill-in-the-blank formats.
+
+Summary
+
+prompts/templates.py contains two templates: MCQ and Fill-in-the-blank.
+
+Both templates use difficulty and topic as inputs.
+
+Both templates return structured JSON objects that match the question schemas we defined earlier.
+
+Examples are included to make the LLM output more accurate and consistent.
+
+This completes the prompts templates setup.
+
+Next, we will move on to integrating these templates with the generator module to generate actual questions for the user.
+
+**Summary:**
+
+Hello everyone! In this video, we worked on prompt templates for our LLM in the Study Buddy project. First, we made the prompts directory a Python package by creating an __init__.py file and running pip install -e . so that any changes in the package are recognized. Next, we created a file named templates.py inside the prompts directory, which contains the prompt templates for generating questions via the LLM. We imported PromptTemplate from LangChain to define structured prompts. We then created an MCQ template that generates multiple-choice questions based on user-provided difficulty and topic. The template ensures the LLM returns a consistent JSON object with the fields: question for the question text, options as an array of four possible answers, and correct_answer for the correct option. Examples were provided to guide the LLM in generating accurate output. Similarly, we created a fill-in-the-blank template, which also uses difficulty and topic as inputs and returns a JSON object with the fields: question containing a blank _ to fill and answer for the correct word or phrase. Examples were again included to ensure the smaller LLaMA 3.18B model produces accurate and structured outputs. In summary, prompts/templates.py now contains two templates—MCQ and fill-in-the-blank—that take difficulty and topic as inputs, return structured JSON matching our previously defined question schemas, and include examples to improve LLM accuracy and consistency. This completes the prompt templates setup and prepares us for integrating these templates with the generator module to generate actual questions for the user.
+
+**6. GROQ Client Setup Code**
+
+In this video, we will be creating our Grok client to interact with the Grok API using LangChain.
+
+Step 1: Make lm a Package
+
+Go to the lm folder.
+
+Ensure an __init__.py file exists so the folder is treated as a package.
+
+Open your terminal and run:
+
+pip install -e .
+
+
+This will install the lm package and recognize any changes.
+
+Step 2: Create client.py
+
+Inside the lm folder, create a file named client.py.
+
+Step 3: Import Libraries
+from langchain.chat_models import ChatGrok
+from src.config.settings import settings
+
+
+ChatGrok allows us to interact with the Grok API.
+
+settings loads configuration variables such as API key, model name, and temperature.
+
+Note:
+Make sure to import the loaded settings instance (small settings) rather than the class itself.
+
+Step 4: Define a Function to Get the LM
+def get_grok_lm():
+    return ChatGrok(
+        api_key=settings.grok_api_key,
+        model=settings.model_name,
+        temperature=settings.temperature
+    )
+
+
+get_grok_lm() is a helper function to access the LM.
+
+Parameters passed to ChatGrok:
+
+API key – from settings.grok_api_key
+
+Model name – from settings.model_name
+
+Temperature – from settings.temperature
+
+Important:
+These three parameters are mandatory to initialize the model.
+
+Step 5: Usage
+
+Whenever you need to use the LM:
+
+lm = get_grok_lm()
+
+
+This avoids re-creating the LM multiple times.
+
+It is already connected to your configurations from settings.py.
+
+Later, when we build the question generator, we will use this get_grok_lm() function to generate questions via the LLM.
+
+Summary
+
+client.py provides a single entry point to access the Grok LLM.
+
+It loads the API key, model, and temperature from settings.py.
+
+Using get_grok_lm() ensures you don’t need to create multiple instances of the LM.
+
+Next, we will move to the generator module to create questions using this LM client.
+
+**Summary:**
+
+In this video, we created a Grok client to interact with the Grok API using LangChain. First, we ensured that the lm folder is a Python package by creating an __init__.py file and running pip install -e . so any changes are recognized. Next, we created a file named client.py inside the lm folder. We imported ChatGrok from langchain.chat_models to interact with the Grok API and the settings instance from src.config.settings to load configuration variables like the API key, model name, and temperature. We then defined a helper function get_grok_lm() that returns a ChatGrok instance initialized with the API key (settings.grok_api_key), model name (settings.model_name), and temperature (settings.temperature). This function ensures that the LLM is accessed consistently without creating multiple instances and is already connected to the configurations from settings.py. Whenever the LM is needed, you can simply call lm = get_grok_lm(). This setup allows seamless integration with the question generator module, which will use this client to generate questions via the LLM. In summary, client.py serves as a single entry point to access the Grok LLM, loading necessary configurations from settings.py and avoiding redundant LM instances, preparing us for the next step of building the question generator.
+
+**7. Question Generator Code**
+
+In this video, we will be creating our Question Generator, which is the most important component of our project.
+
+Step 1: Set Up the Generator Package
+
+Go to the generator folder.
+
+Create an __init__.py file so the folder is treated as a package.
+
+Inside generator, create a file called question_generator.py.
+
+Open your terminal and run:
+
+pip install -e .
+
+
+Remember: Every time you create a new __init__.py, run this command to reinstall the package.
+
+Step 2: Imports
+from langchain.output_parsers import PydanticOutputParser
+from src.models.json_schemas import MCQQuestion, FillBlankQuestion
+from src.prompts.templates import MCQPromptTemplate, FillBlankPromptTemplate
+from src.lm.client import get_grok_lm
+from src.config.settings import settings
+from src.common.logger import get_logger
+from src.common.custom_exception import CustomException
+
+
+Explanation:
+
+PydanticOutputParser: Converts LM text output into structured Python objects.
+
+MCQQuestion, FillBlankQuestion: Data models defining the output structure.
+
+MCQPromptTemplate, FillBlankPromptTemplate: Templates telling the LM how to format answers.
+
+get_grok_lm: Returns the initialized LM instance.
+
+settings: Contains configuration variables like max_retries.
+
+get_logger & CustomException: For logging and exception handling.
+
+Step 3: Create the Question Generator Class
+class QuestionGenerator:
+    def __init__(self):
+        self.lm = get_grok_lm()
+        self.logger = get_logger(self.__class__.__name__)
+
+
+self.lm is the LM instance for generating questions.
+
+self.logger is specifically associated with this class.
+
+Step 4: Private Helper Method – Retry and Parse
+def _retry_and_parse(self, prompt, parser, topic, difficulty):
+    for attempt in range(settings.max_retries):
+        try:
+            self.logger.info(f"Generating question for topic: {topic}, difficulty: {difficulty}")
+            response = self.lm.invoke(prompt.format(topic=topic, difficulty=difficulty))
+            parsed = parser.parse(response.contents)
+            self.logger.info("Successfully parsed the question")
+            return parsed
+        except Exception as e:
+            self.logger.error(f"Error: {str(e)}")
+            if attempt == settings.max_retries - 1:
+                raise CustomException(f"Generation failed after {settings.max_retries} attempts")
+
+
+Key Points:
+
+Dynamically formats the prompt based on topic and difficulty.
+
+Uses a parser to convert LM output into a structured Python object.
+
+Retries up to max_retries if generation or parsing fails.
+
+Logs every attempt and raises a CustomException if all retries fail.
+
+Step 5: Generate MCQ Questions
+def generate_mcq(self, topic: str, difficulty: str = "medium"):
+    try:
+        parser = PydanticOutputParser(pydantic_object=MCQQuestion)
+        question = self._retry_and_parse(MCQPromptTemplate, parser, topic, difficulty)
+        # Extra validation
+        if len(question.options) != 4 or question.correct_answer not in question.options:
+            raise ValueError("Invalid MCQ structure")
+        self.logger.info("Generated a valid MCQ question")
+        return question
+    except Exception as e:
+        self.logger.error(f"MCQ generation failed: {str(e)}")
+        raise CustomException("MCQ generation failed")
+
+
+Explanation:
+
+Uses the MCQ prompt template.
+
+Ensures output follows the MCQQuestion schema.
+
+Checks for exactly 4 options and a valid correct answer.
+
+Step 6: Generate Fill-in-the-Blank Questions
+def generate_fill_blank(self, topic: str, difficulty: str = "medium"):
+    try:
+        parser = PydanticOutputParser(pydantic_object=FillBlankQuestion)
+        question = self._retry_and_parse(FillBlankPromptTemplate, parser, topic, difficulty)
+        if "___" not in question.question:
+            raise ValueError("Fill-in-the-blank question must contain a blank")
+        self.logger.info("Generated a valid fill-in-the-blank question")
+        return question
+    except Exception as e:
+        self.logger.error(f"Fill-in-the-blank generation failed: {str(e)}")
+        raise CustomException("Fill-in-the-blank generation failed")
+
+
+Explanation:
+
+Uses the fill-in-the-blank template.
+
+Ensures output follows the FillBlankQuestion schema.
+
+Validates that the question contains a blank (___).
+
+Step 7: Summary
+
+Defined the QuestionGenerator class with LM and logger.
+
+Created a private _retry_and_parse method for sending prompts and handling retries.
+
+Added generate_mcq and generate_fill_blank methods following the respective Pydantic schemas.
+
+Included logging, validation checks, and exception handling for production readiness.
+
+Next, we will integrate this question generator into our Streamlit app for interactive question creation.
+
+**Summary:**
+
+In this video, we set up the Question Generator, the core component of our project. First, we made the generator folder a Python package by creating an __init__.py file and running pip install -e . to ensure any changes are recognized. Inside the generator folder, we created question_generator.py and imported all necessary modules, including PydanticOutputParser for parsing LM outputs, MCQQuestion and FillBlankQuestion schemas for structured questions, MCQPromptTemplate and FillBlankPromptTemplate for defining prompts, get_grok_lm to access the LLM, settings for configuration variables, and get_logger and CustomException for logging and error handling. We then defined the QuestionGenerator class, initializing it with the LM instance (self.lm) and a logger specific to the class (self.logger). A private helper method _retry_and_parse was created to dynamically format prompts based on topic and difficulty, parse LM outputs into structured objects, and retry generation up to max_retries if parsing or generation fails, while logging every attempt and raising a CustomException after all retries fail. The generate_mcq method uses the MCQ prompt template to generate multiple-choice questions, ensuring the output conforms to the MCQQuestion schema with exactly four options and a valid correct answer, while logging successes or failures. Similarly, the generate_fill_blank method generates fill-in-the-blank questions using the corresponding template, validating that the question contains a blank (___) and adheres to the FillBlankQuestion schema. Throughout, logging, validation, and exception handling are implemented to ensure robustness and production readiness. In summary, the QuestionGenerator class provides structured methods to generate both MCQs and fill-in-the-blank questions via the LM, handling retries, validation, and errors gracefully, and is now ready to be integrated into the Streamlit app for interactive question creation.
+
+**8. Helper Class Code for Application**
+
+Step 1: Why helpers.py?
+
+Keeps application.py clean and readable.
+
+Centralizes main utilities for easy import and maintenance.
+
+Helps separate logic for generating questions, recording answers, evaluating, and saving results.
+
+Step 2: Setup
+
+Create a utils folder:
+
+mkdir utils
+touch utils/__init__.py
+touch utils/helpers.py
+
+
+Install the package if needed:
+
+pip install -e .
+
+
+Import necessary libraries in helpers.py:
+
+import os
+import streamlit as st
+import pandas as pd
+from src.generator.generator import QuestionGenerator
+from datetime import datetime
+
+Step 3: Create the rerun function
+
+Purpose: Refresh Streamlit app when generating new questions.
+
+def rerun():
+    st.session_state["rerun_trigger"] = st.session_state.get("rerun_trigger", False)
+
+
+Enables generating a fresh set of questions for a different topic without leftover data.
+
+Step 4: Create the QuizManager class
+Step 4.1: Constructor
+class QuizManager:
+    def __init__(self):
+        self.questions = []
+        self.user_answers = []
+        self.results = []
+
+
+Initializes empty lists for questions, user answers, and results.
+
+Step 4.2: generate_questions()
+
+Purpose: Generate MCQ or Fill-in-the-Blank questions based on user input.
+
+Parameters:
+
+generator: QuestionGenerator object
+
+topic (str)
+
+question_type (str)
+
+difficulty (str)
+
+num_questions (int)
+
+def generate_questions(self, generator, topic, question_type, difficulty, num_questions):
+    self.questions = []
+    self.user_answers = []
+    try:
+        for _ in range(num_questions):
+            if question_type.lower() == "multiple choice":
+                question = generator.generate_mcq(topic, difficulty.lower())
+                self.questions.append({
+                    "type": "MCQ",
+                    "question": question.question,
+                    "options": question.options,
+                    "correct_answer": question.correct_answer
+                })
+            else:
+                question = generator.generate_fill_blank(topic, difficulty.lower())
+                self.questions.append({
+                    "type": "Fill-in-the-blank",
+                    "question": question.question,
+                    "options": [],
+                    "correct_answer": question.answer
+                })
+        return True
+    except Exception as e:
+        st.error(f"Error generating question: {e}")
+        return False
+
+
+Clears previous questions and user answers.
+
+Handles exceptions to show errors in Streamlit.
+
+Step 4.3: attempt_quiz()
+
+Purpose: Show questions in Streamlit and record user input.
+
+MCQ → st.radio, Fill-in-the-blank → st.text_input
+
+def attempt_quiz(self):
+    for i, q in enumerate(self.questions):
+        st.markdown(f"**Question {i+1}:** {q['question']}")
+        if q["type"] == "MCQ":
+            user_answer = st.radio(
+                f"Select an answer for Question {i+1}", 
+                q["options"], key=f"mcq_{i}"
+            )
+        else:
+            user_answer = st.text_input(
+                f"Fill in the blank for Question {i+1}", key=f"fill_{i}"
+            )
+        self.user_answers.append(user_answer)
+
+
+Stores user answers in self.user_answers.
+
+Step 4.4: evaluate_quiz()
+
+Purpose: Compare user answers with correct answers and generate results.
+
+def evaluate_quiz(self):
+    self.results = []
+    for i, (q, user_ans) in enumerate(zip(self.questions, self.user_answers)):
+        result = {
+            "question_number": i+1,
+            "question": q["question"],
+            "question_type": q["type"],
+            "user_answer": user_ans,
+            "correct_answer": q["correct_answer"],
+            "is_correct": False
+        }
+        if q["type"] == "MCQ":
+            result["options"] = q["options"]
+            result["is_correct"] = user_ans == q["correct_answer"]
+        else:
+            result["is_correct"] = user_ans.strip().lower() == q["correct_answer"].strip().lower()
+        self.results.append(result)
+
+
+Handles MCQ and Fill-in-the-blank.
+
+Normalizes answers (strip spaces, lowercase) to avoid mismatch errors.
+
+Step 4.5: generate_result_dataframe()
+
+Purpose: Convert results into a Pandas DataFrame.
+
+def generate_result_dataframe(self):
+    if not self.results:
+        return pd.DataFrame()
+    return pd.DataFrame(self.results)
+
+Step 4.6: save_to_csv()
+
+Purpose: Save results DataFrame as a timestamped CSV file.
+
+def save_to_csv(self, file_name_prefix="quiz_results"):
+    if not self.results:
+        st.warning("No results to save")
+        return None
+    df = self.generate_result_dataframe()
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    unique_file_name = f"{file_name_prefix}_{timestamp}.csv"
+    os.makedirs("results", exist_ok=True)
+    full_path = os.path.join("results", unique_file_name)
+    try:
+        df.to_csv(full_path, index=False)
+        st.success("Results saved successfully")
+        return full_path
+    except Exception as e:
+        st.error(f"Failed to save results: {e}")
+        return None
+
+
+Saves the CSV inside results directory.
+
+Adds timestamp to ensure unique filenames.
+
+Step 5: Summary
+
+rerun() → Handles session refresh in Streamlit.
+
+QuizManager → Manages entire quiz workflow:
+
+generate_questions() → Creates questions.
+
+attempt_quiz() → Collects user answers.
+
+evaluate_quiz() → Compares answers with correct ones.
+
+generate_result_dataframe() → Converts results to DataFrame.
+
+save_to_csv() → Saves results as CSV file.
+
+Fully modular, keeps your Streamlit app clean.
+
+Supports MCQs and Fill-in-the-blanks.
+
+Handles errors gracefully and ensures proper evaluation.
+
+**Summary:**
+
+In this video, we created the helpers.py file inside the utils folder to centralize utility functions and keep the main application.py clean and readable. This file is designed to handle the core logic for generating questions, recording answers, evaluating them, and saving results. We first set up the utils folder with an __init__.py and helpers.py file, and installed the package using pip install -e .. Inside helpers.py, we imported necessary libraries including os, streamlit, pandas, the QuestionGenerator from the generator module, and datetime. We defined a rerun() function to refresh the Streamlit app when generating new questions, ensuring that users can request a fresh set of questions for a different topic without leftover data. Next, we implemented the QuizManager class, which manages the complete quiz workflow. The constructor initializes empty lists for questions, user_answers, and results. The generate_questions() method uses a QuestionGenerator instance to create either MCQs or fill-in-the-blank questions based on user input, clearing previous questions and handling exceptions to display errors in Streamlit. The attempt_quiz() method renders questions in Streamlit, using st.radio for MCQs and st.text_input for fill-in-the-blank questions, storing user responses in self.user_answers. The evaluate_quiz() method compares user answers with the correct answers, handling both MCQs and fill-in-the-blank formats, and normalizes text to avoid mismatch issues. generate_result_dataframe() converts the results into a Pandas DataFrame, while save_to_csv() saves this DataFrame as a timestamped CSV inside a results directory, ensuring unique filenames and handling file-writing exceptions. In summary, helpers.py and the QuizManager class provide a fully modular system that manages question generation, answer collection, evaluation, and result saving, keeping the Streamlit app clean and organized, supporting both MCQs and fill-in-the-blank questions, while handling errors gracefully and ensuring accurate evaluation.
+
+**9. Main Application Code**
+
+Step 1: Create the file
+
+In your root directory, create the file:
+
+touch application.py
+
+
+This file will be the main app for your quiz.
+
+Step 2: Import libraries
+import os
+import streamlit as st
+from dotenv import load_dotenv
+from src.utils.helpers import *
+from src.generator.generator import QuestionGenerator
+
+
+os → For file handling.
+
+streamlit → For UI.
+
+dotenv → Load environment variables.
+
+helpers → For rerun, QuizManager, and all utility methods.
+
+QuestionGenerator → For generating quiz questions.
+
+Step 3: Load environment variables
+load_dotenv()
+
+
+Ensures all environment variables are loaded at runtime.
+
+Step 4: Set page configuration
+st.set_page_config(
+    page_title="Study Buddy",
+    page_icon="🎧"
+)
+
+
+Title: Study Buddy
+
+Icon: Headphones 🎧
+
+Step 5: Initialize Streamlit session states
+if "quiz_manager" not in st.session_state:
+    st.session_state.quiz_manager = QuizManager()
+
+if "quiz_generated" not in st.session_state:
+    st.session_state.quiz_generated = False
+
+if "quiz_submitted" not in st.session_state:
+    st.session_state.quiz_submitted = False
+
+if "rerun_trigger" not in st.session_state:
+    st.session_state.rerun_trigger = False
+
+
+quiz_manager → Stores the QuizManager object.
+
+quiz_generated → Tracks if the quiz has been generated.
+
+quiz_submitted → Tracks if the user submitted the quiz.
+
+rerun_trigger → Used to rerun the Streamlit app after generating a quiz.
+
+Purpose: Session states prevent losing data when the page refreshes.
+
+Step 6: App title
+st.title("Study Buddy")
+
+
+Displays the main title of the app.
+
+Step 7: Create Sidebar for settings
+Step 7.1: Sidebar header
+st.sidebar.header("Quick Settings")
+
+
+Header for the sidebar.
+
+Step 7.2: Question type selection
+question_type = st.sidebar.selectbox(
+    "Select Question Type",
+    ["Multiple Choice", "Fill in the Blank"],
+    index=0
+)
+
+
+Dropdown to select question type.
+
+Matches the names used in helpers.py to avoid errors.
+
+Step 7.3: Topic input
+topic = st.sidebar.text_input(
+    "Enter Topic",
+    placeholder="Indian History"
+)
+
+
+User enters the topic for the quiz.
+
+Step 7.4: Difficulty selection
+difficulty = st.sidebar.selectbox(
+    "Select Difficulty",
+    ["Easy", "Medium", "Hard"],
+    index=1
+)
+
+
+Default: Medium.
+
+Options: Easy, Medium, Hard.
+
+Step 7.5: Number of questions
+num_questions = st.sidebar.number_input(
+    "Number of Questions",
+    min_value=1,
+    max_value=10,
+    value=5
+)
+
+
+Minimum: 1, Maximum: 10, Default: 5.
+
+Step 8: Generate quiz button
+if st.sidebar.button("Generate Quiz"):
+    st.session_state.quiz_submitted = False
+    generator = QuestionGenerator()
+    success = st.session_state.quiz_manager.generate_questions(
+        generator=generator,
+        topic=topic,
+        question_type=question_type,
+        difficulty=difficulty,
+        num_questions=num_questions
+    )
+    st.session_state.quiz_generated = success
+    rerun()
+
+
+Creates a QuestionGenerator object.
+
+Calls generate_questions() method from QuizManager.
+
+Updates session state to show the quiz in UI.
+
+Calls rerun() to refresh the page and reflect changes immediately.
+
+Step 9: Display quiz if generated
+if st.session_state.quiz_generated and st.session_state.quiz_manager.questions:
+    st.header("Quiz")
+    st.session_state.quiz_manager.attempt_quiz()
+
+
+Displays quiz questions.
+
+Uses attempt_quiz() from QuizManager to render questions and record answers.
+
+Step 10: Submit quiz button
+if st.session_state.quiz_generated:
+    if st.button("Submit Quiz"):
+        st.session_state.quiz_manager.evaluate_quiz()
+        st.session_state.quiz_submitted = True
+        rerun()
+
+
+Evaluates the quiz using evaluate_quiz().
+
+Updates quiz_submitted to True.
+
+Calls rerun() to refresh the UI and show results.
+
+Step 11: Display quiz results
+if st.session_state.quiz_submitted:
+    st.header("Quiz Results")
+    results_df = st.session_state.quiz_manager.generate_result_dataframe()
+    if not results_df.empty:
+        correct_count = results_df['is_correct'].sum()
+        total_questions = len(results_df)
+        score_percentage = (correct_count / total_questions) * 100
+        st.write(f"Score: {score_percentage:.2f}%")
+        for _, result in results_df.iterrows():
+            q_num = result['question_number']
+            if result['is_correct']:
+                st.success(f"Question {q_num}: {result['question']}")
+            else:
+                st.error(f"Question {q_num}: {result['question']}")
+                st.write(f"Your answer: {result['user_answer']}")
+                st.write(f"Correct answer: {result['correct_answer']}")
+
+
+Calculates score.
+
+Displays each question with feedback (green tick for correct, red cross for incorrect).
+
+Step 12: Save and download results
+if st.session_state.quiz_submitted:
+    if st.button("Save Results"):
+        saved_file = st.session_state.quiz_manager.save_to_csv()
+        if saved_file:
+            with open(saved_file, "rb") as f:
+                st.download_button(
+                    label="Download Results",
+                    data=f.read(),
+                    file_name=os.path.basename(saved_file),
+                    mime="text/csv"
+                )
+        else:
+            st.warning("No results available to save")
+
+
+Saves results using save_to_csv().
+
+Provides download button for the CSV file.
+
+Step 13: Main function wrapper
+if __name__ == "__main__":
+    main()
+
+
+All app logic is inside main() function.
+
+Ensures code runs only when this file is executed directly.
+
+Step 14: How the app works
+
+User selects question type, topic, difficulty, number of questions in the sidebar.
+
+Clicks Generate Quiz → Questions appear dynamically using rerun().
+
+User attempts the quiz → Answers are recorded using attempt_quiz().
+
+Clicks Submit Quiz → Quiz is evaluated and results are displayed.
+
+Optionally, user can Save and Download results as CSV.
+
+Session states prevent losing quiz data on page refresh.
+
+**Summary:**
+
+In this video, we created the main Streamlit application file application.py for the Study Buddy quiz. This file serves as the entry point for the app, handling the UI, user interactions, and quiz workflow. We first imported necessary libraries including os for file handling, streamlit for the UI, dotenv to load environment variables, the helper functions and QuizManager from utils/helpers.py, and the QuestionGenerator from the generator module. Environment variables are loaded at runtime using load_dotenv(), and the app page is configured with a title “Study Buddy” and a headphone icon. Streamlit session states are initialized to store the QuizManager object, track whether the quiz has been generated or submitted, and manage a rerun trigger to refresh the app dynamically. The sidebar contains controls for selecting question type (MCQ or fill-in-the-blank), entering the quiz topic, selecting difficulty (Easy, Medium, Hard), and choosing the number of questions (1–10). Clicking the “Generate Quiz” button creates a QuestionGenerator object, calls the generate_questions() method of QuizManager, updates session states, and triggers a page refresh using rerun(). If the quiz is generated, questions are displayed dynamically using the attempt_quiz() method, allowing users to input answers via radio buttons for MCQs or text input for fill-in-the-blank questions. Upon clicking the “Submit Quiz” button, the evaluate_quiz() method compares user answers with correct answers, updates the quiz_submitted state, and refreshes the UI. The quiz results are displayed with the total score percentage, and each question is shown with feedback: correct answers are highlighted in green, and incorrect answers in red along with the user’s answer and the correct answer. Users can optionally save results as a timestamped CSV file using the save_to_csv() method, and a download button allows them to retrieve the file directly from the app. Overall, this setup ensures a fully interactive quiz experience, dynamically generating questions, recording answers, evaluating performance, and providing a mechanism to save and download results, all while maintaining state consistency across page refreshes.
+
+**10. Code Versioning and Dockerfile**
+
+In this video, we will cover code versioning as well as Docker file creation for our project.
+
+Step 1: Code Versioning with GitHub
+
+Create a .gitignore file in your project root directory.
+This file will list files and directories that should not be pushed to GitHub. For example:
+
+logs/
+venv/
+.env
+results/
+
+
+Install Git on your local machine if you haven’t already.
+
+Create a GitHub repository:
+
+Go to GitHub → New Repository
+
+Name it sturdy-buddy (or any name you prefer)
+
+Do not initialize with a README
+
+Push your code to GitHub:
+Open your terminal and run the following commands:
+
+git init
+git branch -M main
+git remote add origin <your-github-repo-url>
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+
+This will push all your project files to GitHub, except those listed in .gitignore.
+
+Step 2: Docker File Creation
+
+Create a Dockerfile in the root directory.
+This will be used for deployment.
+
+Dockerfile contents and explanation:
+
+# Use Python 3.11 slim image
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY . /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -e .
+
+# Expose Streamlit port
+EXPOSE 8501
+
+# Run the Streamlit app
+CMD ["streamlit", "run", "application.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]
+
+
+Explanation:
+
+Python Image: Using a lightweight Python 3.11 slim image.
+
+Environment Variables: Avoids bytecode creation and ensures unbuffered outputs.
+
+Working Directory: Sets /app as the working directory inside the container.
+
+System Dependencies: Installs required packages for production-grade projects.
+
+Copy Project Files: Copies your local code into the Docker image.
+
+Install Dependencies: Installs Python dependencies using pip.
+
+Expose Port: Streamlit app default port is 8501.
+
+Run Command: Streamlit app runs on 0.0.0.0 to make it accessible externally, with headless=true to avoid UI issues in Docker.
+
+Step 3: Push Dockerfile Changes to GitHub
+
+Since we’ve made changes to our project by adding the Dockerfile:
+
+git add .
+git commit -m "Add Dockerfile for deployment"
+git push origin main
+
+
+Now your Dockerfile is versioned along with your project code.
+
+Next Steps: From the next video, we will start working on CI/CD deployment for our project.
+
+**Summary:**
+
+In this video, we covered code versioning using GitHub as well as Dockerfile creation for the Study Buddy project. First, we created a .gitignore file in the project root to exclude files and directories such as logs/, venv/, .env, and results/ from being pushed to GitHub. After installing Git locally, we created a new GitHub repository (named sturdy-buddy or any preferred name) without initializing it with a README. We then initialized Git in the local project folder, set the main branch, added the remote repository, staged all files, committed with the message “Initial commit,” and pushed the project to GitHub, ensuring that all files except those in .gitignore were uploaded. Next, we created a Dockerfile in the root directory to containerize the application for deployment. The Dockerfile uses a lightweight Python 3.11 slim image and sets environment variables PYTHONDONTWRITEBYTECODE and PYTHONUNBUFFERED to avoid bytecode creation and ensure unbuffered outputs. The working directory inside the container is set to /app, system dependencies like build-essential are installed, and project files are copied into the container. Python dependencies are installed using pip install -e ., the default Streamlit port 8501 is exposed, and the app is configured to run with streamlit run application.py on 0.0.0.0 in headless mode, ensuring external accessibility and smooth container operation. Finally, we versioned the Dockerfile by adding, committing with the message “Add Dockerfile for deployment,” and pushing it to GitHub, ensuring that both the project code and deployment configuration are tracked. This completes the setup for containerization and version control, preparing the project for the next steps of CI/CD deployment.
+
+**11. Kubernetes Manifests Files Code**
+
+In this video, we will be creating our Kubernetes manifest files.
+
+Step 1: What are Manifest Files?
+
+Manifest files define how your app will be deployed inside a Kubernetes cluster.
+
+Later, we will form a Kubernetes cluster inside our virtual machine, and these manifest files will tell the cluster how to deploy the app.
+
+Typically, a manifest consists of:
+
+deployment.yaml – defines how your app pods are created and managed.
+
+service.yaml – defines how your app is exposed and accessed.
+
+Some people combine them into a single file, but here we will keep them separate.
+
+Step 2: Adding the Manifest Files
+
+Go to your VSCode root directory and create a folder named manifests.
+
+Copy the deployment.yaml and service.yaml from the resources section into this folder.
+
+Step 3: Understanding deployment.yaml
+
+Key components:
+
+Kind: Deployment
+
+App Name: Keep the same name consistently across the manifest files.
+
+Replicas: Number of pods for your app.
+
+Example: 2 for limited VM resources (e.g., 8GB RAM).
+
+Can be increased if your VM has more resources.
+
+Image:
+
+We will deploy our Docker image to Docker Hub and fetch it from there.
+
+Later, replace the placeholder with your Docker Hub username and image name.
+
+Container Port: Must match the port defined in your Dockerfile.
+
+Streamlit default port: 8501
+
+Environment Variables:
+
+Since .env files are not pushed to GitHub, Kubernetes cannot read them directly.
+
+We inject environment variables (like API keys) into the cluster.
+
+These lines in the manifest fetch the environment variables from the Kubernetes cluster and make them available to the app.
+
+Step 4: Understanding service.yaml
+
+Key components:
+
+Kind: Service
+
+Service Name: Must match the app name to connect the service to the deployment.
+
+Port: Internal port of the service (e.g., 80).
+
+Target Port: Must match your container port (Streamlit default: 8501).
+
+Type:
+
+ClusterIP → accessible only internally inside the cluster.
+
+NodePort → accessible externally from the host machine.
+
+LoadBalancer → exposes the service externally, usually with a cloud provider.
+
+We will use NodePort (or LoadBalancer) so our app is accessible from the internet.
+
+Summary
+
+deployment.yaml defines how many pods, which Docker image to use, ports, and environment variables.
+
+service.yaml defines how the app is exposed and the type of service.
+
+Later, we will deploy our Docker image, inject environment variables, and run the app inside the Kubernetes cluster.
+
+That’s it for this video.
+
+In the next video, we will build our Docker image and deploy it to the Kubernetes cluster.
+
+**Summary:**
+
+In this video, we covered the creation of Kubernetes manifest files for the Study Buddy project. Manifest files define how the application will be deployed inside a Kubernetes cluster, specifying the number of pods, Docker image, ports, and environment variables. Typically, a manifest consists of two separate files: deployment.yaml, which defines how app pods are created and managed, and service.yaml, which defines how the app is exposed and accessed. We created a manifests folder in the root directory and added these files from the resources section. In deployment.yaml, key components include the kind set as Deployment, a consistent app name, the number of replicas (e.g., 2 for limited VM resources), the Docker image (to be fetched from Docker Hub), container port (matching the Dockerfile, default 8501 for Streamlit), and environment variables injected into the cluster since .env files are not directly available. In service.yaml, key components include the kind set as Service, a service name matching the deployment, internal service port (e.g., 80), target port (matching container port), and service type. For external accessibility, we use NodePort or LoadBalancer, allowing the app to be accessed over the internet. Together, deployment.yaml and service.yaml define the pod configuration, image source, ports, environment variables, and exposure method, preparing the app for deployment inside the Kubernetes cluster. In the next video, we will build the Docker image and deploy it to the cluster.
+
+**12. GCP VM Instance Setup for Docker,Minikube,Kubectl**
+
+From this video onwards, our main CI/CD deployment starts.
+
+In this video, we will:
+
+Create a VM instance.
+
+Set it up with all necessary tools and configurations.
+
+We will rely on the full documentation provided in the resources section.
+
+Step 1: Pre-Checks
+
+Before moving forward, make sure you have:
+
+Pushed your code to GitHub
+
+Run git add ., git commit -m "message", and git push.
+
+Since we created the manifest file in the previous video, make sure it is updated.
+
+Created the Dockerfile
+
+Created the manifest directory
+
+Step 2: Creating the VM Instance
+
+Go to GCP Cloud and create an account (you’ll get $300 free credit).
+
+Navigate to VM Instances → Create Instance.
+
+Configure your VM:
+
+Machine Type: E2 (cost-efficient)
+
+Standard machine with 16 GB RAM
+
+OS: Ubuntu 24.04 LTS (64-bit)
+
+Boot Disk: 150 GB (or more if needed)
+
+Networking: Enable HTTP, HTTPS, Load Balancing, and IP Forwarding
+
+Estimated cost: ~$0.15/hour, manageable with free credits.
+
+Step 3: Connect to the VM
+
+Once the VM is running (green tick), click SSH to open the terminal.
+
+Clone your GitHub repo:
+
+Copy the repo URL from GitHub → git clone <URL>
+
+Navigate inside your repo: cd <repo-name>
+
+Step 4: Install Docker
+
+Search online: “Install Docker on Ubuntu” and follow the APT repository instructions.
+
+Install Docker:
+
+Run the commands step by step as given on the website.
+
+Confirm installation with sudo docker run hello-world.
+
+Post-installation steps:
+
+Create Docker group and add your user so you can run Docker without sudo.
+
+Enable Docker to start on boot with systemd.
+
+Verify Docker installation:
+
+docker ps -a → shows running containers
+
+docker run hello-world → demo container
+
+Now Docker is installed and configured properly.
+
+Step 5: Install Minikube
+
+Search: “Install Minikube” → Linux → x86_64 stable binary.
+
+Install the binary using the two commands provided.
+
+Start the cluster: minikube start
+
+This will take 3–4 minutes
+
+Minikube relies on Docker to create containers, so Docker must be installed first
+
+Step 6: Install kubectl
+
+Search: “Install kubectl on Linux”
+
+Ubuntu-specific installation (recommended via snap):
+
+sudo snap install kubectl --classic
+
+
+Verify installation:
+
+kubectl version --client
+
+Step 7: Verify Setup
+
+Docker → running successfully
+
+Minikube → running and configured
+
+kubectl → client version verified
+
+With this, the VM is fully set up for our CI/CD deployment.
+
+In the next video, we will build our Docker image, push it to Docker Hub, and deploy it using Kubernetes.
+
+**Summary:**
+
+From this video onwards, the main CI/CD deployment for the Study Buddy project begins. The video focuses on creating a virtual machine (VM) instance and setting it up with all the necessary tools and configurations. Before proceeding, it is important to ensure that the code has been pushed to GitHub, the Dockerfile has been created, and the manifest directory is updated. The VM is created on Google Cloud Platform (GCP) with an E2 machine type, 16 GB RAM, Ubuntu 24.04 LTS (64-bit) OS, 150 GB boot disk, and networking enabled for HTTP, HTTPS, Load Balancing, and IP Forwarding. The estimated cost is around $0.15/hour, manageable with free credits. Once the VM is running, SSH is used to connect, the GitHub repository is cloned, and the user navigates inside the project folder. Docker is installed following Ubuntu APT repository instructions, verified with docker run hello-world, configured to run without sudo, and enabled to start on boot. Minikube is then installed as a stable binary, started using minikube start, and relies on Docker for container management. Finally, kubectl is installed via snap on Ubuntu and verified with kubectl version --client. After these steps, the VM is fully configured with Docker, Minikube, and kubectl, ready for building Docker images, pushing them to Docker Hub, and deploying the application using Kubernetes in the next phase of the CI/CD pipeline.
+
+**13. Jenkins Setup for Continuous Integration (CI)**
+
+In this video, we will be setting up Jenkins.
+
+As I mentioned in the introduction video:
+
+CI part → Jenkins
+
+CD part → Argo CD
+
+Step 1: Verify Networks
+
+Open your VM terminal and check existing networks:
+
+docker network ls
+
+
+You should see networks like bridge, host, minikube, and none.
+
+Jenkins must run on the same network as Minikube.
+
+We have a pre-written command to run Jenkins in the same network.
+
+Step 2: Run Jenkins Container
+
+Copy the command from the documentation:
+
+It will run Jenkins container on port 8080
+
+Jenkins agents run on port 50000
+
+Uses the LTS image (long-term support)
+
+Paste the command in the VM terminal → Jenkins image will start pulling.
+
+Verify Jenkins is running:
+
+docker ps
+
+
+Check Docker network again:
+
+docker network ls
+
+Step 3: Access Jenkins
+
+Copy the external IP of your VM.
+
+Open a browser → <VM_IP>:8080
+
+If the page doesn’t load, set up a GCP firewall rule:
+
+Go to Firewall in GCP → Create a new rule
+
+Settings:
+
+Network: default
+
+Direction: Ingress
+
+Action: Allow
+
+Targets: All instances
+
+Source IPv4 ranges: 0.0.0.0/0
+
+Allow all ports
+
+Step 4: Unlock Jenkins
+
+Get the initial admin password:
+
+docker logs Jenkins
+
+
+Copy the password → Paste in Jenkins unlock page → Continue
+
+Install Suggested Plugins
+
+Create a new admin user
+
+Username, password, full name, email → Save and Finish
+
+Step 5: Install Required Plugins
+
+Go to Manage Jenkins → Plugins → Available
+
+Install:
+
+Docker
+
+Docker Pipeline
+
+Kubernetes
+
+Wait for the installation to complete.
+
+Step 6: Configure Jenkins Container
+
+Enter Jenkins container terminal:
+
+docker exec -it Jenkins bash
+
+
+Update packages:
+
+apt update -y
+
+
+Install Python 3, pip, and virtual environment:
+
+apt install python3 -y
+apt install python3-pip -y
+apt install python3-venv -y
+
+
+Set python3 as default python:
+
+update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+
+Verify installations:
+
+python --version
+pip --version
+python3 -m venv --help
+
+
+Exit container and restart Jenkins:
+
+docker restart Jenkins
+
+
+Required whenever you make changes inside a Docker container.
+
+Step 7: Login & Verify
+
+Refresh Jenkins → Login with admin credentials
+
+Click Keep me signed in
+
+Jenkins is now fully set up and ready to use
+
+In the next video, we will integrate GitHub with Jenkins to start our CI pipeline.
+
+**Summary:**
+
+In this video, we focus on setting up Jenkins for the CI part of the Study Buddy project, while the CD part will later be handled by Argo CD. First, it is important to verify that the VM’s Docker networks include bridge, host, minikube, and none, ensuring that Jenkins runs on the same network as Minikube. Jenkins is run as a Docker container using the LTS image on port 8080, with agents running on port 50000. After the image is pulled and the container starts, its status can be verified using docker ps, and the network check ensures proper connectivity. To access Jenkins, the VM’s external IP is used in a browser, and if the page does not load, a GCP firewall rule must be created to allow ingress from all IPs and all ports. Once accessed, Jenkins is unlocked using the initial admin password obtained from the container logs, followed by installing suggested plugins and creating a new admin user with credentials. Additional required plugins include Docker, Docker Pipeline, and Kubernetes. Inside the Jenkins container, the terminal is accessed via docker exec, system packages are updated, and Python 3, pip, and virtual environment modules are installed. Python 3 is set as the default Python version, and the installations are verified. After exiting the container, Jenkins is restarted to apply changes. Finally, logging in with the admin credentials and selecting “Keep me signed in” completes the setup, making Jenkins fully operational and ready for CI pipeline integration with GitHub in the next video.
+
+**14. GitHub Integration with Jenkins**
+
+In this video, we will be integrating Jenkins with GitHub, since our source code resides on GitHub.
+
+Step 1: Create a GitHub Personal Access Token
+
+Go to your GitHub profile → Settings → Developer Settings → Personal Access Tokens → Tokens (classic).
+
+Click Generate new token → Classic token
+
+Authenticate with your GitHub password.
+
+Give the token a name (e.g., BuddyBroToken).
+
+Set the required permissions:
+
+repo
+
+workflow
+
+admin:org
+
+admin:public_key
+
+admin:repo
+
+Click Generate token and copy it.
+
+Keep this token handy; you will need it repeatedly.
+
+Step 2: Save Credentials in Jenkins
+
+Go to Jenkins → Manage Jenkins → Credentials → Global → Add Credentials
+
+Fill in the form:
+
+Kind: Username with password
+
+Username: Your GitHub username
+
+Password: The access token you just generated
+
+ID: GitHubToken
+
+Description: GitHub Token
+
+Click Create
+
+Step 3: Create a New Jenkins Pipeline
+
+Go to Jenkins dashboard → New Item
+
+Name it (e.g., StudyBuddyAI)
+
+Select Pipeline → OK
+
+In the Pipeline section:
+
+Definition: Pipeline script from SCM
+
+SCM: Git
+
+Repository URL: Your GitHub repo URL
+
+Credentials: Select the GitHub token you created
+
+Branch: main (or master)
+
+Script Path: Jenkinsfile
+
+Click Apply → Save
+
+Step 4: Generate Pipeline Syntax
+
+Go to Pipeline Syntax → Checkout → Git
+
+Enter repository URL, credentials, branch → Generate Pipeline Script
+
+Copy this script
+
+Step 5: Create Jenkinsfile in VS Code
+
+In your project, create a file named Jenkinsfile
+
+Paste the pipeline script you generated
+
+Comment out all other stages for now, except the GitHub Checkout stage
+
+Save the file
+
+Step 6: Push Jenkinsfile to GitHub
+
+On your VM terminal:
+
+git add Jenkinsfile
+git commit -m "Add Jenkinsfile for CI"
+git push
+
+
+When prompted:
+
+Username → Your GitHub username
+
+Password → Your personal access token (not your GitHub password)
+
+If you face errors due to local changes, first run:
+
+git pull --rebase
+
+Step 7: Verify Jenkins Pipeline
+
+Go to Jenkins dashboard → Select StudyBuddyAI pipeline → Build Now
+
+Open Console Output → You should see a success message
+
+Check Workspace on the left pane → You should see all your project files:
+
+application.py
+
+Dockerfile
+
+manifest
+
+Jenkinsfile
+
+setup.py
+
+src/ directory
+
+This confirms that Jenkins has successfully cloned your GitHub repository into its workspace using the personal access token.
+
+In the next video, we will move on to building our Docker image and deploying it through Jenkins.
+
+**Summary:**
+
+In this video, we integrate Jenkins with GitHub to enable automated CI for the Study Buddy project. First, a GitHub Personal Access Token is created by navigating to Settings → Developer Settings → Personal Access Tokens → Tokens (classic), generating a new token with the necessary permissions such as repo, workflow, and admin scopes, and copying it for later use. Next, this token is securely stored in Jenkins by going to Manage Jenkins → Credentials → Global → Add Credentials, selecting “Username with password,” entering the GitHub username and the access token, and assigning an ID (e.g., GitHubToken). A new Jenkins pipeline is then created from the dashboard, named (e.g., StudyBuddyAI), set to use “Pipeline script from SCM” with Git as SCM, the repository URL, the stored credentials, and the main branch; the script path is set to Jenkinsfile. Using Jenkins’ Pipeline Syntax tool, a pipeline script for the Git checkout stage is generated and added to a Jenkinsfile in the project, with other stages commented out for now. The Jenkinsfile is then pushed to GitHub using git add, git commit, and git push, authenticating with the username and personal access token. Finally, building the pipeline in Jenkins verifies the integration, showing the project files in the workspace and confirming that Jenkins can successfully clone the GitHub repository using the personal access token. This sets the foundation for the next step, building the Docker image and deploying it via Jenkins.
+
+**15. Build and Push Docker Image to DockerHub**
+
+In this video, we will be building our Docker image and pushing it to Docker Hub using Jenkins.
+
+Step 1: Configure Docker in Jenkins
+
+Go to Jenkins → Dashboard → Manage Jenkins → Global Tool Configuration
+
+Scroll down to Docker and click Add Docker
+
+Name: docker (or any name you prefer)
+
+Install automatically → Download from docker.com
+
+Docker version: latest
+
+Click Apply → Save
+
+This allows Jenkins to use Docker commands in your pipelines.
+
+Step 2: Prepare Docker Hub Repository
+
+Open Docker Hub
+ → Sign in or create an account
+
+Create a new repository, e.g., studybuddy
+
+Make it public
+
+Go to Account Settings → Security → New Access Token
+
+Name: e.g., LMOpsToken5
+
+Expiration: None
+
+Permissions: Read, Write, Delete
+
+Generate the token and keep it handy
+
+Step 3: Add Docker Hub Credentials to Jenkins
+
+Go to Jenkins → Manage Jenkins → Credentials → Global → Add Credentials
+
+Fill in the form:
+
+Kind: Username with password
+
+Username: Docker Hub username
+
+Password: Docker Hub access token
+
+ID/Description: DockerHubToken
+
+Click Create
+
+Now Jenkins has access to Docker Hub for pushing images.
+
+Step 4: Update Jenkinsfile and Deployment.yaml
+
+In your VS Code, update the Jenkinsfile:
+
+Uncomment environment variables and set your Docker Hub repo name and credentials ID
+
+Uncomment Build and Push stages
+
+Update deployment.yaml:
+
+Replace the image name with your Docker Hub repo (e.g., dataguru97/studybuddy:latest)
+
+Keep the tag latest
+
+Save changes → Push to GitHub:
+
+git add .
+git commit -m "Update Jenkinsfile and deployment.yaml for Docker build"
+git push origin main
+
+Step 5: Pull Latest Changes on VM
+
+On your VM instance:
+
+git pull origin main
+
+
+Ensures your Jenkins pipeline has the latest Jenkinsfile and deployment.yaml.
+
+Step 6: Build and Push Docker Image via Jenkins
+
+Go to Jenkins dashboard → Select your pipeline → Build Now
+
+Open Console Output to monitor progress
+
+Jenkins will first build the Docker image
+
+Then it will push the image to Docker Hub
+
+After completion, verify on Docker Hub → You should see the new image with the latest tag
+
+Note: Docker Hub may compress the image, so the size could appear smaller than your local build (e.g., 318 MB).
+
+Outcome:
+
+Docker image is built and pushed to Docker Hub
+
+Jenkins pipeline is fully configured to automate Docker builds and pushes
+
+deployment.yaml is ready for Kubernetes deployment
+
+In the next video, we will move on to deploying this Docker image to a Kubernetes cluster using Minikube.
+
+**Summary:**
+
+In this video, we automate building and pushing the Docker image to Docker Hub using Jenkins. First, Docker is configured in Jenkins by going to Manage Jenkins → Global Tool Configuration, adding Docker as a tool, naming it (e.g., docker), and enabling automatic installation of the latest version. Next, a Docker Hub repository is prepared by signing in or creating an account, creating a public repository (e.g., studybuddy), and generating a new access token with read, write, and delete permissions. This token is then securely added to Jenkins as a credential (Kind: Username with password, ID: DockerHubToken) to allow Jenkins to push images. The Jenkinsfile and deployment.yaml are updated: the Jenkinsfile includes Docker Hub credentials and build/push stages, while deployment.yaml references the Docker Hub image with the latest tag. Changes are committed and pushed to GitHub, and the VM pulls the latest updates to ensure Jenkins has the updated pipeline and manifests. Building the pipeline in Jenkins triggers the Docker image build and push; progress is monitored through the console output, and the new image is verified on Docker Hub. After this step, the Docker image is ready for Kubernetes deployment, and the Jenkins pipeline is fully configured to automate future builds and pushes.
+
+**16. ArgoCD Setup for Deployment - Part 1**
+
+From this video onwards, our CI part is completed, and we are starting the CD (Continuous Deployment) part.
+For CD, we will be using Argo CD.
+
+In this video, we will install Argo CD, configure it, and access the Argo CD dashboard.
+
+Step 1: Check Existing Namespaces
+
+On your VM, run:
+
+kubectl get namespaces
+
+
+You will see default namespaces like: default, kube-node-lease, kube-public, kube-system
+
+We will create a new namespace for Argo CD.
+
+Create the namespace:
+
+kubectl create namespace argocd
+
+
+Verify:
+
+kubectl get namespaces
+
+
+You should now see argocd as active.
+
+Step 2: Install Argo CD
+
+Install Argo CD using the official manifest:
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+
+Wait until all pods, deployments, and replicas are in the running state:
+
+kubectl get all -n argocd
+
+
+Only proceed when all pods show Running 1/1.
+If you see 0/1, there is an error that needs fixing.
+
+Step 3: Change Argo CD Server Service Type
+
+By default, Argo CD server is a ClusterIP service, which can only be accessed internally.
+We need NodePort to access it externally.
+
+Edit the Argo CD server service:
+
+kubectl edit svc argocd-server -n argocd
+
+
+In the editor, change:
+
+type: ClusterIP
+
+
+to
+
+type: NodePort
+
+
+Save and exit:
+
+Esc → :wq!
+
+
+Verify the service type:
+
+kubectl get svc -n argocd
+
+
+You should see argocd-server as NodePort now.
+
+Step 4: Access Argo CD UI
+
+Forward the port to your local system:
+
+kubectl port-forward svc/argocd-server -n argocd 31704:443
+
+
+Open your browser:
+
+http://<VM_EXTERNAL_IP>:31704
+
+
+You may see a warning about the connection not being private.
+
+Click Advanced → Continue
+
+Step 5: Login to Argo CD
+
+Username: admin
+
+Password: Get the initial password from the Argo CD secret:
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+
+Paste the password in the UI and click Sign In
+
+Now you are inside the Argo CD dashboard.
+
+Outcome:
+
+Argo CD is installed and running in its own namespace
+
+Service type is updated to NodePort for external access
+
+Port forwarding allows access to Argo CD UI from a browser
+
+Admin password is retrieved and you can log in
+
+In the next video, we will connect Argo CD to our GitHub repository and deploy our Docker image automatically.
+
+**Summary:**
+
+From this video onwards, we start the Continuous Deployment (CD) part of our project using Argo CD. First, on the VM, we check existing Kubernetes namespaces using kubectl get namespaces and create a dedicated namespace for Argo CD with kubectl create namespace argocd, verifying that the namespace is active. Argo CD is installed using the official manifest via kubectl apply -n argocd -f <manifest_url>, and we wait until all pods, deployments, and replicas are in the Running state. By default, the Argo CD server service is a ClusterIP, which is only accessible internally, so we edit the service using kubectl edit svc argocd-server -n argocd and change the type to NodePort for external access. After saving the changes, we verify the service type with kubectl get svc -n argocd to ensure it shows NodePort. To access the UI from a browser, we forward the port using kubectl port-forward svc/argocd-server -n argocd 31704:443 and open http://<VM_EXTERNAL_IP>:31704, handling any browser warnings about insecure connections. Finally, we log in using the admin username and retrieve the initial password from the Argo CD secret via kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d. At the end of this setup, Argo CD is installed and running in its own namespace, accessible externally via NodePort, and ready for connecting to GitHub for automated deployment.
+
+**17. ArgoCD Setup for Deployment - Part 2**
+
+This is part two of installing and configuring Argo CD, which we will use to deploy our app inside the Kubernetes cluster.
+
+In this video, we will focus on preparing the Kubernetes config file and setting it up as a secret in Jenkins.
+
+Step 1: Locate the Kubernetes Config File
+
+Navigate to your GitHub repository root directory on your VM:
+
+cd /path/to/study-buddy-repo
+
+
+List all files to locate the Kubernetes config file:
+
+ls -la
+
+
+Look for the .kube directory.
+
+Navigate to the .kube directory:
+
+cd ~/.kube
+
+
+Identify the config file:
+
+ls
+
+
+You should see a file named config.
+
+View the contents of the config file:
+
+cat config
+
+Step 2: Modify the Config File
+
+The goal is to replace file paths with the actual data so Jenkins can use it:
+
+Open a Notepad or any editor.
+
+Copy the contents of the config file.
+
+Replace these fields:
+
+certificate-authority → certificate-authority-data
+
+client-certificate → client-certificate-data
+
+client-key → client-key-data
+
+Instead of paths, paste the base64-encoded contents of the respective files directly.
+
+Example:
+
+cat /path/to/file | base64 -w 0
+
+
+Copy the output and paste it in the respective field in the config file.
+
+Repeat the same process for all required certificates.
+
+Step 3: Save Config as a System File
+
+Open Git Bash.
+
+Navigate to a directory where you want to save the file:
+
+cd ~/Downloads
+
+
+Create a new system file:
+
+vi kubeconfig
+
+
+Paste the modified content from Notepad.
+
+Save the file:
+
+Esc → :wq!
+
+
+Ensure this is a system file (file) and not a text document (.txt).
+You can verify using file properties.
+
+Step 4: Add Config File to Jenkins
+
+Open Jenkins → Manage Jenkins → Credentials → Global Credentials → Add Credentials
+
+Select Secret File as the kind.
+
+Choose the kubeconfig file you just created.
+
+Set an ID (e.g., kubeconfig) and a description.
+
+Click Create.
+
+Step 5: Configure Kubernetes Access in Jenkins Pipeline
+
+Open your Jenkins pipeline → Configure → Pipeline section
+
+In Pipeline Syntax, select Kubeconfig to generate the pipeline script.
+
+Since the Jenkinsfile already contains pre-written code, you do not need to regenerate it.
+
+Confirm that the pipeline references:
+
+The kubeconfig file ID (kubeconfig)
+
+The Kubernetes API server URL (copy from kubectl cluster-info)
+
+kubectl cluster-info
+
+
+Copy the URL (e.g., https://<control-plane-ip>:6443) and ensure it is used in the pipeline configuration.
+
+Outcome:
+
+Kubernetes config file is prepared with inline certificate data.
+
+Config is added to Jenkins as a Secret File.
+
+Jenkins pipeline can now access the Kubernetes cluster for Argo CD deployments.
+
+With this, part two of Argo CD installation and configuration is complete.
+
+In the next video, we will connect Argo CD to our GitHub repository and deploy our Docker image automatically.
+
+**Summary:**
+
+In this part two of Argo CD setup, we prepare the Kubernetes config file for Jenkins so that the CI/CD pipeline can deploy the app into the Kubernetes cluster. First, we locate the Kubernetes config file on the VM inside the .kube directory (~/.kube/config) and view its contents. The file paths in fields like certificate-authority, client-certificate, and client-key are replaced with the actual base64-encoded data so that Jenkins can use the config without relying on local file paths. After modifying the file, it is saved as a system file (e.g., kubeconfig) on the VM. Next, we add this kubeconfig file to Jenkins as a Secret File credential, giving it an ID such as kubeconfig. In the Jenkins pipeline, this secret is referenced to allow access to the Kubernetes API server, with the server URL copied from kubectl cluster-info. After these steps, Jenkins is able to authenticate with the Kubernetes cluster, enabling Argo CD deployments. At the end of this video, the Kubernetes config is fully prepared, added as a Jenkins secret, and ready for automated deployments from GitHub.
+
+**18. ArgoCD Setup for Deployment - Part 3**
+
+This is part three of Argo CD installation and configuration, where we will deploy our application using Jenkins and Argo CD.
+
+Step 1: Prepare Jenkinsfile
+
+Open your project in VSCode.
+
+Uncomment all lines in the Jenkinsfile — we need all stages to run.
+
+Temporary fix: We are installing kubectl and Argo CD CLI inside the Jenkins container for now.
+
+This stage ensures every Jenkins build has the tools installed.
+
+Later, once installed permanently inside the container, you can remove this stage.
+
+Commands for installing kubectl and argocd CLI can be found online or via ChatGPT.
+
+Step 2: Configure Argo CD and Kubernetes Access
+
+Make sure the kubeconfig name in Jenkins matches the file you created (kubeconfig).
+
+Use kubectl cluster-info to get the Kubernetes server URL and paste it in Jenkins pipeline configuration.
+
+Replace the Argo CD URL in the Jenkinsfile with your Argo CD server URL.
+
+Username: admin
+
+Password: Retrieve using the command we used previously.
+
+Set Argo CD to insecure mode to avoid certificate-related issues.
+
+Step 3: Connect GitHub Repository to Argo CD
+
+Open Argo CD → Settings → Repositories → Connect Repo
+
+Select HTTP/HTTPS and provide:
+
+Repository URL
+
+Optional: Repository name
+
+Project: default
+
+Username & Personal Access Token (optional but recommended)
+
+Click Connect → You should see Connection Status: Successful
+
+Step 4: Set Environment Variables in Kubernetes
+
+Copy your API key from .env file in VSCode.
+
+Create a Kubernetes secret:
+
+kubectl create secret generic <SECRET_NAME> --from-literal=API_KEY='<YOUR_API_KEY>'
+
+
+This allows your app to access the API without pushing the .env file to GitHub.
+
+Step 5: Create Argo CD Application
+
+Go to Argo CD → Applications → Create Application
+
+Fill in the details:
+
+Name: study
+
+Project: default
+
+Sync Policy: Automatic → Enable Prune Resources and Self-Heal
+
+Repository URL: Your GitHub repo
+
+Revision: main
+
+Path: manifests (folder containing deployment & service YAML files)
+
+Cluster URL: Default
+
+Namespace: argo-cd
+
+Click Create
+
+Update Jenkinsfile with your app name:
+
+argocd app sync study
+
+
+Commit and push changes:
+
+git add .
+git commit -m "Update Jenkinsfile with Argo CD sync"
+git push origin main
+
+Step 6: Verify Deployment
+
+Go to Argo CD dashboard → Application study
+
+Confirm:
+
+App Health: Healthy
+
+Sync Status: Synced
+
+Pods: Running as per deployment replicas (e.g., 2/2)
+
+Step 7: Access Application Externally
+
+Start Minikube tunnel to expose services externally:
+
+minikube tunnel
+
+
+This terminal will be occupied while the tunnel runs.
+
+Use kubectl port-forward to forward service port:
+
+kubectl port-forward svc/<SERVICE_NAME> 9090:<TARGET_PORT>
+
+
+Access the app via your VM's external IP at port 9090.
+
+Step 8: Handle Deployment Issues
+
+Watch out for double quotes errors in Python files (helpers.py). Use single quotes inside strings to avoid conflicts.
+
+Change Docker image tags to avoid caching issues with Argo CD:
+
+Update Jenkinsfile and deployment.yaml
+
+Example: v5 → v1
+
+Push changes, rebuild the Jenkins pipeline, and confirm the app is running correctly.
+
+Step 9: Test App Functionality
+
+Verify API access and functionality (e.g., quizzes, results).
+
+Ensure everything works as expected.
+
+Next Steps: Webhooks
+
+Currently, each change requires manually triggering Jenkins builds.
+
+Next, we will automate builds using GitHub webhooks so that pushes to GitHub automatically trigger Jenkins builds and deployments.
+
+Outcome:
+
+Argo CD is fully configured with Jenkins and Minikube.
+
+Application is deployed and accessible externally.
+
+Environment variables are injected securely.
+
+Pipeline can sync app automatically, and image tag management avoids caching issues.
+
+**Summary:**
+
+In part three of Argo CD configuration, we deploy the application using Jenkins and Argo CD. First, the Jenkinsfile is fully enabled by uncommenting all stages, including a temporary step to install kubectl and the Argo CD CLI inside the Jenkins container to ensure all builds have the necessary tools. Jenkins is configured with the correct kubeconfig and Kubernetes server URL, and the Argo CD server URL and admin credentials are updated in the pipeline. Next, the GitHub repository is connected to Argo CD using HTTP/HTTPS and optional credentials, ensuring a successful connection. Environment variables such as API keys are securely injected into Kubernetes as secrets, avoiding the need to push .env files. An Argo CD application is created with automatic sync, prune, and self-heal enabled, pointing to the manifests directory in the GitHub repo. The Jenkinsfile is updated to include argocd app sync <app_name> to trigger deployments. After committing and pushing changes, the deployment is verified in the Argo CD dashboard with healthy status and running pods. Minikube tunnels and port-forwarding are used to access the application externally, and deployment issues like Docker image caching and Python string quotes are resolved by updating tags and using single quotes. Finally, the app functionality is tested, confirming that environment variables, API access, and quiz features work correctly. With this setup, Jenkins and Argo CD are fully integrated, the application is deployed on the Kubernetes cluster, and the pipeline is ready for automation using webhooks.
+
+**19. WebHooks , Some Stages and Cleanup**
+
+In this video, we will learn how to set up webhooks to fully automate our CI/CD pipeline using GitHub, Jenkins, and Argo CD.
+
+As I mentioned in the previous video, webhooks automatically trigger your Jenkins build whenever you push code to GitHub, so you no longer need to manually click “Build Now” in Jenkins.
+
+Step 1: Configure Webhook in GitHub
+
+Go to your GitHub repository → Settings → Webhooks → Add webhook.
+
+Payload URL: Replace this with your Jenkins URL.
+
+Format: http://<JENKINS_URL>/github-webhook/
+
+Content type: Select application/json.
+
+Secret: Leave blank.
+
+Enable SSL verification.
+
+Choose which events trigger the webhook:
+
+Select Just the push event.
+
+Click Add webhook → Your GitHub side setup is complete.
+
+Step 2: Configure Jenkins to Receive Webhook
+
+Open Jenkins → Go to your Pipeline → Configure.
+
+Under Build Triggers, check GitHub hook trigger for GITScm polling.
+
+Click Apply → Save.
+
+Now, Jenkins is ready to listen for GitHub webhook events.
+
+Step 3: Test the Webhook
+
+Make a small change in your project (e.g., application.py).
+
+Commit and push the changes to GitHub:
+
+git add .
+git commit -m "Test webhook"
+git push origin main
+
+
+Go to Jenkins → You will see a new build triggered automatically.
+
+Step 4: Dynamic Docker Image Tagging
+
+Previously, we were using hard-coded image tags like v1 or latest.
+
+This causes Argo CD to use cached images and not detect updates.
+
+Solution: Use dynamic image tags with Jenkins build numbers
+
+In Jenkinsfile, create an environment variable:
+
+IMAGE_TAG = "v${BUILD_NUMBER}"
+
+
+When building the Docker image:
+
+docker build -t <dockerhub_repo>:${IMAGE_TAG} .
+docker push <dockerhub_repo>:${IMAGE_TAG}
+
+
+Replace the placeholder image tag in deployment.yaml dynamically:
+
+Using a script, fetch the placeholder in the YAML and replace it with the new IMAGE_TAG.
+
+This ensures each build gets a unique image tag (v1, v2, v3, etc.)
+
+Step 5: Commit Deployment Changes Automatically
+
+After updating deployment.yaml, commit changes to GitHub from Jenkins:
+
+Use GitHub token stored in Jenkins credentials.
+
+Commit and push the updated deployment.yaml with the new image tag.
+
+Jenkins will now:
+
+Build the Docker image with the new tag
+
+Push it to Docker Hub
+
+Update deployment.yaml in GitHub
+
+Trigger kubectl and Argo CD CLI commands to sync the application
+
+Step 6: Verify Deployment
+
+Open Argo CD → Application study-buddy.
+
+Refresh → You will see the new pods with updated image tags running.
+
+Enable port forwarding to access your Streamlit app externally:
+
+kubectl port-forward svc/<service_name> 9090:<target_port>
+
+
+Open your browser → Verify that all changes are reflected.
+
+Step 7: Cleanup
+
+Delete your VM instance to avoid unnecessary charges.
+
+Optionally, delete the Docker Hub repository.
+
+After cleanup, your app will no longer be accessible, which is expected.
+
+Outcome:
+
+Fully automated CI/CD pipeline using GitHub → Jenkins → Argo CD → Kubernetes.
+
+Dynamic Docker image tagging ensures Argo CD always deploys the latest build.
+
+Webhooks eliminate the need for manual builds.
+
+Application is deployed successfully and accessible externally.
+
+This concludes the complete CI/CD deployment with automated builds.
+
+You have now a production-ready setup with Jenkins and Argo CD!
+
+**Summary:**
+
+In this video, we set up webhooks to fully automate the CI/CD pipeline using GitHub, Jenkins, and Argo CD. First, a webhook is created in the GitHub repository by navigating to Settings → Webhooks → Add webhook, setting the payload URL to Jenkins (http://<JENKINS_URL>/github-webhook/), choosing application/json as the content type, enabling SSL verification, and selecting the push event. On the Jenkins side, the pipeline is configured to trigger on GitHub webhook events by checking “GitHub hook trigger for GITScm polling” under Build Triggers. A test push from GitHub confirms that Jenkins automatically starts a new build. To prevent image caching issues in Argo CD, dynamic Docker image tagging is implemented using the Jenkins build number (IMAGE_TAG = "v${BUILD_NUMBER}"), ensuring each build gets a unique tag. During the pipeline, Docker images are built and pushed to Docker Hub with the new tag, deployment.yaml is dynamically updated with the new tag, committed back to GitHub, and Argo CD automatically syncs the application. Deployment verification is done via the Argo CD dashboard, confirming updated pods with the correct image tags, and port forwarding allows external access to the Streamlit app. Finally, cleanup steps are suggested to avoid unnecessary VM and Docker Hub costs. ✅ Outcome: The pipeline is fully automated, dynamic Docker tagging ensures Argo CD always deploys the latest build, webhooks remove the need for manual builds, and the application is deployed and accessible externally, creating a production-ready CI/CD setup.
 
 # **E. Celebrity Detector and QnA**
 
