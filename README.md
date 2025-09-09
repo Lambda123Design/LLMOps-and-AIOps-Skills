@@ -1243,6 +1243,1612 @@ Finally, remember to perform cleanup to avoid unnecessary charges. Go back to GC
 In summary, we deployed an application on Google Kubernetes Engine using CircleCI, tested it successfully, and then performed the necessary cleanup to manage costs. This completes the project and ensures you not only know how to deploy but also how to maintain resources responsibly.
 
 
+### Project Notes from Udemy:
+
+**1. Introduction to the Project**
+
+So as you’ve already seen in the demo video, here’s what we are building:
+
+We are creating an AI Celebrity Detector and Question Answer System.
+
+User uploads an image of a celebrity.
+
+Our model detects the celebrity’s name and provides some basic details.
+
+The user can then ask questions about that celebrity using our language model (LM).
+
+This is the overall idea of the application.
+
+Main Components / Tech Stack
+
+Here are the key technologies we are using:
+
+Google Cloud (GCP) – For hosting and managing our services.
+
+Kubernetes (GKE) – For deploying and scaling our application in a cluster.
+
+CircleCI – Cloud-based CI/CD tool for automating deployment.
+
+Flask – Backend framework to handle processing and API calls.
+
+HTML & CSS – Frontend interface for user interaction.
+
+OpenCV (Python) – For image processing (grayscale conversion, resizing, drawing bounding boxes).
+
+Grok LM & LLaMA – For celebrity recognition and answering questions.
+
+Docker & Google Artifact Registry (GAR) – For containerizing the app and storing Docker images.
+
+Why These Technologies?
+
+OpenCV: Convert RGB images to grayscale, detect faces, scale images, and highlight detected faces.
+
+Grok LM + LLaMA: Handle image-based celebrity recognition and language-based question answering.
+
+CircleCI: Fetches code from GitHub and automates CI/CD. Cloud-based, unlike Jenkins.
+
+Flask + HTML/CSS: Flask handles backend logic, HTML/CSS creates an interactive frontend.
+
+Docker + GAR: Containerize the app and store images securely for deployment.
+
+GKE: Predefined Kubernetes cluster on Google Cloud to deploy your containerized app.
+
+Project Workflow
+
+Project & API Setup
+
+Create a virtual environment.
+
+Set up logging and exception handling.
+
+Install required libraries (OpenCV, Flask, LangChain, etc.).
+
+Define project structure and generate API keys for LLaMA.
+
+Image Handler
+
+Convert uploaded images to grayscale and numpy arrays.
+
+Preprocess images for celebrity detection.
+
+Celebrity Detector
+
+Detect the celebrity from the processed image.
+
+Retrieve basic details about the celebrity.
+
+QA Engine
+
+Answer user questions about the detected celebrity.
+
+Flask Routes
+
+Define all backend routes for image upload, celebrity detection, and question answering.
+
+Main Application
+
+Integrate Flask backend with HTML/CSS frontend.
+
+Make the application interactive and functional.
+
+Docker & Kubernetes
+
+Dockerfile: Containerizes the application.
+
+Kubernetes deployment file: Configures replicas, ports, and services for deployment on GKE.
+
+GitHub & CI/CD
+
+Push code to GitHub (source code management).
+
+CircleCI Pipeline:
+
+Checkout Stage: Fetch code from GitHub.
+
+Build & Push Image: Build Docker image and push to GAR.
+
+Deploy to GKE: Deploy Docker image to the Google Kubernetes Engine cluster.
+
+Outcome
+
+Once deployed, the application allows users to:
+
+Upload a celebrity image.
+
+Detect the celebrity and get details.
+
+Ask any questions about the celebrity.
+
+Fully automated CI/CD pipeline ensures smooth updates and deployments.
+
+This concludes the workflow and tech overview for our AI Celebrity Detector & QA system.
+
+Hope you enjoy the project and are ready to move forward to the implementation!
+
+**Summary:**
+
+As demonstrated in the project demo, we are building an AI Celebrity Detector and Question Answer System. The application workflow is straightforward: the user uploads an image of a celebrity, the model detects the celebrity’s name, provides basic details, and then the user can ask questions about the celebrity using a language model (LM).
+
+Main Components / Tech Stack:
+
+Google Cloud (GCP): Hosting and managing services.
+
+Kubernetes (GKE): Deploying and scaling the containerized application.
+
+CircleCI: Automating CI/CD processes for seamless deployment.
+
+Flask: Backend framework to handle API calls and processing.
+
+HTML & CSS: Frontend interface for user interaction.
+
+OpenCV (Python): Image preprocessing (grayscale conversion, resizing, bounding boxes).
+
+Grok LM & LLaMA: Celebrity recognition and language-based question answering.
+
+Docker & Google Artifact Registry (GAR): Containerizing the app and storing images securely.
+
+Why These Technologies:
+
+OpenCV: Converts images to grayscale, detects faces, scales images, and highlights detected faces.
+
+Grok LM + LLaMA: Handles celebrity recognition and answers questions about them.
+
+CircleCI: Cloud-based CI/CD automation, fetching code from GitHub.
+
+Flask + HTML/CSS: Flask handles backend logic, HTML/CSS provides an interactive frontend.
+
+Docker + GAR: Containerizes the application and stores images securely.
+
+GKE: Deploys and manages containerized applications in a scalable Kubernetes cluster.
+
+Project Workflow:
+
+Project & API Setup: Create virtual environment, set up logging and exceptions, install required libraries, define project structure, generate API keys.
+
+Image Handler: Convert uploaded images to grayscale and numpy arrays, preprocess for celebrity detection.
+
+Celebrity Detector: Detect the celebrity from the processed image and retrieve basic details.
+
+QA Engine: Answer user questions about the detected celebrity.
+
+Flask Routes: Define backend routes for image upload, celebrity detection, and question answering.
+
+Main Application: Integrate Flask backend with HTML/CSS frontend for interactivity.
+
+Docker & Kubernetes: Containerize the app with Dockerfile, define deployment and services for GKE.
+
+GitHub & CI/CD: Push code to GitHub, CircleCI pipeline automates build, push to GAR, and deploy to GKE.
+
+Outcome:
+Once deployed, users can upload a celebrity image, detect the celebrity, view their details, and ask questions interactively. The fully automated CI/CD pipeline ensures smooth updates and deployment.
+
+This provides a complete end-to-end workflow and tech overview for the AI Celebrity Detector & QA system, setting the stage for implementation.
+
+**2. Project and API Setup ( Groq )**
+
+This is the Project Setup video for our Celebrity Detector and Question Answer System.
+
+Step 1: Create Project Folder
+
+Create a new folder named:
+
+Celebrity Detector and Question Answer System
+
+
+Open it in VS Code:
+
+Option 1: Right-click → Open in VS Code.
+
+Option 2: Open terminal in that folder and run:
+
+code .
+
+Step 2: Set Up Virtual Environment
+
+Open a new terminal in VS Code.
+
+Create a virtual environment:
+
+python -m venv env
+
+
+Activate the virtual environment:
+
+env\Scripts\activate
+
+
+You’ll see (env) in your terminal, indicating successful activation.
+
+Step 3: Create requirements.txt
+
+Create a requirements.txt file in the root directory with the following libraries:
+
+Flask – Backend framework
+
+OpenCV-Python – Image processing
+
+numpy – Handling image arrays
+
+requests – HTTP requests
+
+python-dotenv – Load environment variables
+
+Save the file.
+
+Step 4: Create setup.py
+
+Create a setup.py file in the root directory.
+
+Copy the code from the provided GitHub repository.
+
+Set the project name, e.g., Celebrity Detector and QA System.
+
+Purpose:
+
+This file allows your app folder to be treated as a package.
+
+Required for installing all dependencies and packages properly.
+
+Step 5: Define Project Structure
+
+Folders & Files:
+
+Celebrity Detector and QA System/
+│
+├── app/               # Main application components
+│   ├── __init__.py    # Marks this as a package
+│   └── utils/         # Utility functions
+│       └── __init__.py
+│
+├── templates/         # HTML files
+├── static/            # CSS & JS files
+├── requirements.txt
+├── setup.py
+└── .env               # Environment variables
+
+
+app/ → Main backend logic
+
+utils/ → Reusable utility functions
+
+templates/ → Frontend HTML
+
+static/ → CSS & JavaScript
+
+__init__.py → Marks folder as a package
+
+Step 6: Install Dependencies
+
+Run the following command to install all requirements and set up packages:
+
+pip install -e .
+
+
+This triggers setup.py and installs all required libraries.
+
+Step 7: Configure Environment Variables
+
+Create a .env file in the root directory.
+
+Add your Grok API Key for the LLaMA model:
+
+GROK_API_KEY="your_api_key_here"
+
+
+How to get the API Key:
+
+Sign up on Grok Cloud (free account).
+
+Navigate to the API Keys section.
+
+Create a new key, name it celebrity, and copy it.
+
+Paste it into your .env file.
+
+Project Setup Summary
+
+By the end of this video, you have:
+
+Created project folder and opened it in VS Code.
+
+Set up a virtual environment and activated it.
+
+Created requirements.txt with necessary libraries.
+
+Created setup.py to handle package installation.
+
+Defined the project structure (app, utils, templates, static).
+
+Installed all dependencies using pip install -e ..
+
+Added environment variables for the API key in .env.
+
+Now your project is ready for development, and you can move on to image handling and celebrity detection in the next video.
+
+**Summary:**
+
+In this video, we set up the foundation for the Celebrity Detector and Question Answer System project. First, a dedicated project folder named Celebrity Detector and Question Answer System was created and opened in VS Code to organize all project files systematically. A virtual environment was then set up and activated to isolate project dependencies and ensure a clean development setup.
+
+Next, a requirements.txt file was created listing all essential libraries, including Flask for the backend, OpenCV for image processing, NumPy for handling image arrays, requests for HTTP requests, and python-dotenv for managing environment variables. Alongside this, a setup.py file was added to treat the project as a Python package, allowing for smooth installation of dependencies and proper project structure management.
+
+The project structure was clearly defined with dedicated folders: app/ for the main backend logic, utils/ for reusable functions, templates/ for HTML frontend files, and static/ for CSS and JavaScript files. The __init__.py files marked the folders as packages, making it easier to organize and import modules. After defining the structure, all dependencies were installed using pip install -e ., which triggered setup.py and ensured all required libraries were correctly installed.
+
+Finally, a .env file was configured to store sensitive information like the Grok API Key, which is necessary for interacting with the LLaMA model for celebrity recognition. This step ensures secure handling of API credentials. By the end of this setup, the project had a clean and organized structure, all necessary dependencies installed, and environment variables configured, making it ready for the next stages of development, including image handling, celebrity detection, and question answering.
+
+**3.Image Handler Code with OpenCV**
+
+In this video, we will create the Image Handler utility code. This will handle user-uploaded images for face detection.
+
+Step 1: Create the File
+
+Navigate to the utils directory.
+
+Create a file named:
+
+image_handler.py
+
+
+Purpose:
+
+Users upload images, but we cannot directly process them.
+
+This utility will handle conversions, preprocessing, and temporary storage.
+
+Step 2: Import Libraries
+import cv2
+from io import BytesIO
+import numpy as np
+
+
+Explanation:
+
+cv2 → OpenCV library for image processing.
+
+BytesIO → In-memory file handling (temporary storage).
+
+numpy → Handle image arrays (images are arrays of pixel values).
+
+Step 3: Define the Function
+def process_image(image_file):
+
+
+This function will process an uploaded image.
+
+image_file → The image uploaded by the user.
+
+Step 4: Create Temporary Memory
+memory_file = BytesIO()
+image_file.save(memory_file)
+image_bytes = memory_file.getvalue()
+
+
+Explanation:
+
+Stores the uploaded image in memory temporarily.
+
+Prevents saving thousands of images to local storage.
+
+image_bytes contains the image in bytes format for processing.
+
+Step 5: Convert to Numpy Array
+np_array = np.frombuffer(image_bytes, np.uint8)
+img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
+
+
+Convert byte data to a numpy array.
+
+Convert the array to an OpenCV-compatible image.
+
+Step 6: Convert to Grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+
+Converts the original BGR image to grayscale.
+
+Grayscale images are easier and faster for face detection.
+
+Step 7: Load Pre-Trained Face Detector
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+)
+faces = face_cascade.detectMultiScale(gray, 1.1, 5)
+
+
+Explanation:
+
+Uses OpenCV’s Haar Cascade to detect frontal faces.
+
+faces stores all detected faces in (x, y, w, h) format.
+
+Step 8: Handle No Face or Multiple Faces
+if len(faces) == 0:
+    return image_bytes, None
+
+largest_face = max(faces, key=lambda r: r[2]*r[3])
+x, y, w, h = largest_face
+
+
+No face: Return original image and None.
+
+Multiple faces: Select the largest face (main subject).
+
+Extract coordinates of the largest face (x, y, w, h).
+
+Step 9: Draw Rectangle on Face
+cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 3)
+
+
+Draws a green rectangle around the detected face on the original colored image.
+
+Step 10: Encode Image as JPEG
+success, buffer = cv2.imencode('.jpg', img)
+return buffer.tobytes(), largest_face
+
+
+Converts the OpenCV image to JPEG format.
+
+Returns:
+
+The image in bytes format (for later use/display).
+
+The coordinates of the largest face (x, y, w, h).
+
+Summary of Image Handler
+
+Accept user-uploaded image.
+
+Store it temporarily in memory.
+
+Convert image from bytes → numpy array → OpenCV image.
+
+Convert colored image → grayscale (for face detection).
+
+Load pre-trained frontal face detector.
+
+Detect faces in the image:
+
+If no faces → return original image and None.
+
+If multiple faces → detect only largest face.
+
+Extract coordinates of the face (x, y, w, h).
+
+Draw a bounding box on the face.
+
+Encode image to JPEG bytes for output.
+
+Return encoded image and face coordinates.
+
+This utility function ensures the uploaded images are processed efficiently without storing them locally and prepares them for the next steps in your Celebrity Detector system.
+
+**Summary:**
+
+In this video, we created the Image Handler utility, which is responsible for processing user-uploaded images for face detection. The utility is implemented in a file named image_handler.py inside the utils/ directory. Its primary purpose is to handle image conversions, preprocessing, and temporary memory storage so that uploaded images can be processed efficiently without saving them permanently on disk.
+
+We started by importing necessary libraries: OpenCV (cv2) for image processing, BytesIO for in-memory file handling, and NumPy (numpy) for working with image arrays. A function named process_image(image_file) was defined to handle the uploaded image. The image is first stored in memory using BytesIO, and its byte representation is extracted for further processing.
+
+The byte data is then converted to a NumPy array and decoded into an OpenCV-compatible image. To simplify face detection and improve performance, the image is converted from color (BGR) to grayscale. A pre-trained Haar Cascade classifier is loaded to detect frontal faces. The function checks for the presence of faces: if none are detected, it returns the original image and None. If multiple faces are detected, the largest face (assumed to be the main subject) is selected. Coordinates (x, y, w, h) of the largest face are extracted.
+
+For visualization, a green rectangle is drawn around the detected face on the original color image. Finally, the image is encoded as a JPEG and returned as bytes along with the coordinates of the largest face.
+
+In summary, the Image Handler utility efficiently processes user-uploaded images by temporarily storing them in memory, converting them into OpenCV-compatible format, detecting the main face using a Haar Cascade classifier, drawing a bounding box, and returning the processed image and face coordinates. This prepares the images for the subsequent steps in the Celebrity Detector system.
+
+**4. Celebrity Detector Code using Llama-4**
+
+In this video, we’ll create our Celebrity Detector code.
+
+In the previous video, you made the image handling code. Now you have a perfect image, and we’ll detect who that celebrity is.
+
+We’ll implement this inside a file named detector.py under the utils folder.
+
+Step 1: Import Libraries
+import os       # For environment variables
+import base64   # To encode images
+import requests # To send API requests
+
+
+OS → Load your API key from environment variables.
+
+base64 → Encode your image before sending to the API.
+
+requests → Send HTTP requests to the API endpoint.
+
+Step 2: Create the Celebrity Detector Class
+class CelebrityDetector:
+    def __init__(self):
+        self.api_key = os.getenv("GROK_API_KEY")
+        self.api_url = "YOUR_API_ENDPOINT_URL"
+        self.model = "llama-for-maverick-17b-instruct"
+
+
+api_key → Loaded from environment variables.
+
+api_url → Endpoint URL from the API documentation.
+
+model → The model to use for celebrity recognition.
+
+Step 3: Define the identify Method
+def identify(self, image_bytes):
+    # Convert image bytes to base64
+    encoded_image = base64.b64encode(image_bytes).decode()
+    # Prepare headers
+    headers = {
+        "Authorization": f"Bearer {self.api_key}",
+        "Content-Type": "application/json"
+    }
+    # Prepare prompt
+    prompt = {
+        "model": self.model,
+        "messages": [
+            {
+                "role": "user",
+                "content": "You are a celebrity recognition expert..."
+            }
+        ],
+        "image_url": encoded_image,
+        "temperature": 0.3,
+        "max_tokens": 1024
+    }
+    # Send POST request
+    response = requests.post(self.api_url, headers=headers, json=prompt)
+    if response.status_code == 200:
+        result = response.json()["choices"][0]["message"]["content"]
+        name = self.extract_name(result)
+        return result, name
+    else:
+        return "Unknown", "Unknown"
+
+Key Points:
+
+Image Conversion: APIs expect base64 images, not raw bytes.
+
+Headers: Include your API key and content type (application/json).
+
+Prompt: Instruct the model to identify the celebrity, returning Full Name, Profession, Nationality. If unknown, return "Unknown".
+
+Temperature: Controls creativity. Lower = more accurate, less hallucination (0.2–0.5 recommended).
+
+Max Tokens: Output limit for the API (1024 is sufficient).
+
+Step 4: Define the extract_name Method
+def extract_name(self, content):
+    for line in content.splitlines():
+        if line.lower().startswith("full name"):
+            return line.split(":")[1].strip()
+    return "Unknown"
+
+
+This extracts the full name from the API response.
+
+If it cannot find the name, it returns "Unknown".
+
+Step 5: How it Works
+
+Pass Image Bytes → Comes from the image handler in the previous video.
+
+Convert to Base64 → Required for API requests.
+
+Prepare Headers & Prompt → Set API key, model, content type, image, instructions.
+
+Send POST Request → Hit the API endpoint.
+
+Check Response → Status code 200 = success.
+
+Extract Result → Fetch the text output.
+
+Extract Name → Use extract_name() to get the celebrity’s full name.
+
+Handle Errors → Return "Unknown" if something goes wrong.
+
+In Short: The Celebrity Detector takes an image, sends it to the API, receives a textual result, extracts the celebrity's name, and returns it along with the full result.
+
+**Summary:**
+
+In this video, we created the Celebrity Detector utility, which identifies the celebrity in an uploaded image. This code is implemented in a file named detector.py under the utils/ folder. The main purpose of this utility is to take the preprocessed image from the Image Handler, send it to a celebrity recognition API, and return both the detailed API response and the celebrity’s full name.
+
+We began by importing essential libraries: os to load environment variables (for the API key), base64 to encode images before sending them via API, and requests to handle HTTP POST requests to the celebrity recognition endpoint. A class named CelebrityDetector was created. In its constructor, we load the API key from environment variables, set the API endpoint URL, and define the model (in this case, "llama-for-maverick-17b-instruct") to use for celebrity recognition.
+
+The core functionality is implemented in the identify method. It first converts the image bytes into a base64-encoded string, which is required by the API. Headers are prepared with the API key and content type (application/json). A prompt is created to instruct the model to identify the celebrity and return details such as Full Name, Profession, and Nationality. A POST request is sent to the API endpoint, and if the response is successful (status code 200), the textual output is extracted. The extract_name method parses this output to retrieve the celebrity’s full name. If no name is found or the API request fails, it returns "Unknown".
+
+In summary, the Celebrity Detector works by taking an image from the user, converting it to a base64 format, sending it to a specialized API, and processing the response. It returns both the full textual description from the API and the extracted full name of the detected celebrity, providing a bridge between image recognition and further question-answering capabilities in the application.
+
+**5. Question Answer Engine Code**
+
+In this video, we’ll create a Question Answer Engine.
+
+We’ve already detected the celebrity in the previous step. Now, this engine will allow us to ask questions about that celebrity.
+
+We’ll implement this in utils/QA_engine.py.
+
+Step 1: Import Libraries
+import os       # To load environment variables
+import requests # To send HTTP requests to API
+
+
+OS → Load your API key.
+
+requests → Send requests to the API endpoint.
+
+Step 2: Create the QA Engine Class
+class QAEngine:
+    def __init__(self):
+        self.api_key = os.getenv("GROK_API_KEY")
+        self.api_url = "YOUR_API_ENDPOINT_URL"
+        self.model = "llama-for-maverick-17b-instruct"  # You can change this to another chat-capable model
+
+
+api_key → Fetched from environment variables.
+
+api_url → Same endpoint as in the celebrity detector.
+
+model → LLM used for generating answers.
+
+Step 3: Define ask_about_celebrity Method
+def ask_about_celebrity(self, name, question):
+    # Prepare headers
+    headers = {
+        "Authorization": f"Bearer {self.api_key}",
+        "Content-Type": "application/json"
+    }
+    # Prepare prompt
+    prompt = f"""
+    You are an AI assistant who knows a lot about celebrities.
+    Answer questions about this celebrity concisely and accurately.
+    Celebrity Name: {name}
+    Question: {question}
+    """
+    # Prepare payload
+    payload = {
+        "model": self.model,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "temperature": 0.5,  # 0.3-0.5 recommended for accurate yet slightly creative responses
+        "max_tokens": 512
+    }
+    # Send request to API
+    response = requests.post(self.api_url, headers=headers, json=payload)
+    # Check response
+    if response.status_code == 200:
+        return response.json()["choices"][0]["message"]["content"]
+    else:
+        return "Sorry, I couldn't find the answer."
+
+Step 4: Key Points
+
+Headers → Include API key for authorization and content type (application/json).
+
+Prompt → Instructs the model to act as a celebrity expert and answer questions about the given celebrity.
+
+Temperature → Controls creativity: higher temperature = more creative but may hallucinate.
+
+Max Tokens → Output length limit (512 is usually sufficient for QA).
+
+Response Handling → Extract the content from JSON response. Return an error message if the API fails.
+
+Step 5: How it Works
+
+Pass Celebrity Name and Question → Name comes from the Celebrity Detector.
+
+Create Prompt → Concatenate the name and user question in a clear instruction.
+
+Send API Request → Send payload to the LLM API endpoint.
+
+Get Response → Extract the text output from the JSON response.
+
+Handle Errors → Return a friendly message if something goes wrong.
+
+In short:
+
+The QA Engine allows you to ask any question about a detected celebrity. It takes the celebrity’s name and a user question, sends it to the LLM API, and returns a concise, accurate answer.
+
+**Summary:**
+
+In this video, we created the Question Answer (QA) Engine, which allows users to ask questions about the celebrity detected in the previous step. This functionality is implemented in utils/QA_engine.py. The main goal of this module is to take the celebrity’s name and a user-provided question, send them to a language model API, and return a concise, accurate answer.
+
+We started by importing os to load environment variables (for the API key) and requests to handle HTTP requests to the API endpoint. A class named QAEngine was defined, where the constructor loads the API key from environment variables, sets the API endpoint URL, and specifies the model to use (in this case, "llama-for-maverick-17b-instruct").
+
+The core functionality is in the ask_about_celebrity method. It takes the celebrity’s name and the user’s question, constructs a prompt instructing the model to act as a celebrity expert, and sends this prompt in a JSON payload to the API. The payload includes headers for authorization, the selected model, a temperature parameter to control creativity, and a max token limit to restrict output length. The API response is checked for success (status code 200), and the answer is extracted from the JSON content. If the request fails, a friendly error message is returned.
+
+In summary, the QA Engine bridges the celebrity detection with interactive querying. It receives the detected celebrity’s name and a user question, communicates with the LLM API, and provides a concise, accurate response. This enables the application to deliver a fully interactive experience, allowing users not only to identify celebrities but also to learn more about them through natural language queries.
+
+**6. Flask Backend Routes Code**
+
+In this video, we will create routes for our Flask backend. These routes will handle image uploads, celebrity detection, and question answering.
+
+We will implement this in app/routes.py.
+
+Step 1: Import Libraries
+from flask import Blueprint, render_template, request
+import base64
+
+# Import our utility modules
+from app.utils.image_handler import process_image
+from app.utils.celebrity_detector import CelebrityDetector
+from app.utils.QA_engine import QAEngine
+
+
+Explanation:
+
+Blueprint → Organizes backend routes.
+
+render_template → Renders HTML pages.
+
+request → Handles HTTP GET/POST requests.
+
+base64 → Encodes images for display on HTML pages.
+
+process_image, CelebrityDetector, QAEngine → Utilities from previous videos.
+
+Step 2: Create Blueprint and Initialize Classes
+main = Blueprint("main", __name__)  # Create Flask blueprint
+
+# Initialize utility classes
+celebrity_detector = CelebrityDetector()
+qa_engine = QAEngine()
+
+
+main → Blueprint to organize routes.
+
+Instances of CelebrityDetector and QAEngine allow us to call their methods in routes.
+
+Step 3: Define Home Route
+@main.route("/", methods=["GET", "POST"])
+def index():
+    player_info = None
+    result_image_data = None
+    user_question = None
+    answer = None
+    # Handle form submission
+    if request.method == "POST":
+        # Check if an image was uploaded
+        if "image" in request.files:
+            image_file = request.files["image"]
+            if image_file:  # Ensure valid image
+                # Process image and get bytes and face coordinates
+                image_bytes, face_box = process_image(image_file)
+                # Detect celebrity
+                player_info, player_name = celebrity_detector.identify(image_bytes)
+                if face_box is not None:
+                    # Convert image to Base64 for HTML display
+                    result_image_data = base64.b64encode(image_bytes).decode("utf-8")
+                else:
+                    player_info = "No face detected. Please try another image."
+        # Handle user question about celebrity
+        elif "question" in request.form:
+            user_question = request.form.get("question")
+            player_name = request.form.get("player_name")
+            player_info = request.form.get("player_info")
+            result_image_data = request.form.get("result_image_data")
+            # Ask question to QA engine
+            answer = qa_engine.ask_about_celebrity(player_name, user_question)
+    # Render HTML template with results
+    return render_template(
+        "index.html",
+        player_info=player_info,
+        result_image_data=result_image_data,
+        user_question=user_question,
+        answer=answer
+    )
+
+Step 4: Key Points
+
+Blueprint → main organizes routes.
+
+Route Methods → GET → fetch inputs, POST → send data from form.
+
+Variables:
+
+player_info → Celebrity info (name, nationality, achievements).
+
+result_image_data → Base64 image with face box.
+
+user_question → Question user asked about celebrity.
+
+answer → Answer generated by QA engine.
+
+Image Handling → Check valid image → process → detect celebrity → encode image.
+
+Question Handling → Retrieve question, player info, image from form → send to QA engine → get answer.
+
+Render Template → Send all variables to index.html for display.
+
+Step 5: Flow Summary
+
+User uploads image → POST request → validate image → process image → detect celebrity → encode image → send info to HTML.
+
+User asks a question → POST request → extract question and previous context → QA engine returns answer → send to HTML.
+
+GET request → Display empty form when page loads.
+
+In short:
+
+This blueprint handles both image upload & celebrity detection and question answering. The results (celebrity info, image with face box, user question, and answer) are sent to the HTML template for display.
+
+Next, we will create the HTML frontend (index.html) to show all these results.
+
+**Summary:**
+
+In this video, we implemented the Flask backend routes for our Celebrity Detector and Question Answer System. These routes, defined in app/routes.py, handle both image uploads for celebrity detection and user questions for the QA engine. We began by importing necessary libraries, including Flask modules (Blueprint, render_template, request) for route management, base64 for encoding images to display on HTML pages, and our utility modules (process_image, CelebrityDetector, and QAEngine) from previous steps.
+
+We created a Flask blueprint named main to organize our routes and initialized instances of CelebrityDetector and QAEngine to utilize their methods within the routes. The primary route / handles both GET and POST requests. For POST requests, if a user uploads an image, the image is processed via the process_image utility, the celebrity is detected using the CelebrityDetector, and the resulting image is converted to Base64 for rendering on the frontend. If a user submits a question, the QA engine is called with the celebrity’s name and the question to generate an answer. GET requests simply render an empty form when the page loads.
+
+Key variables include player_info (celebrity details), result_image_data (Base64 image with detected face bounding box), user_question (question submitted by the user), and answer (response from the QA engine). The route validates the image, processes it, detects the celebrity, encodes the image, and sends all results to the HTML template (index.html) for display.
+
+In summary, this blueprint effectively connects the backend utilities with the frontend, enabling users to upload an image, detect the celebrity, and ask questions about them. All results, including the celebrity information, processed image, user question, and generated answer, are rendered on the web page for an interactive experience.
+
+**7. Main Application Code using HTML/CSS and Flask**
+
+In this video, we are integrating the backend (routes/blueprint) with the frontend (HTML & CSS) to create the complete Flask application.
+
+Step 1: Setting Up the Flask App
+
+File: app/__init__.py
+
+Import necessary libraries:
+
+Flask for the web app.
+
+os for handling paths.
+
+load_dotenv to load environment variables.
+
+Your main blueprint from app/routes.
+
+Define a function to create the app:
+
+from flask import Flask
+from app.routes import main
+from dotenv import load_dotenv
+import os
+
+def create_app():
+    load_dotenv()  # Load environment variables
+    # Template folder path
+    template_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates'))
+    # Initialize Flask app
+    app = Flask(__name__, template_folder=template_path)
+    # Set secret key for sessions & forms
+    app.secret_key = os.getenv("SECRET_KEY", "default_secret")
+    # Register blueprint
+    app.register_blueprint(main)
+    return app
+
+
+Purpose:
+
+The secret key secures forms and session data.
+
+Templates folder is specified so Flask knows where to find HTML files.
+
+Blueprint (main) contains all backend routes.
+
+Step 2: Running the Flask App
+
+File: app.py (root directory)
+
+Import the app creation function:
+
+from app import create_app
+from dotenv import load_dotenv
+
+if __name__ == "__main__":
+    load_dotenv()  # Optional but ensures environment variables are loaded
+    app = create_app()
+    app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+Explanation:
+
+0.0.0.0 makes the app accessible externally (needed for Docker/K8s deployment).
+
+debug=True helps in development by showing errors.
+
+Step 3: Frontend Setup
+
+Templates folder (templates/index.html)
+
+Two forms:
+
+Image Upload: Upload a celebrity image.
+
+Question Form: Ask a question about the detected celebrity.
+
+Jinja2 Templates:
+
+Used to bridge Python data with HTML.
+
+Example:
+
+<img src="data:image/jpeg;base64,{{ result_image_data }}" />
+<ul>
+  {% for key, value in player_info.items() %}
+    <li>{{ key }}: {{ value }}</li>
+  {% endfor %}
+</ul>
+<p>User Question: {{ user_question }}</p>
+<p>Answer: {{ answer }}</p>
+
+
+Notes:
+
+Form input names (image, question) must match route handling.
+
+Base64 encoding is used to display processed images in HTML.
+
+Step 4: Styling
+
+Static folder (static/style.css)
+
+Contains all frontend styling.
+
+Connected to HTML using <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">.
+
+Step 5: Application Flow
+
+User uploads an image → POST request handled in blueprint.
+
+Image is processed → celebrity detected → bounding box drawn.
+
+Result image, celebrity info (player_info), question, and answer are rendered in HTML using Jinja2.
+
+User can ask questions about the celebrity → answered using the question-answer engine.
+
+Step 6: Demo
+
+Uploaded images of celebrities like MS Dhoni, Salman Khan, Robert Downey Jr.
+
+Results:
+
+Bounding box around the face.
+
+Celebrity info displayed (name, profession, nationality, achievements).
+
+Question-answer works perfectly.
+
+Summary
+
+Backend (routes) + Frontend (index.html, style.css) integrated.
+
+Blueprint main handles all routes.
+
+Base64 is used to render images on HTML.
+
+Two forms: image upload and question form.
+
+Secret key secures sessions for form submissions.
+
+Application is production-ready and can be deployed on servers.
+
+**Summary:**
+
+In this video, we integrated the Flask backend routes with the frontend HTML and CSS to create a fully functional Celebrity Detector and Question Answer System. We began by setting up the Flask application in app/__init__.py, where we imported Flask, os, load_dotenv for environment variables, and our main blueprint from app/routes. We defined a create_app function that initialized the Flask app, specified the templates folder, set a secret key for session security, and registered the blueprint containing all backend routes. This setup ensures the backend is properly connected and secure, while Flask knows where to locate HTML templates.
+
+Next, we configured the app runner in app.py in the root directory. Here, the app is created by calling create_app(), and it runs on host 0.0.0.0 and port 5000 with debug=True. The host configuration allows external access, which is essential for Docker and Kubernetes deployment, while debug mode aids development by showing runtime errors.
+
+On the frontend, we set up the templates/index.html file with two forms: one for image upload and another for user questions. Using Jinja2 templating, we dynamically rendered Python data on the HTML page, such as the processed celebrity image (displayed via Base64 encoding) and celebrity information (player_info). Question and answer pairs from the QA engine are also displayed, ensuring an interactive interface. The frontend styling was added through static/style.css, linked in HTML to provide a polished look for the forms and results.
+
+The application flow is as follows: the user uploads a celebrity image, which is processed by the backend; the celebrity is detected, and a bounding box is drawn on the face. The resulting image, celebrity details, and any user questions are then displayed on the HTML page. Users can ask questions about the detected celebrity, and the QA engine returns answers in real time. During the demo, celebrity images like MS Dhoni, Salman Khan, and Robert Downey Jr. were uploaded, and the application successfully displayed face bounding boxes, detailed information, and answered user questions accurately.
+
+In summary, the Flask backend and frontend were fully integrated: the blueprint main handles all routes, Base64 is used to render images, forms for image upload and questions work seamlessly, the secret key secures sessions, and the system is now production-ready for deployment.
+
+**8. Dockerfile , Kubernetes Deployment File and Code Versioning using GitHub**
+
+In this video, we are containerizing the Flask app using Docker, deploying it with Kubernetes, and doing code versioning with GitHub.
+
+Step 1: Docker Setup
+
+File: Dockerfile (root directory)
+
+Base Image:
+
+FROM python:3.11
+
+
+Using Python 3.11 as the parent image.
+
+Environment Variables: (Optional but recommended)
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+
+Working Directory:
+
+WORKDIR /app
+
+
+Install System Dependencies (needed by OpenCV):
+
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender-dev \
+    libxext6
+
+
+Copy App Content:
+
+COPY . /app
+
+
+Install Python Packages:
+
+RUN pip install --no-cache-dir -e .
+
+
+Installs all packages listed in setup.py and requirements.txt without using cached files.
+
+Expose Port & Run App:
+
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+
+Step 1: Summary:
+
+Python base image
+
+Environment variables
+
+OpenCV dependencies
+
+Copy all files
+
+Install Python packages
+
+Expose Flask port 5000
+
+Run the app
+
+Step 2: Kubernetes Deployment
+
+File: kubernetes_deploy.yaml (root directory)
+
+Deployment Section:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lm-ops-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lm-ops-app
+  template:
+    metadata:
+      labels:
+        app: lm-ops-app
+    spec:
+      containers:
+        - name: lm-ops-app
+          image: <GCP_ARTIFACT_REGISTRY_PATH>/lm-ops-app:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lm-ops-secret
+                  key: api-key
+
+
+Service Section:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lm-ops-app-service
+spec:
+  selector:
+    app: lm-ops-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
+
+
+Step 2: Notes:
+
+Deployment name and container name should match (lm-ops-app).
+
+replicas: 1 for simplicity; can increase later.
+
+Port 5000 is exposed internally; service maps port 80 externally.
+
+Service type LoadBalancer to make app public.
+
+API keys can be injected into Kubernetes secrets and accessed from the container.
+
+Step 3: GitHub Versioning
+
+Create .gitignore file:
+
+Ignore sensitive files like .env and project management files.
+
+Initialize Local Repository:
+
+git init
+
+
+Add Remote Repository:
+
+git remote add origin <GITHUB_REPO_URL>
+
+
+Add Files & Commit:
+
+git add .
+git commit -m "Initial commit"
+
+
+Push to GitHub:
+
+git push origin main
+
+Step 3: Notes:
+
+Only files not listed in .gitignore will be pushed.
+
+Check GitHub to confirm successful upload.
+
+Step 4: Workflow Summary
+
+Docker: Containerizes Flask app with all dependencies.
+
+Kubernetes: Deploys app using Deployment + Service; API keys injected via secrets.
+
+GitHub: Version control to keep track of code changes.
+
+This setup ensures:
+
+Reproducible environments (Docker)
+
+Scalable deployment (Kubernetes)
+
+Code safety and collaboration (GitHub)
+
+**Summary:**
+
+In this video, we focused on containerizing the Flask application, deploying it with Kubernetes, and implementing code versioning using GitHub. First, we created a Dockerfile in the project root to containerize the Flask app. We used python:3.11 as the base image and set environment variables to prevent Python from writing .pyc files and to enable unbuffered output. We set the working directory to /app and installed system dependencies required for OpenCV. The entire project content was copied into the container, and Python packages were installed using pip install -e . to include all dependencies listed in setup.py and requirements.txt. Finally, port 5000 was exposed, and the Flask app was set to run via CMD ["python", "app.py"]. This ensures that the container is fully self-sufficient and ready to run the application in any environment.
+
+Next, we defined a Kubernetes deployment in kubernetes_deploy.yaml. The deployment specifies one replica of the containerized app with the name lm-ops-app, exposing port 5000 internally. API keys are injected securely using Kubernetes secrets, allowing the container to access necessary credentials without exposing them in code. The service section maps the internal container port to port 80 externally and uses LoadBalancer type to make the application publicly accessible. This setup allows scalable and secure deployment of the application on Kubernetes clusters, while keeping sensitive data protected via secrets.
+
+For code versioning, we created a .gitignore file to exclude sensitive files like .env. A local Git repository was initialized, the remote GitHub repository was added, and all files were committed and pushed to GitHub. This ensures that the codebase is safely stored in version control, enabling collaboration, tracking changes, and easy rollback if needed. Only the files not listed in .gitignore are pushed to GitHub, keeping secrets and unnecessary files private.
+
+Summary of Workflow: Docker containerizes the Flask application with all dependencies, Kubernetes handles scalable deployment and secret management, and GitHub maintains version control. This integrated setup ensures reproducible environments, secure and scalable deployments, and efficient code collaboration.
+
+**9. GCP Setup ( Service Accounts , GKE, GAR )**
+
+In this video, we set up Google Cloud for our project, including enabling APIs, creating a Kubernetes cluster, an artifact registry, and a service account.
+
+Step 1: Prerequisites
+
+Before starting, ensure you have completed:
+
+Docker file – already created.
+
+Kubernetes deployment file – already created.
+
+Code versioning on GitHub – already completed.
+
+Step 2: Google Cloud Account
+
+Sign in to Google Cloud Platform (GCP)
+
+New users get $300 free credits.
+
+Step 3: Enable Required APIs
+
+Go to APIs & Services → Library and enable the following APIs:
+
+Kubernetes Engine API – required to create Kubernetes clusters.
+
+Google Container Registry API – needed to store Docker images in Artifact Registry.
+
+Compute Engine API – manages computation resources for VM instances.
+
+Cloud Build API – required for building and deploying images.
+
+Cloud Storage API – used for storing objects/files.
+
+IAM API – to manage roles and service accounts.
+
+(Optional but recommended to avoid errors in deployment)
+
+Step 4: Create Google Kubernetes Engine (GKE) Cluster
+
+Go to Kubernetes Engine → Clusters → Create Cluster.
+
+Configure:
+
+Name: lm-ops
+
+Region: us-central1
+
+Tier: Standard
+
+Skip Fleet Registration.
+
+Networking:
+
+Access via DNS
+
+IPv4 enabled
+
+Do not enable authorized networks
+
+Advanced options: leave default.
+
+Click Create → cluster creation may take ~5 minutes.
+
+Step 5: Create Google Artifact Registry
+
+Go to Artifact Registry → Repositories → Create Repository
+
+Configure:
+
+Name: lm-ops-repo
+
+Format: Docker
+
+Tier: Standard
+
+Region: us-central1
+
+Click Create → repository is created instantly.
+
+Step 6: Create Service Account
+
+Go to IAM & Admin → Service Accounts → Create Service Account
+
+Name: e.g., celebrity
+
+Assign Permissions:
+
+Owner
+
+Storage Object Admin
+
+Storage Object Viewer
+
+Artifact Registry Admin
+
+Artifact Registry Writer
+
+Click Done
+
+Step 7: Create Service Account Key
+
+Go to Actions → Manage Keys → Add Key → Create New Key
+
+Format: JSON → click Create → download the key.
+
+Place the JSON file in your project root and rename it to:
+
+GCP_key.json
+
+
+Add to .gitignore to prevent pushing it to GitHub:
+
+GCP_key.json
+
+Summary of Google Cloud Setup
+
+Enabled six essential APIs.
+
+Created Kubernetes cluster (lm-ops).
+
+Created Artifact Registry (lm-ops-repo).
+
+Created Service Account with required permissions.
+
+Generated JSON key for service account access and added it to .gitignore.
+
+Note: Only move forward to the next step once the Kubernetes cluster shows a green tick (fully created).
+
+**Summary:**
+
+In this video, we focused on setting up Google Cloud Platform (GCP) to prepare the environment for deploying our Celebrity Detector and QA System. We started by ensuring prerequisites were complete, including having the Dockerfile, Kubernetes deployment file, and code versioning on GitHub ready.
+
+Next, we signed in to Google Cloud Platform and noted that new users receive $300 in free credits. We then enabled the essential APIs required for the project, including Kubernetes Engine API for cluster creation, Google Container Registry API for storing Docker images, Compute Engine API for managing VM instances, Cloud Build API for building and deploying images, Cloud Storage API for file storage, and IAM API to manage roles and service accounts. Enabling these APIs ensures that all necessary GCP services work seamlessly during deployment.
+
+After enabling APIs, we created a Google Kubernetes Engine (GKE) cluster named lm-ops in the us-central1 region with the standard tier. We used default networking settings, enabled IPv4 access, and skipped fleet registration. Cluster creation took a few minutes, and a green tick confirmed that the cluster was ready. We then created a Google Artifact Registry named lm-ops-repo with Docker format in the same region, which serves as a secure storage location for our containerized Docker images.
+
+Finally, we set up a Service Account to manage permissions and automate deployments. The account, named celebrity, was assigned roles including Owner, Storage Object Admin/Viewer, and Artifact Registry Admin/Writer. A JSON key was generated for this account, downloaded, renamed to GCP_key.json, and added to .gitignore to keep it secure. This key allows our project to authenticate with GCP programmatically during Docker pushes and Kubernetes deployments.
+
+Summary: The GCP setup included enabling six critical APIs, creating a Kubernetes cluster (lm-ops), creating an Artifact Registry (lm-ops-repo), creating a Service Account with necessary permissions, and generating a secure JSON key for authentication. With this setup complete and the cluster fully active, the environment is now ready for deploying our containerized application.
+
+**10. Circle CI Pipeline Code**
+
+In this video, we create a CircleCI pipeline to automate Docker image building, pushing to Google Artifact Registry, and deploying to Google Kubernetes Engine (GKE).
+
+Step 1: Folder & File Setup
+
+In the root directory, create a folder:
+
+.circleci
+
+
+Inside .circleci, create a file:
+
+config.yml
+
+
+Copy the config.yml from the GitHub repository (provided).
+
+CircleCI will automatically detect this folder and file.
+
+Step 2: Config.yml Overview
+
+Version: 2.1 – specifies the CircleCI version.
+
+Executor: Docker executor using Google Cloud SDK image (gcloud)
+
+Why? gcloud is pre-installed; no need for manual installation.
+
+Working Directory: /repo – all code runs here.
+
+Step 3: Jobs in the Pipeline
+Job 1: Checkout Code
+
+Pulls your project code from GitHub into the Docker container.
+
+Ensures the pipeline has the latest version of the code.
+
+Job 2: Build Docker Image
+
+Uses remote Docker to enable Docker commands inside CircleCI.
+
+Authentication with GCP:
+
+Fetch GCP_KEY from CircleCI environment variables (stored as base64).
+
+Decode back to GCP_key.json.
+
+Activate the service account using the JSON key.
+
+Authenticate Docker with Google Artifact Registry.
+
+Build & Push Image:
+
+docker build -t <artifact-registry-path>/<repo-name>:<image-tag> .
+docker push <artifact-registry-path>/<repo-name>:<image-tag>
+
+
+Environment Variables:
+
+GCP_KEY – base64 encoded GCP service account key.
+
+PROJECT_ID – GCP project ID.
+
+REGION – region for Artifact Registry and GKE.
+
+Job 3: Deploy to GKE
+
+Checkout code again.
+
+Setup remote Docker.
+
+Authenticate with GCP using the same service account key.
+
+Deploy using Kubernetes:
+
+kubectl apply -f Kubernetes_deployment.yaml
+kubectl rollout restart deployment <app-name>
+
+
+Notes:
+
+Deployment name and image must match Kubernetes deployment YAML.
+
+Project ID and region are pulled from CircleCI environment variables.
+
+Step 4: Workflow Definition
+
+Defines job execution order:
+
+checkout code → must succeed first.
+
+build Docker image → runs only if checkout succeeds.
+
+deploy to GKE → runs only if Docker image build succeeds.
+
+Ensures CI/CD pipeline executes in the correct order.
+
+Step 5: Key Points
+
+Service account key is never exposed publicly; stored as CircleCI environment variable.
+
+Image names and deployment names must be consistent across CircleCI config and Kubernetes YAML.
+
+Pipeline automates:
+
+Code checkout
+
+Docker image build & push
+
+Kubernetes deployment
+
+Next Steps:
+
+In the following video, environment variables in CircleCI will be set.
+
+The pipeline will be executed to deploy the app to Google Kubernetes Engine.
+
+**Summary:**
+
+In this video, we set up a CircleCI pipeline to automate the deployment workflow for our Celebrity Detector and QA System. The pipeline is designed to build the Docker image, push it to Google Artifact Registry (GAR), and deploy it to Google Kubernetes Engine (GKE) automatically, reducing manual intervention and ensuring consistent deployments.
+
+We started by creating a .circleci folder in the project root and adding a config.yml file inside it. This configuration file, which CircleCI automatically detects, contains the pipeline instructions. We used CircleCI version 2.1 and a Docker executor with the Google Cloud SDK image to ensure that gcloud commands are available without manual installation. The working directory inside the executor is set to /repo, where all project code is executed.
+
+The pipeline consists of three main jobs. The first job, Checkout Code, pulls the latest code from GitHub into the Docker container to ensure the pipeline works with the most recent changes. The second job, Build Docker Image, sets up remote Docker so that Docker commands can run inside CircleCI, decodes the base64-encoded GCP service account key, activates the service account, authenticates Docker with GAR, and then builds and pushes the Docker image. This job relies on environment variables such as GCP_KEY, PROJECT_ID, and REGION to manage authentication and deployment paths securely.
+
+The third job, Deploy to GKE, again checks out the code, authenticates with GCP using the service account key, and applies the Kubernetes deployment using kubectl apply. It also performs a rollout restart to ensure the deployment picks up the new image. The job depends on the Docker image being successfully built and pushed to GAR. The workflow section in config.yml ensures that jobs run in the correct order: first checkout, then build, then deploy.
+
+Key points include keeping the service account key secure by storing it as a CircleCI environment variable, maintaining consistency in image and deployment names across CircleCI config and Kubernetes YAML, and automating the entire CI/CD process. This setup ensures that whenever code is pushed to GitHub, CircleCI can automatically build the Docker image, push it to GAR, and deploy it to GKE without manual steps.
+
+Summary: The CircleCI pipeline automates the workflow from code checkout to Docker image build and push, and finally to Kubernetes deployment, ensuring reproducible, secure, and efficient CI/CD for the application.
+
+**11. Full CI/CD Deployment of Application on GKE**
+
+In this video, we perform the CircleCI setup, configure environment variables, deploy the application to GKE, and perform cleanup.
+
+Step 1: Convert GCP Key to Base64
+
+Open Git Bash in VSCode.
+
+Run the command to encode your GCP_key.json:
+
+base64 GCP_key.json
+
+
+Copy the encoded output (ensure no extra spaces at start or end).
+
+Step 2: CircleCI Project Setup
+
+Sign up/login to CircleCI
+.
+
+Create a new project:
+
+Name: LM_ops (or anything you prefer).
+
+Pipeline name: Build and Test.
+
+Connect GitHub repository (authorize if required).
+
+Push the .circleci/config.yml to GitHub:
+
+git add .
+git commit -m "Add CircleCI config"
+git push
+
+
+CircleCI will auto-detect config.yml.
+
+Set triggers:
+
+Default: run on all pushes.
+
+Optional: run only on specific branches/events.
+
+Step 3: Define Environment Variables
+
+In Project Settings → Environment Variables, define the following:
+
+Name	Value
+GCLOUD_SERVICE_KEY	Base64 encoded GCP key JSON
+PROJECT_ID	GCP Project ID
+GKE_CLUSTER	Name of your Kubernetes cluster
+COMPUTE_REGION	Region where GKE cluster is deployed
+
+Ensure no extra spaces when pasting the base64 key.
+
+Step 4: Running the Pipeline
+
+Automatic: triggers on push to GitHub.
+
+Manual:
+
+Go to Pipelines → LM_ops project.
+
+Select branch (e.g., main) and pipeline (Build and Test).
+
+Click Run Pipeline.
+
+Pipeline stages:
+
+Checkout code
+
+Build Docker image
+
+Deploy to GKE
+
+Step 5: Kubernetes Secrets
+
+If your deployment requires secrets (like API keys):
+
+kubectl create secret generic <secret-name> --from-literal=API_KEY=<your-api-key>
+
+
+Example: inject Grok API key into your cluster.
+
+Resolves errors like container configuration error.
+
+Step 6: Verify Deployment
+
+Go to GKE → Workloads → LM_ops app.
+
+Wait 5–10 minutes if you see errors like minimum availability, especially on trial accounts.
+
+Open the Load Balancer endpoint to access your app.
+
+Test the functionality (e.g., celebrity detection demo).
+
+Step 7: Cleanup (Important!)
+
+To avoid unnecessary charges:
+
+Delete Kubernetes cluster:
+
+GKE → Clusters → Delete cluster.
+
+Delete Docker Artifact Repository:
+
+Artifact Registry → Delete repository.
+
+Optional:
+
+Delete CircleCI project
+
+Delete service account (not charged for service accounts)
+
+Only cluster and artifact repository deletion are mandatory to avoid costs.
+
+Key Takeaways
+
+Encode GCP keys in base64 to store safely in CircleCI environment variables.
+
+CircleCI automates the full CI/CD pipeline: code checkout → Docker build → push → GKE deployment.
+
+Kubernetes secrets must be injected to avoid container errors.
+
+Always perform cleanup to avoid unnecessary GCP charges.
+
+**Summary:**
+
+In this video, we completed the CircleCI setup, configured environment variables, deployed the application to GKE, and performed cleanup to ensure a smooth and cost-efficient CI/CD workflow.
+
+The first step involved converting the GCP service account key (GCP_key.json) to base64 using Git Bash in VSCode. This ensures the key can be securely stored in CircleCI environment variables without exposing sensitive data. The encoded key is copied carefully to avoid extra spaces, which could cause authentication errors.
+
+Next, we set up the CircleCI project by signing in, creating a new project (e.g., LM_ops), connecting it to our GitHub repository, and pushing the .circleci/config.yml file. CircleCI automatically detects this configuration and can trigger pipelines on every push to GitHub or manually when needed.
+
+We then defined essential environment variables in CircleCI Project Settings, including GCLOUD_SERVICE_KEY (base64-encoded key), PROJECT_ID, GKE_CLUSTER, and COMPUTE_REGION. These variables allow the pipeline to authenticate with GCP, locate the correct cluster, and deploy the application automatically.
+
+Running the pipeline triggers the stages sequentially: code checkout → Docker image build → push → deployment to GKE. For deployments that require secrets, such as the Grok API key, we used Kubernetes secrets via kubectl create secret, ensuring the container runs without configuration errors.
+
+After deployment, we verified the application on GKE workloads and accessed it via the Load Balancer endpoint to confirm that features like celebrity detection and question answering work as expected.
+
+Finally, we performed cleanup to avoid unnecessary charges. This involved deleting the Kubernetes cluster and Artifact Registry repository. Optionally, CircleCI projects and service accounts can also be removed.
+
+Key Takeaways:
+
+Encode GCP keys in base64 to store safely in CircleCI.
+
+CircleCI automates the full CI/CD process: code checkout → Docker build → push → GKE deployment.
+
+Kubernetes secrets must be injected to avoid container configuration errors.
+
+Always clean up cloud resources like clusters and repositories to prevent unexpected costs.
+
+This setup ensures a secure, automated, and cost-efficient deployment workflow for the Celebrity Detector and QA system.
 
 **F. AI Music Composer**
 
